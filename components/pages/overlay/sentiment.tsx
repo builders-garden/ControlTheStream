@@ -163,7 +163,7 @@ export const OverlaySentiment = ({ brand }: { brand: Brand }) => {
       setShowPoll(true);
       setTimeout(() => {
         toast.dismiss(toastId);
-      }, 25000);
+      }, 45000);
     },
   });
 

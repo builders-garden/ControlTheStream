@@ -94,6 +94,12 @@ export type KalshiMarketStartedEvent = {
   kalshiUrl: string;
   kalshiEventId: string;
   position: PopupPositions;
+  durationMs: number; // Duration in milliseconds
+};
+
+export type KalshiMarketEndedEvent = {
+  id: string;
+  brandId: string;
 };
 
 export type ServerToClientEvents = {
@@ -106,4 +112,5 @@ export type ServerToClientEvents = {
   [ServerToClientSocketEvents.END_SENTIMENT_POLL]: EndPollNotificationEvent;
   [ServerToClientSocketEvents.UPDATE_SENTIMENT_POLL]: UpdatePollNotificationEvent;
   [ServerToClientSocketEvents.KALSHI_MARKET_STARTED]: KalshiMarketStartedEvent;
+  [ServerToClientSocketEvents.KALSHI_MARKET_ENDED]: KalshiMarketEndedEvent;
 };

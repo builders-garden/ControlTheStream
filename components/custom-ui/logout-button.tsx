@@ -26,7 +26,7 @@ export const LogoutButton = ({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="flex justify-center items-center min-w-1/3 w-1/3">
+      className="flex justify-center items-center">
       {brandSlug === THE_ROLLUP_BRAND_SLUG ? (
         <TheRollupButton
           buttonColor="red"
@@ -36,8 +36,8 @@ export const LogoutButton = ({
           disabled={disabled}>
           {children || (
             <div className="flex justify-start items-center w-full gap-2">
-              <LogOut className="size-5 text-muted" />
-              <p className="text-xl font-bold text-muted">Logout</p>
+              <LogOut className="size-4 text-muted" />
+              <p className="text-base font-bold text-muted">Logout</p>
             </div>
           )}
         </TheRollupButton>
@@ -49,8 +49,8 @@ export const LogoutButton = ({
           disabled={disabled}>
           {children || (
             <div className="flex justify-start items-center w-full gap-2">
-              <LogOut className="size-5 text-muted" />
-              <p className="text-xl font-bold text-muted">Logout</p>
+              <LogOut className="size-4 text-muted" />
+              <p className="text-base font-bold text-muted">Logout</p>
             </div>
           )}
         </CTSButton>

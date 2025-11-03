@@ -2,12 +2,16 @@
 
 import { Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { QRCodeSVG } from "qrcode.react";
 import { useEffect } from "react";
+import { NumberTicker } from "@/components/shadcn-ui/number-ticker";
 import { useKalshiGet } from "@/hooks/use-kalshi-get";
 import { useSocket } from "@/hooks/use-socket";
 import { useSocketUtils } from "@/hooks/use-socket-utils";
+import { THE_ROLLUP_BRAND_SLUG } from "@/lib/constants";
 import { ServerToClientSocketEvents } from "@/lib/enums";
 import { KalshiMarketStartedEvent } from "@/lib/types/socket/server-to-client.type";
+import { cn } from "@/lib/utils";
 
 export interface KalshiNotificationData {
   id: string; // ID stored in the database
@@ -19,10 +23,16 @@ export interface KalshiNotificationData {
 
 export const ToastKalshiNotification = ({
   data,
+  brandSlug,
 }: {
   data: KalshiNotificationData;
+  brandSlug: string;
 }) => {
   console.log("ToastKalshiNotification mounted with data:", data);
+
+  // Whether the brand is the Rollup
+  const isBrandTheRollup = brandSlug === THE_ROLLUP_BRAND_SLUG;
+  console.log("brandSlug", brandSlug);
 
   const { subscribe, unsubscribe } = useSocket();
   const { joinStream } = useSocketUtils();
@@ -83,43 +93,206 @@ export const ToastKalshiNotification = ({
   const xOffset = isLeft ? 100 : isRight ? -100 : 0;
   const yOffset = isCenter ? (isTop ? 100 : -100) : 0;
 
+  // Percentage results bar (mirrors poll ResultsBar but uses YES/NO)
+  const ResultsBarYesNo = ({
+    yesPercent,
+    noPercent,
+  }: {
+    yesPercent: number;
+    noPercent: number;
+  }) => {
+    const clampedYes = Math.max(0, Math.min(100, yesPercent));
+    const clampedNo = Math.max(0, Math.min(100, noPercent));
+    const total = clampedYes + clampedNo;
+    const normalizedYes = total === 0 ? 50 : (clampedYes / total) * 100;
+    const normalizedNo = 100 - normalizedYes;
+
+    const yesSizeClass =
+      normalizedYes < 8
+        ? "text-xs"
+        : normalizedYes < 16
+          ? "text-lg"
+          : "text-2xl";
+    const noSizeClass =
+      normalizedNo < 8 ? "text-xs" : normalizedNo < 16 ? "text-lg" : "text-2xl";
+    const yesStack = normalizedYes < 10;
+    const noStack = normalizedNo < 10;
+
+    return (
+      <motion.div
+        className={cn(
+          "flex items-center w-full min-w-[1000px] rounded-xl overflow-hidden border-4",
+          isBrandTheRollup ? "border-[#E6B45E]" : "border-white",
+        )}
+        initial={{ opacity: 0, scale: 0, rotate: -6 }}
+        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+        transition={{
+          duration: 0.4,
+          scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
+          rotate: { type: "spring", visualDuration: 0.45, bounce: 0.3 },
+        }}>
+        <motion.div
+          className={cn(
+            "h-14 flex items-center justify-center bg-[#CF5953]",
+            normalizedNo > 0 ? "px-2" : "px-0",
+          )}
+          initial={{ width: "50%" }}
+          animate={{ width: `${normalizedNo}%` }}
+          transition={{
+            type: "spring",
+            stiffness: 100,
+            damping: 60,
+            delay: 0.45,
+          }}>
+          {noStack ? (
+            <div
+              className={cn(
+                "flex flex-col items-center leading-4 text-white font-overused-grotesk font-black",
+                noSizeClass,
+              )}>
+              <div>NO</div>
+              <div className="flex items-center gap-0.5">
+                <NumberTicker
+                  value={normalizedNo}
+                  startValue={50}
+                  className={cn("tracking-tighter text-white", noSizeClass)}
+                  delay={0.45}
+                />
+                %
+              </div>
+            </div>
+          ) : (
+            <span
+              className={cn(
+                "flex items-center gap-1 text-white font-overused-grotesk font-black tracking-tighter shrink-0",
+                noSizeClass,
+              )}>
+              NO
+              <NumberTicker
+                value={normalizedNo}
+                startValue={50}
+                className={cn("tracking-tighter text-white", noSizeClass)}
+                delay={0.45}
+              />
+              %
+            </span>
+          )}
+        </motion.div>
+        <motion.div
+          className={cn(
+            "h-14 flex items-center justify-center bg-[#4CAF50]",
+            normalizedYes > 0 ? "px-2" : "px-0",
+          )}
+          initial={{ width: "50%" }}
+          animate={{ width: `${normalizedYes}%` }}
+          transition={{
+            type: "spring",
+            stiffness: 100,
+            damping: 60,
+            delay: 0.45,
+          }}>
+          {yesStack ? (
+            <div
+              className={cn(
+                "flex flex-col items-center leading-4 text-white font-overused-grotesk font-black",
+                yesSizeClass,
+              )}>
+              <div>YES</div>
+              <div className="flex items-center gap-0.5">
+                <NumberTicker
+                  value={normalizedYes}
+                  startValue={50}
+                  className={cn("tracking-tighter text-white", yesSizeClass)}
+                  delay={0.45}
+                />
+                %
+              </div>
+            </div>
+          ) : (
+            <span
+              className={cn(
+                "flex items-center gap-1 text-white font-overused-grotesk font-black tracking-tighter shrink-0",
+                yesSizeClass,
+              )}>
+              YES
+              <NumberTicker
+                value={normalizedYes}
+                startValue={50}
+                className={cn("tracking-tighter text-white", yesSizeClass)}
+                delay={0.45}
+              />
+              %
+            </span>
+          )}
+        </motion.div>
+      </motion.div>
+    );
+  };
+
   // Render single market
-  const renderSingleMarket = (market: {
+  const renderSingleMarket = (_market: {
     title: string;
     yesPrice: string;
     noPrice: string;
   }) => {
-    const yesPercentage = Math.round(parseFloat(market.yesPrice) * 100);
-    const noPercentage = 100 - yesPercentage;
+    const yesPriceFloat = Math.max(0, parseFloat(_market.yesPrice || "0"));
+    const noPriceFloat = Math.max(
+      0,
+      _market.noPrice ? parseFloat(_market.noPrice) : 1 - yesPriceFloat,
+    );
+    const yesPercent = Math.round(yesPriceFloat * 100);
+    const noPercent = Math.round(noPriceFloat * 100);
+    const yesPriceLabel = `${yesPercent}%`;
+    const noPriceLabel = `${noPercent}%`;
 
     return (
-      <div className="bg-gradient-to-b bg-[#1B2541] rounded-xl shadow-lg px-6 py-4 min-w-[800px] border-4 border-[#E6B45E]">
-        <div className="flex items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="text-center">
-              <div className="text-green-500 font-bold text-2xl">YES</div>
-              <div className="text-white font-black text-3xl">
-                {yesPercentage}%
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-red-500 font-bold text-2xl">NO</div>
-              <div className="text-white font-black text-3xl">
-                {noPercentage}%
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-1 text-center">
-            <h3 className="text-white font-bold text-xl mb-2">
-              {kalshiData?.success ? kalshiData.data.eventTitle : "Market"}
+      <div
+        className={cn(
+          "rounded-xl shadow-lg px-3 py-3 min-w-[760px] min-h-[96px] border-4 backdrop-blur-[150px]",
+          isBrandTheRollup
+            ? "bg-black/70 border-[#E6B45E]"
+            : "bg-black/70 border-primary",
+        )}>
+        {/* Header: title + QR + green label */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1 pr-10">
+            <h3 className="text-white font-black text-[26px] leading-7 text-left">
+              {kalshiData?.success ? kalshiData.data.eventTitle : _market.title}
             </h3>
-            <p className="text-gray-300 text-sm">{market.title}</p>
           </div>
+          <div className="flex flex-col items-center justify-center shrink-0">
+            <div className="bg-white p-1">
+              <QRCodeSVG value={data.kalshiUrl} size={66} level="M" />
+            </div>
+            <div className="text-[#00d296] font-bold text-lg mt-1">
+              Powered by Kalshi
+            </div>
+          </div>
+        </div>
 
-          <div className="text-center">
-            <div className="text-[#E6B45E] font-bold text-lg">Kalshi</div>
-            <div className="text-gray-400 text-sm">Market</div>
+        {/* Options: two buttons YES/NO with prices */}
+        <div className="mt-2">
+          <div className="grid grid-cols-2 gap-1">
+            <div className="rounded-sm bg-white px-1 py-0.5 text-center border border-white/40">
+              <div className="inline-flex items-center justify-center gap-1 leading-none align-middle">
+                <span className="text-[#4CAF50] font-extrabold uppercase tracking-tight text-base">
+                  Yes
+                </span>
+                <span className="text-black font-black tracking-tight text-lg">
+                  {yesPriceLabel}
+                </span>
+              </div>
+            </div>
+            <div className="rounded-sm bg-white px-1 py-0.5 text-center border border-white/40">
+              <div className="inline-flex items-center justify-center gap-1 leading-none align-middle">
+                <span className="text-[#CF5953] font-extrabold uppercase tracking-tight text-base">
+                  No
+                </span>
+                <span className="text-black font-black tracking-tight text-lg">
+                  {noPriceLabel}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -130,61 +303,72 @@ export const ToastKalshiNotification = ({
   const renderMultipleMarkets = () => {
     if (!kalshiData?.success || !kalshiData.data.markets) return null;
 
+    // Build list with bars like the reference
+    const marketsAll = kalshiData.data.markets as Array<{
+      title: string;
+      yesPrice: string;
+      noSubTitle?: string;
+      ticker: string;
+    }>;
+
+    const scoredAll = marketsAll.map((m, i) => ({
+      index: i,
+      name: m.noSubTitle || m.title || `Option ${i + 1}`,
+      pct: Math.round(parseFloat(m.yesPrice) * 100),
+      ticker: m.ticker,
+    }));
+
+    const scored = scoredAll.slice(0, 3);
+    const extraCount = Math.max(0, scoredAll.length - 3);
+    const maxPct = scored.reduce((acc, m) => (m.pct > acc ? m.pct : acc), 0);
+
     return (
-      <div className="bg-gradient-to-b bg-[#1B2541] rounded-xl shadow-lg px-6 py-4 min-w-[900px] border-4 border-[#E6B45E]">
-        <div className="text-center mb-4">
-          <h3 className="text-white font-bold text-xl mb-2">
-            {kalshiData.data.eventTitle}
-          </h3>
-          <p className="text-gray-300 text-sm">
-            {kalshiData.data.totalMarkets} markets available
-          </p>
+      <div
+        className={cn(
+          "rounded-xl shadow-lg px-3 py-3 min-w-[760px] min-h-[96px] border-4 backdrop-blur-[150px]",
+          isBrandTheRollup
+            ? "bg-black/70 border-[#E6B45E]"
+            : "bg-black/70 border-primary",
+        )}>
+        {/* Header: title + QR */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1 pr-10">
+            <h3 className="text-white font-black text-[26px] leading-7 text-left">
+              {kalshiData.data.eventTitle}
+            </h3>
+          </div>
+          <div className="flex flex-col items-center justify-center shrink-0">
+            <div className="bg-white p-0.5">
+              <QRCodeSVG value={data.kalshiUrl} size={84} level="M" />
+            </div>
+            <div className="text-[#00d296] font-bold text-lg mt-1">
+              Powered by Kalshi
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
-          {kalshiData.data.markets.slice(0, 3).map(
-            (
-              market: {
-                title: string;
-                yesPrice: string;
-                noSubTitle: string;
-                ticker: string;
-              },
-              index: number,
-            ) => {
-              const yesPercentage = Math.round(
-                parseFloat(market.yesPrice) * 100,
-              );
-              const candidateName = market.noSubTitle || `Option ${index + 1}`;
-
+        {/* Options grid (3 price boxes with names) */}
+        <div className="mt-2">
+          <div className="grid grid-cols-3 gap-1">
+            {scored.map((m) => {
+              const percentLabel = `${m.pct}%`;
               return (
                 <div
-                  key={market.ticker}
-                  className="bg-gray-800 rounded-lg p-3 text-center">
-                  <div className="text-white font-bold text-sm mb-1">
-                    {candidateName}
+                  key={m.ticker}
+                  className="rounded-sm bg-white px-2 py-1 text-center border border-white/40">
+                  <div className="text-black font-extrabold text-sm leading-tight mb-0.5 truncate tracking-tight">
+                    {m.name}
                   </div>
-                  <div className="text-green-500 font-black text-xl">
-                    {yesPercentage}%
+                  <div>
+                    <span className="text-black font-black tracking-tight text-lg align-middle">
+                      {percentLabel}
+                    </span>
                   </div>
-                  <div className="text-gray-400 text-xs">Yes</div>
                 </div>
               );
-            },
-          )}
-        </div>
-
-        {kalshiData.data.totalMarkets > 3 && (
-          <div className="text-center mt-3">
-            <span className="text-gray-400 text-sm">
-              +{kalshiData.data.totalMarkets - 3} more markets
-            </span>
+            })}
           </div>
-        )}
-
-        <div className="text-center mt-4">
-          <div className="text-[#E6B45E] font-bold text-lg">Kalshi</div>
-          <div className="text-gray-400 text-sm">Prediction Markets</div>
+          {/* No extra markets label */}
         </div>
       </div>
     );
@@ -228,7 +412,12 @@ export const ToastKalshiNotification = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15, ease: "easeInOut" }}
-              className="bg-gradient-to-b bg-[#1B2541] rounded-xl shadow-lg px-6 py-8 min-w-[600px] border-4 border-[#E6B45E] flex justify-center items-center">
+              className={cn(
+                "rounded-xl shadow-lg px-3 py-5 min-w-[680px] min-h-[88px] border-4 flex justify-center items-center",
+                isBrandTheRollup
+                  ? "bg-[#1B2541] border-[#E6B45E]"
+                  : "bg-background border-primary",
+              )}>
               <div className="flex flex-col items-center gap-4">
                 <Loader2 className="size-8 text-[#E6B45E] animate-spin" />
                 <div className="text-white font-bold text-lg">
@@ -243,7 +432,12 @@ export const ToastKalshiNotification = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="bg-gradient-to-b bg-[#1B2541] rounded-xl shadow-lg px-6 py-8 min-w-[600px] border-4 border-red-500 flex justify-center items-center">
+              className={cn(
+                "rounded-xl shadow-lg px-3 py-5 min-w-[680px] min-h-[88px] border-4 flex justify-center items-center",
+                isBrandTheRollup
+                  ? "bg-[#1B2541] border-red-500"
+                  : "bg-background border-red-500",
+              )}>
               <div className="text-center">
                 <div className="text-red-500 font-bold text-lg mb-2">Error</div>
                 <div className="text-white text-sm">{error}</div>

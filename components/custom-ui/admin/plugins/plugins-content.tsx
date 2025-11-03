@@ -41,11 +41,11 @@ export const PluginsContent = ({ brandId }: { brandId: string }) => {
             onClick: () => setSelectedTab(PluginsTabs.TOKENS),
             isSelected: isTokensTab,
           },
-          // {
-          //   label: "Kalshi",
-          //   onClick: () => setSelectedTab(PluginsTabs.KALSHI),
-          //   isSelected: isKalshiTab,
-          // },
+          {
+            label: "Kalshi",
+            onClick: () => setSelectedTab(PluginsTabs.KALSHI),
+            isSelected: isKalshiTab,
+          },
         ]}
       />
 

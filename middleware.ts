@@ -21,7 +21,8 @@ export default async function middleware(req: NextRequest) {
     pathname === "/api/auth/logout" ||
     pathname === "/api/current-time" ||
     pathname.includes("/api/og") ||
-    pathname.includes("/api/webhook/farcaster")
+    pathname.includes("/api/webhook/farcaster") ||
+    pathname.includes("/api/kalshi/get") //TODO: Remove this after testing
   ) {
     return NextResponse.next();
   }

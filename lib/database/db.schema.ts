@@ -376,12 +376,19 @@ export const kalshiEventsTable = sqliteTable(
     kalshiUrl: text("kalshi_url").notNull(), // The original URL provided by the admin
     eventTitle: text("event_title").notNull(), // e.g., "New York City Mayor Election"
     totalMarkets: integer("total_markets").notNull(), // e.g., 5
+    duration: integer("duration"), // Duration in seconds
+    activatedAt: text("activated_at"), // ISO timestamp when event was activated
+    status: text("status", { mode: "text" })
+      .$type<"active" | "inactive">()
+      .default("active")
+      .notNull(),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },
   (t) => [
     index("idx_kalshi_events_brand_id").on(t.brandId),
     index("idx_kalshi_events_kalshi_event_id").on(t.kalshiEventId),
+    index("idx_kalshi_events_status").on(t.status),
   ],
 );
 

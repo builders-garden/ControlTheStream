@@ -93,10 +93,13 @@ export interface KalshiMarketDisplay {
 export interface KalshiApiSuccess {
   success: true;
   data: {
+    eventId?: string; // Optional: Only present when fetching active events from DB
     eventTitle: string;
     markets: KalshiMarketDisplay[];
     totalMarkets: number; // Total number of markets available
     kalshiUrl: string; // Original Kalshi URL
+    duration?: number; // Duration in minutes, when available
+    activatedAt?: string; // ISO timestamp when event was activated, when available
   };
 }
 

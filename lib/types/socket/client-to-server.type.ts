@@ -83,6 +83,7 @@ export type StartKalshiMarketEvent = {
   kalshiUrl: string;
   kalshiEventId: string;
   position: PopupPositions;
+  durationMs: number; // Duration in milliseconds
 };
 
 export type UpdateKalshiMarketEvent = {
@@ -100,12 +101,6 @@ export type UpdateKalshiMarketEvent = {
 export type EndKalshiMarketEvent = {
   id: string;
   brandId: string;
-  result: string;
-  // For binary markets
-  finalPrice?: string;
-  // For aggregated option markets
-  winningOptionId?: string;
-  winningOptionName?: string;
 };
 export type ClientToServerEvents = {
   [ClientToServerSocketEvents.JOIN_STREAM]: JoinStreamEvent;

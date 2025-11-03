@@ -21,11 +21,11 @@ export const KalshiMarketCard = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="w-full max-w-md bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+      className="w-full max-w-md bg-card border border-border rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
       {/* Header */}
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
-          <h3 className="font-bold text-lg text-gray-800 leading-tight mb-2">
+          <h3 className="font-bold text-lg text-foreground leading-tight mb-2">
             {eventTitle || market.title}
           </h3>
           {kalshiUrl && (
@@ -34,7 +34,7 @@ export const KalshiMarketCard = ({
                 href={kalshiUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-green-600 hover:text-green-700 underline hover:no-underline transition-colors duration-200">
+                className="text-sm text-primary hover:text-primary/80 underline hover:no-underline transition-colors duration-200">
                 View this market on Kalshi
               </a>
             </div>
@@ -43,7 +43,7 @@ export const KalshiMarketCard = ({
             <span className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full font-medium">
               {market.status}
             </span>
-            <span className="text-xs text-gray-500 font-mono">
+            <span className="text-xs text-muted-foreground font-mono">
               {market.ticker}
             </span>
           </div>
@@ -56,9 +56,9 @@ export const KalshiMarketCard = ({
         <motion.div
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="bg-white border-2 border-blue-200 rounded-lg p-4 text-center cursor-pointer hover:border-blue-300 transition-colors duration-200">
-          <div className="text-blue-600 font-bold text-lg mb-1">Yes</div>
-          <div className="text-2xl font-bold text-blue-700">
+          className="bg-background border-2 border-green-500/20 rounded-lg p-4 text-center cursor-pointer hover:border-green-500/40 transition-colors duration-200">
+          <div className="text-green-600 font-bold text-lg mb-1">Yes</div>
+          <div className="text-2xl font-bold text-white-600">
             {yesPercentage}%
           </div>
         </motion.div>
@@ -67,20 +67,18 @@ export const KalshiMarketCard = ({
         <motion.div
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="bg-white border-2 border-purple-200 rounded-lg p-4 text-center cursor-pointer hover:border-purple-300 transition-colors duration-200">
-          <div className="text-purple-600 font-bold text-lg mb-1">No</div>
-          <div className="text-2xl font-bold text-purple-700">
-            {noPercentage}%
-          </div>
+          className="bg-background border-2 border-red-500/20 rounded-lg p-4 text-center cursor-pointer hover:border-red-500/40 transition-colors duration-200">
+          <div className="text-red-600 font-bold text-lg mb-1">No</div>
+          <div className="text-2xl font-bold text-white-600">{noPercentage}%</div>
         </motion.div>
       </div>
 
       {/* Footer */}
-      <div className="mt-4 pt-3 border-t border-green-200">
+      <div className="mt-4 pt-3 border-t border-border">
         <div className="flex justify-between items-center">
           <div className="text-right">
             <div className="text-xs">
-              <span className="text-gray-500">powered by </span>
+              <span className="text-muted-foreground">powered by </span>
               <span className="text-green-600 font-bold">Kalshi</span>
             </div>
           </div>

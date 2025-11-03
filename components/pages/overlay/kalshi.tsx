@@ -4,12 +4,17 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ToastKalshiNotification } from "@/components/custom-ui/toast/toast-kalshi-notification";
 import { useSocket } from "@/hooks/use-socket";
+import { useSocketUtils } from "@/hooks/use-socket-utils";
 import { Brand } from "@/lib/database/db.schema";
 import { PopupPositions, ServerToClientSocketEvents } from "@/lib/enums";
-import { KalshiMarketStartedEvent } from "@/lib/types/socket/server-to-client.type";
+import {
+  KalshiMarketEndedEvent,
+  KalshiMarketStartedEvent,
+} from "@/lib/types/socket/server-to-client.type";
 
 export const OverlayKalshi = ({ brand }: { brand: Brand }) => {
   const { subscribe, unsubscribe } = useSocket();
+  const { joinStream } = useSocketUtils();
 
   // Unified Kalshi market state and visibility flag
   type NormalizedKalshiMarket = {
@@ -18,6 +23,7 @@ export const OverlayKalshi = ({ brand }: { brand: Brand }) => {
     kalshiUrl: string;
     kalshiEventId: string;
     position: PopupPositions;
+    durationMs: number; // Duration in milliseconds
   };
 
   const [_kalshiMarket, setKalshiMarket] =
@@ -28,13 +34,17 @@ export const OverlayKalshi = ({ brand }: { brand: Brand }) => {
 
   const openToastFromKalshiMarket = useCallback(
     (market: NormalizedKalshiMarket) => {
-      console.log("Opening toast with market data:", market);
-      console.log("Toast ID:", toastId);
-      console.log("Toast position:", market.position);
+      console.log("📊 OverlayKalshi: Creating toast with duration:", {
+        marketId: market.id,
+        durationMs: market.durationMs,
+        durationMinutes: market.durationMs / 1000 / 60,
+        toastId: toastId,
+      });
 
       toast.custom(
         () => (
           <ToastKalshiNotification
+            brandSlug={brand.slug}
             data={{
               id: market.id,
               brandId: market.brandId,
@@ -46,32 +56,30 @@ export const OverlayKalshi = ({ brand }: { brand: Brand }) => {
         ),
         {
           id: toastId,
-          duration: Infinity,
+          duration: market.durationMs, // Use dynamic duration from event
           position: market.position,
           className: "flex items-center justify-center w-full",
         },
       );
-
-      console.log("Toast.custom() called successfully");
     },
-    [toastId],
+    [toastId, brand.slug],
   );
 
   // Handle Kalshi market started event
   const handleKalshiMarketStarted = useCallback(
     (data: KalshiMarketStartedEvent) => {
-      console.log("Received Kalshi market started event:", data);
-      console.log("Event brandId:", data.brandId);
-      console.log("Current brandId:", brand.id);
-      console.log("Brand match:", data.brandId === brand.id);
-
       // Only show if it's for this brand
       if (data.brandId !== brand.id) {
-        console.log("Event not for this brand, ignoring");
         return;
       }
 
-      console.log("Processing Kalshi market event for this brand");
+      console.log("📊 OverlayKalshi: Received Kalshi Market with Duration:", {
+        marketId: data.id,
+        kalshiEventId: data.kalshiEventId,
+        durationMs: data.durationMs,
+        durationMinutes: data.durationMs / 1000 / 60,
+        position: data.position,
+      });
 
       const normalized: NormalizedKalshiMarket = {
         id: data.id,
@@ -79,47 +87,68 @@ export const OverlayKalshi = ({ brand }: { brand: Brand }) => {
         kalshiUrl: data.kalshiUrl,
         kalshiEventId: data.kalshiEventId,
         position: data.position,
+        durationMs: data.durationMs,
       };
 
-      console.log("Normalized market data:", normalized);
       setKalshiMarket(normalized);
       setShowKalshiMarket(true);
-      console.log("Opening toast...");
       openToastFromKalshiMarket(normalized);
     },
     [brand.id, openToastFromKalshiMarket],
   );
 
+  // Handle Kalshi market ended event
+  const handleKalshiMarketEnded = useCallback(
+    (data: KalshiMarketEndedEvent) => {
+      // Only handle if it's for this brand
+      if (data.brandId !== brand.id) {
+        return;
+      }
+
+      setShowKalshiMarket(false);
+      setKalshiMarket(null);
+      toast.dismiss(toastId);
+    },
+    [brand.id, toastId],
+  );
+
   // Subscribe to socket events
   useEffect(() => {
-    console.log("subscribe to kalshi market started event");
-    console.log("brand.id", brand.id);
+    // Join the stream to receive events for this brand
+    joinStream({
+      brandId: brand.id,
+      username: "Overlay",
+      profilePicture: "https://via.placeholder.com/150",
+    });
+
     subscribe(
       ServerToClientSocketEvents.KALSHI_MARKET_STARTED,
       handleKalshiMarketStarted,
     );
 
-    // TEMPORARY: Test the toast by manually triggering an event after 5 seconds
-    const testTimer = setTimeout(() => {
-      console.log("🧪 TESTING: Manually triggering Kalshi market event");
-      const testEvent: KalshiMarketStartedEvent = {
-        id: "test-kalshi-market-123",
-        brandId: brand.id,
-        kalshiUrl: "https://kalshi.com/events/KXFEDDECISION-25OCT",
-        kalshiEventId: "KXFEDDECISION-25OCT",
-        position: PopupPositions.TOP_CENTER,
-      };
-      handleKalshiMarketStarted(testEvent);
-    }, 5000);
+    subscribe(
+      ServerToClientSocketEvents.KALSHI_MARKET_ENDED,
+      handleKalshiMarketEnded,
+    );
 
     return () => {
-      clearTimeout(testTimer);
       unsubscribe(
         ServerToClientSocketEvents.KALSHI_MARKET_STARTED,
         handleKalshiMarketStarted,
       );
+      unsubscribe(
+        ServerToClientSocketEvents.KALSHI_MARKET_ENDED,
+        handleKalshiMarketEnded,
+      );
     };
-  }, [subscribe, unsubscribe, handleKalshiMarketStarted, brand.id]);
+  }, [
+    subscribe,
+    unsubscribe,
+    handleKalshiMarketStarted,
+    handleKalshiMarketEnded,
+    joinStream,
+    brand.id,
+  ]);
 
   // Clean up toast when component unmounts or market changes
   useEffect(() => {

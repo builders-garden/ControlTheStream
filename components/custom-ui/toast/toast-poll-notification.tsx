@@ -215,7 +215,7 @@ export const ToastPollNotification = ({
 
   const isVotingClosed = remainingSeconds <= 0;
   const timeLabel = isVotingClosed
-    ? "Voting closed"
+    ? "Vote ended"
     : `${formatSecondsToClock(remainingSeconds)} left to vote`;
 
   return (

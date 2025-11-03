@@ -7,6 +7,8 @@ import { KalshiMultiMarketCard } from "./kalshi-multi-market-card";
 interface KalshiConfirmationProps {
   result: KalshiApiResult;
   isAddingToOverlay: boolean;
+  duration: number;
+  onDurationChange: (duration: number) => void;
   onAddToOverlay: () => void;
   onCancel: () => void;
 }
@@ -14,13 +16,15 @@ interface KalshiConfirmationProps {
 export const KalshiConfirmation = ({
   result,
   isAddingToOverlay,
+  duration,
+  onDurationChange,
   onAddToOverlay,
   onCancel,
 }: KalshiConfirmationProps) => {
   if (!result.success) {
     return (
-      <div className="w-full p-6 bg-red-50 border border-red-200 rounded-lg">
-        <div className="text-red-600">
+      <div className="w-full p-6 bg-card border border-destructive/50 rounded-lg">
+        <div className="text-destructive">
           <h3 className="font-bold text-lg mb-2">Error</h3>
           <p>{result.error}</p>
         </div>
@@ -32,7 +36,7 @@ export const KalshiConfirmation = ({
     <div className="w-full mt-6">
       {/* Market Preview Section */}
       <div className="mb-6">
-        <h2 className="font-semibold text-white text-2xl mb-4 text-center">
+        <h2 className="font-semibold text-foreground text-2xl mb-4 text-center">
           Market Preview
         </h2>
         {/* Conditional rendering based on market count */}
@@ -63,13 +67,33 @@ export const KalshiConfirmation = ({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <div className="text-blue-800">
+        className="bg-card border border-border rounded-lg p-6">
+        <div className="text-foreground">
           <h3 className="font-bold text-lg mb-3">Ready to Add to Overlay?</h3>
-          <p className="mb-4 text-sm">
+          <p className="mb-4 text-sm text-muted-foreground">
             This market will be visible in the streaming overlay for your
             audience to see real-time predictions.
           </p>
+
+          {/* Duration Input */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2">
+              Toast Duration (minutes)
+            </label>
+            <input
+              type="number"
+              min="1"
+              max="60"
+              value={duration}
+              onChange={(e) => onDurationChange(Number(e.target.value))}
+              className="w-full max-w-xs px-4 py-2 rounded-md border border-border bg-background text-foreground outline-none focus:ring-2 focus:ring-primary"
+              placeholder="5"
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              How long the toast should stay visible in the overlay
+            </p>
+          </div>
+
           <div className="flex gap-3">
             <CTSButton
               className="rounded-full"

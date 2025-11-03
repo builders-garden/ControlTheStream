@@ -1,5 +1,6 @@
 import { KalshiApiResult } from "@/lib/types/kalshi.type";
 import { useApiMutation } from "./use-api-mutation";
+import { useApiQuery } from "./use-api-query";
 
 // Types for API responses
 type KalshiGetApiResponse = KalshiApiResult;
@@ -25,6 +26,17 @@ interface KalshiStoreRequest {
     totalMarkets: number;
   };
   kalshiUrl: string;
+  duration?: number; // Duration in minutes
+}
+
+interface KalshiDeactivateRequest {
+  eventId: string;
+}
+
+interface KalshiDeactivateApiResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
 }
 
 // Mutation hooks
@@ -43,5 +55,27 @@ export const useKalshiStore = () => {
     method: "POST",
     body: (variables) => variables,
     tokenType: null, // Authentication is handled via headers in the API
+  });
+};
+
+// Query hook for active Kalshi events
+export const useActiveKalshiEvent = (brandId: string) => {
+  return useApiQuery<KalshiGetApiResponse>({
+    queryKey: ["active-kalshi-event", brandId],
+    url: `/api/kalshi/active?brandId=${brandId}`,
+    enabled: !!brandId,
+    isProtected: true,
+    tokenType: null,
+  });
+};
+
+// Mutation hook for deactivating Kalshi events
+export const useKalshiDeactivate = () => {
+  return useApiMutation<KalshiDeactivateApiResponse, KalshiDeactivateRequest>({
+    url: "/api/kalshi/deactivate",
+    method: "POST",
+    body: (variables) => variables,
+    tokenType: null, // Authentication is handled via middleware
+    isProtected: true, // Send credentials for authentication
   });
 };

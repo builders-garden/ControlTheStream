@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { CopyButton } from "@/components/custom-ui/copy-button";
 import { CTSButton } from "@/components/custom-ui/cts-button";
+import { ToastKalshiNotification } from "@/components/custom-ui/toast/toast-kalshi-notification";
 import { ToastNotification } from "@/components/custom-ui/toast/toast-notification";
 import { ToastPollNotification } from "@/components/custom-ui/toast/toast-poll-notification";
 import { useAdminAuth } from "@/contexts/auth/admin-auth-context";
@@ -23,6 +24,7 @@ export const PopupsContent = () => {
     voteCasted,
     adminStartBullmeter: adminStartSentimentPoll,
     adminEndBullmeter: adminEndSentimentPoll,
+    adminStartKalshiMarket,
   } = useSocketUtils();
   const [selectedPopupPosition, _] = useState<PopupPositions>(
     PopupPositions.TOP_CENTER,
@@ -120,7 +122,7 @@ export const PopupsContent = () => {
       id: "1",
       brandId: brand.data.id,
       pollQuestion: "ETH will flip BTC this cycle",
-      endTimeMs: addSeconds(new Date(), 5).getTime(),
+      endTimeMs: addSeconds(new Date(), 8).getTime(),
       votes: 10,
       voters: 10,
       qrCodeUrl: "https://example.com/poll",
@@ -134,10 +136,8 @@ export const PopupsContent = () => {
     adminStartSentimentPoll({
       id: "1",
       brandId: brand.data.id,
-      //username: "Admin",
-      //profilePicture: "https://via.placeholder.com/150",
       pollQuestion: "ETH will flip BTC this cycle",
-      endTimeMs: addSeconds(new Date(), 5).getTime(),
+      endTimeMs: addSeconds(new Date(), 8).getTime(),
       position: selectedPopupPosition,
       guests: [],
       results: {
@@ -145,6 +145,20 @@ export const PopupsContent = () => {
         bearPercent: 30,
       },
     });
+
+    const durationMs = 15000;
+
+    // Set timeout to end poll after duration (so overlay receives END event)
+    setTimeout(() => {
+      if (!brand.data?.id) return;
+      adminEndSentimentPoll({
+        id: "1",
+        brandId: brand.data.id,
+        votes: 0,
+        voters: 0,
+        results: { bullPercent: 0, bearPercent: 0 },
+      });
+    }, durationMs);
 
     toast.custom(
       () => (
@@ -154,7 +168,7 @@ export const PopupsContent = () => {
         />
       ),
       {
-        duration: 10000,
+        duration: durationMs,
         position: selectedPopupPosition,
         onDismiss: () => {
           if (!brand.data?.id) return;
@@ -166,6 +180,90 @@ export const PopupsContent = () => {
             results: { bullPercent: 0, bearPercent: 0 },
           });
         },
+      },
+    );
+  };
+
+  const handleTestKalshiNotification = () => {
+    if (!brand.data?.id) return;
+
+    const kalshiUrl =
+      "https://kalshi.com/markets/kxmayornycparty/mayor-of-nyc-party-winner/kxmayornycparty-25";
+    const urlParts = kalshiUrl.split("/");
+    const kalshiEventId = urlParts[urlParts.length - 1]?.toUpperCase() || "";
+    const durationMs = 20000;
+
+    const data = {
+      id: "test-kalshi-" + Date.now(),
+      brandId: brand.data.id,
+      kalshiUrl,
+      kalshiEventId,
+      position: selectedPopupPosition,
+    };
+
+    // Emit socket event so overlay can receive it
+    adminStartKalshiMarket({
+      id: data.id,
+      brandId: data.brandId,
+      kalshiUrl: data.kalshiUrl,
+      kalshiEventId: data.kalshiEventId,
+      position: data.position,
+      durationMs,
+    });
+
+    // Also show toast in admin panel
+    toast.custom(
+      () => (
+        <ToastKalshiNotification
+          data={data}
+          brandSlug={brand.data?.slug ?? THE_ROLLUP_BRAND_SLUG}
+        />
+      ),
+      {
+        duration: durationMs,
+        position: selectedPopupPosition,
+      },
+    );
+  };
+
+  const handleTestKalshiNotification2 = () => {
+    if (!brand.data?.id) return;
+
+    const kalshiUrl =
+      "https://kalshi.com/markets/kxdoed/doe-eliminated/kxdoed-26";
+    const urlParts = kalshiUrl.split("/");
+    const kalshiEventId = urlParts[urlParts.length - 1]?.toUpperCase() || "";
+    const durationMs = 20000;
+
+    const data = {
+      id: "test-kalshi-2-" + Date.now(),
+      brandId: brand.data.id,
+      kalshiUrl,
+      kalshiEventId,
+      position: selectedPopupPosition,
+    };
+
+    // Emit socket event so overlay can receive it
+    adminStartKalshiMarket({
+      id: data.id,
+      brandId: data.brandId,
+      kalshiUrl: data.kalshiUrl,
+      kalshiEventId: data.kalshiEventId,
+      position: data.position,
+      durationMs,
+    });
+
+    // Also show toast in admin panel
+    toast.custom(
+      () => (
+        <ToastKalshiNotification
+          data={data}
+          brandSlug={brand.data?.slug ?? THE_ROLLUP_BRAND_SLUG}
+        />
+      ),
+      {
+        duration: durationMs,
+        position: selectedPopupPosition,
       },
     );
   };
@@ -197,7 +295,7 @@ export const PopupsContent = () => {
               <p className="text-base font-bold text-muted-foreground">
                 Test popups by clicking the buttons below
               </p>
-              <div className="grid grid-cols-5 gap-2.5 w-full">
+              <div className="grid grid-cols-7 gap-2.5 w-full">
                 <CTSButton
                   className="w-full shrink-0"
                   onClick={() => handleTestNotification("tip")}>
@@ -223,6 +321,16 @@ export const PopupsContent = () => {
                   onClick={handleTestPollNotification}>
                   Bull-Meter Poll
                 </CTSButton>
+                <CTSButton
+                  className="w-full shrink-0"
+                  onClick={handleTestKalshiNotification2}>
+                  Kalshi Market (single)
+                </CTSButton>
+                <CTSButton
+                  className="w-full shrink-0"
+                  onClick={handleTestKalshiNotification}>
+                  Kalshi Market (multiple)
+                </CTSButton>
               </div>
             </div>
           </div>
@@ -237,31 +345,51 @@ export const PopupsContent = () => {
           <div className="flex flex-col justify-start items-start gap-1">
             <p className="text-muted-foreground font-bold">
               <span className="font-bold">1.</span> Copy the URLs below and add
-              two Browser Sources to your setup
+              three Browser Sources to your setup
             </p>
-            <div className="flex justify-start items-start w-full gap-2.5">
-              <div className="flex flex-col gap-1">
-                <p className="font-bold text-muted/70 text-sm">Popups URL</p>
-                <div className="flex justify-between items-center w-full gap-2.5 border border-muted rounded-md p-2">
-                  {`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}/overlay/popups`}
-                  <CopyButton
-                    key="copy-button"
-                    size="sm"
-                    stringToCopy={`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}/overlay/popups`}
-                  />
+            <div className="flex flex-col justify-start items-start w-full gap-2.5">
+              <div className="flex justify-start items-start w-full gap-2.5">
+                <div className="flex flex-col gap-1">
+                  <p className="font-bold text-muted/70 text-sm">Popups URL</p>
+                  <div className="flex justify-between items-center w-full gap-2.5 border border-muted rounded-md p-2">
+                    {`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}/overlay/popups`}
+                    <CopyButton
+                      key="copy-button-popups"
+                      size="sm"
+                      stringToCopy={`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}/overlay/popups`}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p className="font-bold text-muted/70 text-sm">
+                    Bull-meter Poll URL
+                  </p>
+                  <div className="flex justify-between items-center w-full gap-2.5 border border-muted rounded-md p-2">
+                    {`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}/overlay/sentiment`}
+                    <CopyButton
+                      key="copy-button-sentiment"
+                      size="sm"
+                      stringToCopy={`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}/overlay/sentiment`}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-1">
-                <p className="font-bold text-muted/70 text-sm">
-                  Bull-meter Poll URL
-                </p>
-                <div className="flex justify-between items-center w-full gap-2.5 border border-muted rounded-md p-2">
-                  {`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}/overlay/sentiment`}
-                  <CopyButton
-                    key="copy-button"
-                    size="sm"
-                    stringToCopy={`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}/overlay/sentiment`}
-                  />
+              <div className="flex justify-start items-start w-full gap-2.5">
+                <div className="flex flex-col gap-1">
+                  <p className="font-bold text-muted/70 text-sm">
+                    Kalshi Market URL
+                  </p>
+                  <div className="flex justify-between items-center w-full gap-2.5 border border-muted rounded-md p-2">
+                    {`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}/overlay/kalshi`}
+                    <CopyButton
+                      key="copy-button-kalshi"
+                      size="sm"
+                      stringToCopy={`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}/overlay/kalshi`}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  {/* Empty div for spacing */}
                 </div>
               </div>
             </div>
@@ -269,7 +397,8 @@ export const PopupsContent = () => {
           <div className="flex flex-col justify-start items-start gap-1">
             <p className="text-muted-foreground font-bold">
               <span className="font-bold">2.</span> Set width and height to
-              600x150 for popups and 1100x250 for bull-meter poll
+              600x150 for popups, 1100x250 for bull-meter poll, and 1100x250 for
+              Kalshi market
             </p>
             <p className="text-sm text-muted/70">
               These are suggested sizes, feel free to adjust them to your

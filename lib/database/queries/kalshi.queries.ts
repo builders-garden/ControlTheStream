@@ -70,6 +70,24 @@ export const getKalshiEventsByBrand = async (
 };
 
 /**
+ * Get active Kalshi events for a brand
+ */
+export const getActiveKalshiEventsByBrand = async (
+  brandId: string,
+): Promise<KalshiEvent[]> => {
+  return await db
+    .select()
+    .from(kalshiEventsTable)
+    .where(
+      and(
+        eq(kalshiEventsTable.brandId, brandId),
+        eq(kalshiEventsTable.status, "active"),
+      ),
+    )
+    .orderBy(desc(kalshiEventsTable.createdAt));
+};
+
+/**
  * Update a Kalshi event
  */
 export const updateKalshiEvent = async (
@@ -121,4 +139,40 @@ export const kalshiEventExists = async (
     .limit(1);
 
   return !!event;
+};
+
+/**
+ * Activate a Kalshi event
+ */
+export const activateKalshiEvent = async (
+  eventId: string,
+): Promise<KalshiEvent | null> => {
+  const [updatedEvent] = await db
+    .update(kalshiEventsTable)
+    .set({
+      status: "active",
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(kalshiEventsTable.id, eventId))
+    .returning();
+
+  return updatedEvent || null;
+};
+
+/**
+ * Deactivate a Kalshi event
+ */
+export const deactivateKalshiEvent = async (
+  eventId: string,
+): Promise<KalshiEvent | null> => {
+  const [updatedEvent] = await db
+    .update(kalshiEventsTable)
+    .set({
+      status: "inactive",
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(kalshiEventsTable.id, eventId))
+    .returning();
+
+  return updatedEvent || null;
 };
