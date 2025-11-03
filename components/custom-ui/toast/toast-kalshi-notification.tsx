@@ -235,27 +235,28 @@ export const ToastKalshiNotification = ({
     yesPrice: string;
     noPrice: string;
   }) => {
-    const yesPercentage = Math.round(parseFloat(_market.yesPrice) * 100);
-    const noPercentage = Math.max(0, 100 - yesPercentage);
-
-    const options = [
-      { name: "YES", pct: yesPercentage },
-      { name: "NO", pct: noPercentage },
-    ].sort((a, b) => b.pct - a.pct);
-    const maxPct = options.reduce((acc, o) => (o.pct > acc ? o.pct : acc), 0);
+    const yesPriceFloat = Math.max(0, parseFloat(_market.yesPrice || "0"));
+    const noPriceFloat = Math.max(
+      0,
+      _market.noPrice ? parseFloat(_market.noPrice) : 1 - yesPriceFloat,
+    );
+    const yesPercent = Math.round(yesPriceFloat * 100);
+    const noPercent = Math.round(noPriceFloat * 100);
+    const yesPriceLabel = `${yesPercent}%`;
+    const noPriceLabel = `${noPercent}%`;
 
     return (
       <div
         className={cn(
-          "rounded-xl shadow-lg px-6 py-4 min-w-[1000px] min-h-[100px] border-4",
+          "rounded-xl shadow-lg px-3 py-3 min-w-[760px] min-h-[96px] border-4 backdrop-blur-[150px]",
           isBrandTheRollup
-            ? "bg-[#1B2541] border-[#E6B45E]"
-            : "bg-background border-primary",
+            ? "bg-black/70 border-[#E6B45E]"
+            : "bg-black/70 border-primary",
         )}>
-        {/* Header: centered title + QR + green label */}
-        <div className="flex items-center justify-between gap-6">
-          <div className="flex-1 pr-24">
-            <h3 className="text-white font-black text-[34px] leading-9 text-center">
+        {/* Header: title + QR + green label */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1 pr-10">
+            <h3 className="text-white font-black text-[26px] leading-7 text-left">
               {kalshiData?.success ? kalshiData.data.eventTitle : _market.title}
             </h3>
           </div>
@@ -268,42 +269,30 @@ export const ToastKalshiNotification = ({
             </div>
           </div>
         </div>
-        <div className="h-px bg-white/20 mt-3" />
 
-        {/* Options list: two bars YES/NO */}
-        <div className="mt-4">
-          <div className="flex flex-col gap-3">
-            {options.map((o) => {
-              const isYes = o.name === "YES";
-              return (
-                <div key={o.name} className="w-full">
-                  <div className="relative h-10 rounded-md overflow-hidden border border-white/40 bg-[#2f2f2f]">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${o.pct}%` }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 100,
-                        damping: 60,
-                      }}
-                      className={cn(
-                        "absolute inset-y-0 left-0",
-                        isYes ? "bg-[#4CAF50]" : "bg-[#CF5953]",
-                      )}
-                    />
-
-                    <div className="relative z-10 h-full flex items-center justify-between px-3">
-                      <span className="text-white font-bold text-xl">
-                        {o.name}
-                      </span>
-                      <span className="text-white font-black text-xl">
-                        {o.pct}%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+        {/* Options: two buttons YES/NO with prices */}
+        <div className="mt-2">
+          <div className="grid grid-cols-2 gap-1">
+            <div className="rounded-sm bg-white px-1 py-0.5 text-center border border-white/40">
+              <div className="inline-flex items-center justify-center gap-1 leading-none align-middle">
+                <span className="text-[#4CAF50] font-extrabold uppercase tracking-tight text-base">
+                  Yes
+                </span>
+                <span className="text-black font-black tracking-tight text-lg">
+                  {yesPriceLabel}
+                </span>
+              </div>
+            </div>
+            <div className="rounded-sm bg-white px-1 py-0.5 text-center border border-white/40">
+              <div className="inline-flex items-center justify-center gap-1 leading-none align-middle">
+                <span className="text-[#CF5953] font-extrabold uppercase tracking-tight text-base">
+                  No
+                </span>
+                <span className="text-black font-black tracking-tight text-lg">
+                  {noPriceLabel}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -336,71 +325,50 @@ export const ToastKalshiNotification = ({
     return (
       <div
         className={cn(
-          "rounded-xl shadow-lg px-6 py-4 min-w-[1000px] min-h-[100px] border-4",
+          "rounded-xl shadow-lg px-3 py-3 min-w-[760px] min-h-[96px] border-4 backdrop-blur-[150px]",
           isBrandTheRollup
-            ? "bg-[#1B2541] border-[#E6B45E]"
-            : "bg-background border-primary",
+            ? "bg-black/70 border-[#E6B45E]"
+            : "bg-black/70 border-primary",
         )}>
         {/* Header: title + QR */}
-        <div className="flex items-center justify-between gap-6">
-          <div className="flex-1 pr-24">
-            <h3 className="text-white font-black text-[34px] leading-9 text-center">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1 pr-10">
+            <h3 className="text-white font-black text-[26px] leading-7 text-left">
               {kalshiData.data.eventTitle}
             </h3>
           </div>
           <div className="flex flex-col items-center justify-center shrink-0">
-            <div className="bg-white p-1">
-              <QRCodeSVG value={data.kalshiUrl} size={66} level="M" />
+            <div className="bg-white p-0.5">
+              <QRCodeSVG value={data.kalshiUrl} size={84} level="M" />
             </div>
             <div className="text-[#00d296] font-bold text-lg mt-1">
               Powered by Kalshi
             </div>
           </div>
         </div>
-        <div className="h-px bg-white/20 mt-3" />
 
-        {/* Options list */}
-        <div className="mt-4">
-          <div className="flex flex-col gap-3">
+        {/* Options grid (3 price boxes with names) */}
+        <div className="mt-2">
+          <div className="grid grid-cols-3 gap-1">
             {scored.map((m) => {
-              const isLeader = m.pct === maxPct;
+              const percentLabel = `${m.pct}%`;
               return (
-                <div key={m.ticker} className="w-full">
-                  <div className="relative h-10 rounded-md overflow-hidden border border-white/40 bg-[#2f2f2f]">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${m.pct}%` }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 100,
-                        damping: 60,
-                      }}
-                      className={cn(
-                        "absolute inset-y-0 left-0",
-                        isLeader ? "bg-[#00d296]" : "bg-[#4b4b4b]",
-                      )}
-                    />
-
-                    <div className="relative z-10 h-full flex items-center justify-between px-3">
-                      <span className="text-white font-semibold text-base">
-                        {m.name}
-                      </span>
-                      <span className="text-white font-black text-xl">
-                        {m.pct}%
-                      </span>
-                    </div>
+                <div
+                  key={m.ticker}
+                  className="rounded-sm bg-white px-2 py-1 text-center border border-white/40">
+                  <div className="text-black font-extrabold text-sm leading-tight mb-0.5 truncate tracking-tight">
+                    {m.name}
+                  </div>
+                  <div>
+                    <span className="text-black font-black tracking-tight text-lg align-middle">
+                      {percentLabel}
+                    </span>
                   </div>
                 </div>
               );
             })}
           </div>
-          {extraCount > 0 && (
-            <div className="text-center mt-3">
-              <span className="text-white text-sm">
-                +{extraCount} more markets
-              </span>
-            </div>
-          )}
+          {/* No extra markets label */}
         </div>
       </div>
     );
@@ -445,7 +413,7 @@ export const ToastKalshiNotification = ({
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15, ease: "easeInOut" }}
               className={cn(
-                "rounded-xl shadow-lg px-6 py-8 min-w-[1000px] min-h-[100px] border-4 flex justify-center items-center",
+                "rounded-xl shadow-lg px-3 py-5 min-w-[680px] min-h-[88px] border-4 flex justify-center items-center",
                 isBrandTheRollup
                   ? "bg-[#1B2541] border-[#E6B45E]"
                   : "bg-background border-primary",
@@ -465,7 +433,7 @@ export const ToastKalshiNotification = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className={cn(
-                "rounded-xl shadow-lg px-6 py-8 min-w-[1000px] min-h-[100px] border-4 flex justify-center items-center",
+                "rounded-xl shadow-lg px-3 py-5 min-w-[680px] min-h-[88px] border-4 flex justify-center items-center",
                 isBrandTheRollup
                   ? "bg-[#1B2541] border-red-500"
                   : "bg-background border-red-500",

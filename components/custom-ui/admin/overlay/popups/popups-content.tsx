@@ -24,6 +24,7 @@ export const PopupsContent = () => {
     voteCasted,
     adminStartBullmeter: adminStartSentimentPoll,
     adminEndBullmeter: adminEndSentimentPoll,
+    adminStartKalshiMarket,
   } = useSocketUtils();
   const [selectedPopupPosition, _] = useState<PopupPositions>(
     PopupPositions.TOP_CENTER,
@@ -145,6 +146,20 @@ export const PopupsContent = () => {
       },
     });
 
+    const durationMs = 15000;
+
+    // Set timeout to end poll after duration (so overlay receives END event)
+    setTimeout(() => {
+      if (!brand.data?.id) return;
+      adminEndSentimentPoll({
+        id: "1",
+        brandId: brand.data.id,
+        votes: 0,
+        voters: 0,
+        results: { bullPercent: 0, bearPercent: 0 },
+      });
+    }, durationMs);
+
     toast.custom(
       () => (
         <ToastPollNotification
@@ -153,7 +168,7 @@ export const PopupsContent = () => {
         />
       ),
       {
-        duration: 20000,
+        duration: durationMs,
         position: selectedPopupPosition,
         onDismiss: () => {
           if (!brand.data?.id) return;
@@ -172,15 +187,31 @@ export const PopupsContent = () => {
   const handleTestKalshiNotification = () => {
     if (!brand.data?.id) return;
 
+    const kalshiUrl =
+      "https://kalshi.com/markets/kxmayornycparty/mayor-of-nyc-party-winner/kxmayornycparty-25";
+    const urlParts = kalshiUrl.split("/");
+    const kalshiEventId = urlParts[urlParts.length - 1]?.toUpperCase() || "";
+    const durationMs = 20000;
+
     const data = {
       id: "test-kalshi-" + Date.now(),
       brandId: brand.data.id,
-      kalshiUrl:
-        "https://kalshi.com/markets/kxpresperson/pres-person/kxpresperson-28",
-      kalshiEventId: "KXPRESPERSON-28",
+      kalshiUrl,
+      kalshiEventId,
       position: selectedPopupPosition,
     };
 
+    // Emit socket event so overlay can receive it
+    adminStartKalshiMarket({
+      id: data.id,
+      brandId: data.brandId,
+      kalshiUrl: data.kalshiUrl,
+      kalshiEventId: data.kalshiEventId,
+      position: data.position,
+      durationMs,
+    });
+
+    // Also show toast in admin panel
     toast.custom(
       () => (
         <ToastKalshiNotification
@@ -189,7 +220,7 @@ export const PopupsContent = () => {
         />
       ),
       {
-        duration: 15000,
+        duration: durationMs,
         position: selectedPopupPosition,
       },
     );
@@ -198,14 +229,31 @@ export const PopupsContent = () => {
   const handleTestKalshiNotification2 = () => {
     if (!brand.data?.id) return;
 
+    const kalshiUrl =
+      "https://kalshi.com/markets/kxdoed/doe-eliminated/kxdoed-26";
+    const urlParts = kalshiUrl.split("/");
+    const kalshiEventId = urlParts[urlParts.length - 1]?.toUpperCase() || "";
+    const durationMs = 20000;
+
     const data = {
       id: "test-kalshi-2-" + Date.now(),
       brandId: brand.data.id,
-      kalshiUrl: "https://kalshi.com/markets/kxdoed/doe-eliminated/kxdoed-26",
-      kalshiEventId: "KXDOED-26",
+      kalshiUrl,
+      kalshiEventId,
       position: selectedPopupPosition,
     };
 
+    // Emit socket event so overlay can receive it
+    adminStartKalshiMarket({
+      id: data.id,
+      brandId: data.brandId,
+      kalshiUrl: data.kalshiUrl,
+      kalshiEventId: data.kalshiEventId,
+      position: data.position,
+      durationMs,
+    });
+
+    // Also show toast in admin panel
     toast.custom(
       () => (
         <ToastKalshiNotification
@@ -214,7 +262,7 @@ export const PopupsContent = () => {
         />
       ),
       {
-        duration: 15000,
+        duration: durationMs,
         position: selectedPopupPosition,
       },
     );
