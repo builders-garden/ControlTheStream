@@ -53,7 +53,7 @@ export const LandingContent = ({ signInWithBase }: LandingContentProps) => {
 
         <div className="relative flex justify-center items-center w-full mt-8 md:mt-0">
           <Image
-            src="/images/hero.svg"
+            src="/images/hero.png"
             alt="The Control The Stream hero image"
             width={900}
             height={900}

@@ -17,9 +17,15 @@ import {
   useWebAppSignIn,
 } from "@/hooks/use-auth-hooks";
 import { useBrandBySlug } from "@/hooks/use-brands";
+import { useCreatorCoins } from "@/hooks/use-creator-coin";
 import { useFeaturedTokens } from "@/hooks/use-featured-tokens";
 import { useTipSettings } from "@/hooks/use-tip-settings";
-import { Brand, FeaturedToken, TipSettings } from "@/lib/database/db.schema";
+import {
+  Brand,
+  CreatorCoin,
+  FeaturedToken,
+  TipSettings,
+} from "@/lib/database/db.schema";
 import { AuthTokenType } from "@/lib/enums";
 import { wagmiAdapter } from "@/lib/reown";
 import { User } from "@/lib/types/user.type";
@@ -41,6 +47,10 @@ interface WebAppAuthContextType {
     };
     featuredTokens: {
       data: FeaturedToken[];
+      refetch: () => Promise<void>;
+    };
+    creatorCoin: {
+      data: CreatorCoin | undefined;
       refetch: () => Promise<void>;
     };
   };
@@ -95,6 +105,7 @@ export const WebAppAuthProvider = ({ children }: { children: ReactNode }) => {
   const [brand, setBrand] = useState<Brand>();
   const [tipSettings, setTipSettings] = useState<TipSettings>();
   const [featuredTokens, setFeaturedTokens] = useState<FeaturedToken[]>([]);
+  const [creatorCoin, setCreatorCoin] = useState<CreatorCoin>();
   const [user, setUser] = useState<User>();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -142,6 +153,14 @@ export const WebAppAuthProvider = ({ children }: { children: ReactNode }) => {
     enabled: !!brand?.id,
   });
 
+  // Fetching the creator coin when the brand is connected
+  const {
+    data: creatorCoinsData,
+    isLoading: isFetchingCreatorCoin,
+    error: creatorCoinError,
+    refetch: refetchCreatorCoins,
+  } = useCreatorCoins(brand?.id, !!brand?.id);
+
   // Auto set user logic
   useEffect(() => {
     if (authUser) {
@@ -169,6 +188,16 @@ export const WebAppAuthProvider = ({ children }: { children: ReactNode }) => {
       setFeaturedTokens(featuredTokensData.data as FeaturedToken[]);
     }
   }, [featuredTokensData]);
+
+  // Auto set creator coin logic
+  useEffect(() => {
+    if (creatorCoinsData && creatorCoinsData.data) {
+      // Only take the first creator coin (since we only allow 1)
+      setCreatorCoin(creatorCoinsData.data[0]);
+    } else {
+      setCreatorCoin(undefined);
+    }
+  }, [creatorCoinsData]);
 
   // Handles the refetching of the brand
   const executeRefetchBrand = useCallback(async () => {
@@ -201,6 +230,16 @@ export const WebAppAuthProvider = ({ children }: { children: ReactNode }) => {
       setFeaturedTokens(newFeaturedTokens.data.data as FeaturedToken[]);
     }
   }, [refetchFeaturedTokens]);
+
+  // Handles the refetching of the creator coin
+  const executeRefetchCreatorCoin = useCallback(async () => {
+    const newCreatorCoins = await refetchCreatorCoins();
+    if (newCreatorCoins.isSuccess && newCreatorCoins.data?.data) {
+      setCreatorCoin(newCreatorCoins.data.data[0]);
+    } else {
+      setCreatorCoin(undefined);
+    }
+  }, [refetchCreatorCoins]);
 
   // Logout mutation
   const { mutate: logout } = useLogout({
@@ -299,14 +338,26 @@ export const WebAppAuthProvider = ({ children }: { children: ReactNode }) => {
         data: featuredTokens,
         refetch: executeRefetchFeaturedTokens,
       },
+      creatorCoin: {
+        data: creatorCoin,
+        refetch: executeRefetchCreatorCoin,
+      },
     },
     isLoggingOut,
     executeLogout,
     signInWithWebApp: executeSignInWithWebApp,
     isSigningIn,
-    sideBarLoading: isFetchingTipSettings || isFetchingFeaturedTokens,
+    sideBarLoading:
+      isFetchingTipSettings ||
+      isFetchingFeaturedTokens ||
+      isFetchingCreatorCoin,
     isLoading: isEnvironmentLoading || isFetchingBrand,
-    error: error || brandError || tipSettingsError || featuredTokensError,
+    error:
+      error ||
+      brandError ||
+      tipSettingsError ||
+      featuredTokensError ||
+      creatorCoinError,
   };
 
   return (

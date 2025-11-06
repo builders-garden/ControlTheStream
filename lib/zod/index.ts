@@ -15,6 +15,7 @@ export const env = createEnv({
     YOUTUBE_API_KEY: z.string().min(1),
     BACKEND_SECRET: z.string().min(1),
     OPENAI_API_KEY: z.string().min(1),
+    ZORA_API_KEY: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_APP_ENV: z
