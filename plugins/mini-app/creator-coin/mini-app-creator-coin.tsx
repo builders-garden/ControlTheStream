@@ -1,7 +1,7 @@
 import sdk from "@farcaster/miniapp-sdk";
 import { ArrowDownUp, ArrowUp, ChartColumn } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { useSocketUtils } from "@/hooks/use-socket-utils";
 import {
@@ -28,8 +28,14 @@ export const MiniAppCreatorCoin = ({
   brandSlug,
 }: MiniAppCreatorCoinProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const { tokenTraded } = useSocketUtils();
   const { address } = useAccount();
+
+  // Reset image error state when coin changes
+  useEffect(() => {
+    setImageError(false);
+  }, [coin]);
 
   // Get the first wallet address with a base name
   const baseName = user?.wallets.find((wallet) => wallet.baseName)?.baseName;
@@ -128,13 +134,14 @@ export const MiniAppCreatorCoin = ({
           <div
             className="size-12 rounded-full flex justify-center items-center shrink-0"
             style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}>
-            {coin.logoUrl ? (
+            {coin.logoUrl && !imageError ? (
               <Image
                 src={buildImageUrlFromCid(coin.logoUrl)}
                 alt={coin.name || ""}
                 width={40}
                 height={40}
                 className="rounded-full"
+                onError={() => setImageError(true)}
               />
             ) : (
               <ArrowUp className="size-6 text-white" strokeWidth={2} />

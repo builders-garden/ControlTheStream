@@ -1,5 +1,6 @@
 import { ArrowUp } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { CreatorCoin } from "@/lib/database/db.schema";
 import { buildImageUrlFromCid } from "@/lib/utils";
 
@@ -8,6 +9,13 @@ interface WebAppCreatorCoinProps {
 }
 
 export const WebAppCreatorCoin = ({ coin }: WebAppCreatorCoinProps) => {
+  const [imageError, setImageError] = useState(false);
+
+  // Reset image error state when coin changes
+  useEffect(() => {
+    setImageError(false);
+  }, [coin]);
+
   // Handle open token page (_blank)
   const handleOpenTokenPage = () => {
     if (!coin.chainId) return;
@@ -27,13 +35,14 @@ export const WebAppCreatorCoin = ({ coin }: WebAppCreatorCoinProps) => {
           <div
             className="size-16 rounded-full flex justify-center items-center shrink-0"
             style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}>
-            {coin.logoUrl ? (
+            {coin.logoUrl && !imageError ? (
               <Image
                 src={buildImageUrlFromCid(coin.logoUrl)}
                 alt={coin.name || ""}
                 width={56}
                 height={56}
                 className="rounded-full"
+                onError={() => setImageError(true)}
               />
             ) : (
               <ArrowUp className="size-8 text-white" strokeWidth={2} />

@@ -1,12 +1,15 @@
 import { Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { CTSButton } from "@/components/custom-ui/cts-button";
 import { CTSCard } from "@/components/custom-ui/cts-card";
 import { useAdminAuth } from "@/contexts/auth/admin-auth-context";
-import { useCreatorCoins, useDeleteCreatorCoin } from "@/hooks/use-creator-coin";
+import {
+  useCreatorCoins,
+  useDeleteCreatorCoin,
+} from "@/hooks/use-creator-coin";
 import { CreatorCoin } from "@/lib/database/db.schema";
 import {
   buildImageUrlFromCid,
@@ -24,6 +27,8 @@ export const AddedCreatorCoin = ({ coin, index }: AddedCreatorCoinProps) => {
   const creatorCoinsQuery = useCreatorCoins(brand.data?.id);
   const { mutate: deleteCreatorCoin } = useDeleteCreatorCoin();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
 
   // Handles the deletion of the coin from the list
   const handleDeleteCoin = () => {
@@ -59,14 +64,26 @@ export const AddedCreatorCoin = ({ coin, index }: AddedCreatorCoinProps) => {
         {/* Coin information */}
         <div className="flex justify-between items-center w-full gap-3">
           <div className="flex justify-start items-center gap-2.5">
-            <Image
-              src={buildImageUrlFromCid(coin.logoUrl) || "/images/coin.svg"}
-              alt={coin.name ?? ""}
-              className="size-10 rounded-full"
-              priority
-              width={40}
-              height={40}
-            />
+            {coin.logoUrl && !imageError ? (
+              <Image
+                src={buildImageUrlFromCid(coin.logoUrl)}
+                alt={coin.name ?? ""}
+                className="size-10 rounded-full"
+                priority
+                width={40}
+                height={40}
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <Image
+                src="/images/coin.svg"
+                alt={coin.name ?? ""}
+                className="size-10 rounded-full"
+                priority
+                width={40}
+                height={40}
+              />
+            )}
             <div className="flex flex-col justify-start items-start gap-0.5">
               <h1 className="text-lg font-bold">{coin.name}</h1>
               <p className="text-sm opacity-50 font-bold">{coin.symbol}</p>
@@ -123,4 +140,3 @@ export const AddedCreatorCoin = ({ coin, index }: AddedCreatorCoinProps) => {
     </motion.div>
   );
 };
-

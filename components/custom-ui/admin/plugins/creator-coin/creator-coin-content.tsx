@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useMemo } from "react";
 import { useAdminAuth } from "@/contexts/auth/admin-auth-context";
@@ -15,6 +16,23 @@ export const CreatorCoinContent = () => {
 
   // Disabled state for the add more coins button (only 1 coin allowed)
   const isAddMoreCoinsDisabled = addedCoins.length >= 1;
+
+  // Show loading state while checking for creator coins
+  if (creatorCoinsQuery.isLoading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+        className="flex flex-col justify-center items-center w-full h-full py-5 pr-5 gap-5">
+        <div className="flex justify-center items-center gap-2">
+          <Loader2 className="size-6 text-foreground animate-spin" />
+          <p className="text-lg">Loading...</p>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
