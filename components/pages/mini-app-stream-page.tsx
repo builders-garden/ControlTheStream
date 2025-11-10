@@ -9,6 +9,7 @@ import { useLastYoutubeContent } from "@/hooks/use-last-youtube-content";
 import { THE_ROLLUP_BRAND_SLUG } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { env } from "@/lib/zod";
+import { MiniAppCreatorCoin } from "@/plugins/mini-app/creator-coin/mini-app-creator-coin";
 import { MiniAppFeaturedTokens } from "@/plugins/mini-app/featured-tokens/mini-app-featured-tokens";
 import { MiniAppTips } from "@/plugins/mini-app/tips/mini-app-tips";
 import { BottomNavbar } from "../custom-ui/mini-app/bottom-navbar";
@@ -190,6 +191,15 @@ export const MiniAppStreamPage = () => {
             tipSettings={brand.tipSettings.data}
             user={user.data}
             brandName={brand.data?.name}
+            brandSlug={brand.data?.slug}
+          />
+        )}
+
+        {/* Creator Coin */}
+        {brand.creatorCoin.data && (
+          <MiniAppCreatorCoin
+            coin={brand.creatorCoin.data}
+            user={user.data}
             brandSlug={brand.data?.slug}
           />
         )}

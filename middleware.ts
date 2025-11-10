@@ -22,7 +22,7 @@ export default async function middleware(req: NextRequest) {
     pathname === "/api/current-time" ||
     pathname.includes("/api/og") ||
     pathname.includes("/api/webhook/farcaster") ||
-    pathname.includes("/api/kalshi/get") //TODO: Remove this after testing
+    pathname.includes("/api/kalshi/get")
   ) {
     return NextResponse.next();
   }
@@ -60,6 +60,11 @@ export default async function middleware(req: NextRequest) {
 
   // skip auth check for GET requests to featured-tokens
   if (pathname === "/api/featured-tokens" && req.method === "GET") {
+    return NextResponse.next();
+  }
+
+  // skip auth check for GET requests to creator-coin
+  if (pathname === "/api/creator-coin" && req.method === "GET") {
     return NextResponse.next();
   }
 

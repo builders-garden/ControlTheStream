@@ -9,6 +9,7 @@ import { useLastYoutubeContent } from "@/hooks/use-last-youtube-content";
 import { THE_ROLLUP_BRAND_SLUG } from "@/lib/constants";
 import { cn, formatWalletAddress } from "@/lib/utils";
 import { env } from "@/lib/zod";
+import { WebAppCreatorCoin } from "@/plugins/web-app/creator-coin/web-app-creator-coin";
 import { WebAppFeaturedTokens } from "@/plugins/web-app/featured-tokens/web-app-featured-tokens";
 import { WebAppTips } from "@/plugins/web-app/tips/web-app-tips";
 import { CTSButton } from "../custom-ui/cts-button";
@@ -284,6 +285,11 @@ export const WebAppStreamPage = () => {
                       tipSettings={brand.tipSettings.data}
                       user={user.data}
                     />
+                  )}
+
+                  {/* Creator Coin */}
+                  {brand.creatorCoin.data && (
+                    <WebAppCreatorCoin coin={brand.creatorCoin.data} />
                   )}
 
                   {/* Featured Tokens */}

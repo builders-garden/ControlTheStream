@@ -395,3 +395,30 @@ export const kalshiEventsTable = sqliteTable(
 export type KalshiEvent = typeof kalshiEventsTable.$inferSelect;
 export type CreateKalshiEvent = typeof kalshiEventsTable.$inferInsert;
 export type UpdateKalshiEvent = Partial<CreateKalshiEvent>;
+
+/**
+ * Creator Coin table
+ */
+export const creatorCoinTable = sqliteTable(
+  "creator_coin",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => ulid()),
+    brandId: text("brand_id")
+      .notNull()
+      .references(() => brandsTable.id, { onDelete: "cascade" }),
+    address: text("address").$type<Address>().notNull(),
+    chainId: integer("chain_id").notNull(),
+    symbol: text("symbol").notNull(),
+    name: text("name").notNull(),
+    logoUrl: text("logo_url"),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (t) => [index("idx_creator_coin_brand_id").on(t.brandId)],
+);
+
+export type CreatorCoin = typeof creatorCoinTable.$inferSelect;
+export type CreateCreatorCoin = typeof creatorCoinTable.$inferInsert;
+export type UpdateCreatorCoin = Partial<CreateCreatorCoin>;
