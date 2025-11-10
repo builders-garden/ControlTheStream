@@ -3,17 +3,19 @@ import { ArrowDownUp, ArrowUp, ChartColumn } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
+import { TheRollupButton } from "@/components/custom-ui/tr-button";
 import { useSocketUtils } from "@/hooks/use-socket-utils";
 import {
   BASE_USDC_ADDRESS,
   BASE_USDC_LOGO_URL,
   FARCASTER_CLIENT_FID,
+  THE_ROLLUP_BRAND_SLUG,
   ZERO_ADDRESS,
 } from "@/lib/constants";
 import { CreatorCoin } from "@/lib/database/db.schema";
 import { PopupPositions } from "@/lib/enums";
 import { User } from "@/lib/types/user.type";
-import { buildImageUrlFromCid, formatWalletAddress } from "@/lib/utils";
+import { buildImageUrlFromCid, cn, formatWalletAddress } from "@/lib/utils";
 import { formatSingleToken } from "@/lib/utils/farcaster-tokens";
 
 interface MiniAppCreatorCoinProps {
@@ -31,6 +33,9 @@ export const MiniAppCreatorCoin = ({
   const [imageError, setImageError] = useState(false);
   const { tokenTraded } = useSocketUtils();
   const { address } = useAccount();
+
+  // Whether the brand is the Rollup
+  const isBrandTheRollup = brandSlug === THE_ROLLUP_BRAND_SLUG;
 
   // Reset image error state when coin changes
   useEffect(() => {
@@ -127,13 +132,18 @@ export const MiniAppCreatorCoin = ({
     <div className="flex flex-col justify-center items-start w-full gap-2.5">
       <h1 className="text-sm font-bold">Creator Coin</h1>
       <div
-        className="flex justify-between items-center w-full py-3 px-4 rounded-[8px]"
-        style={{ backgroundColor: "#57FFDD" }}>
+        className={cn(
+          "flex justify-between items-center w-full py-3 px-4 rounded-[8px]",
+          isBrandTheRollup ? "bg-card border-black border-[1px]" : "",
+        )}
+        style={!isBrandTheRollup ? { backgroundColor: "#57FFDD" } : undefined}>
         <div className="flex justify-start items-center gap-3 flex-1 min-w-0">
           {/* Icon with upward arrow */}
           <div
             className="size-12 rounded-full flex justify-center items-center shrink-0"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}>
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+            }}>
             {coin.logoUrl && !imageError ? (
               <Image
                 src={buildImageUrlFromCid(coin.logoUrl)}
@@ -154,26 +164,48 @@ export const MiniAppCreatorCoin = ({
         </div>
         {/* Action buttons */}
         <div className="flex justify-end items-center gap-2 shrink-0">
-          <button
-            onClick={handleSwapToken}
-            className="size-[32px] p-0 rounded-[4px] flex justify-center items-center transition-colors"
-            style={{ backgroundColor: "#212121" }}
-            disabled={isProcessing}>
-            <ArrowDownUp
-              className="size-4 shrink-0 text-white"
-              strokeWidth={1.5}
-            />
-          </button>
-          <button
-            onClick={handleShowChart}
-            className="size-[32px] p-0 rounded-[4px] flex justify-center items-center transition-colors"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.35)" }}
-            disabled={isProcessing}>
-            <ChartColumn
-              className="size-4 shrink-0 text-white"
-              strokeWidth={1.5}
-            />
-          </button>
+          {isBrandTheRollup ? (
+            <>
+              <TheRollupButton
+                onClick={handleSwapToken}
+                className="bg-accent size-[32px] p-0 rounded-[4px]"
+                disabled={isProcessing}>
+                <ArrowDownUp
+                  className="size-4 shrink-0 text-white"
+                  strokeWidth={1.5}
+                />
+              </TheRollupButton>
+              <TheRollupButton
+                onClick={handleShowChart}
+                className="size-[32px] p-0 rounded-[4px]"
+                disabled={isProcessing}>
+                <ChartColumn className="size-4 shrink-0" strokeWidth={1.5} />
+              </TheRollupButton>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={handleSwapToken}
+                className="size-[32px] p-0 rounded-[4px] flex justify-center items-center transition-colors"
+                style={{ backgroundColor: "#212121" }}
+                disabled={isProcessing}>
+                <ArrowDownUp
+                  className="size-4 shrink-0 text-white"
+                  strokeWidth={1.5}
+                />
+              </button>
+              <button
+                onClick={handleShowChart}
+                className="size-[32px] p-0 rounded-[4px] flex justify-center items-center transition-colors"
+                style={{ backgroundColor: "rgba(0, 0, 0, 0.35)" }}
+                disabled={isProcessing}>
+                <ChartColumn
+                  className="size-4 shrink-0 text-white"
+                  strokeWidth={1.5}
+                />
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

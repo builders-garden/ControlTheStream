@@ -1,6 +1,9 @@
 import { ArrowUp } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { TheRollupButton } from "@/components/custom-ui/tr-button";
+import { useWebAppAuth } from "@/contexts/auth/web-app-auth-context";
+import { THE_ROLLUP_BRAND_SLUG } from "@/lib/constants";
 import { CreatorCoin } from "@/lib/database/db.schema";
 import { buildImageUrlFromCid } from "@/lib/utils";
 
@@ -9,7 +12,11 @@ interface WebAppCreatorCoinProps {
 }
 
 export const WebAppCreatorCoin = ({ coin }: WebAppCreatorCoinProps) => {
+  const { brand } = useWebAppAuth();
   const [imageError, setImageError] = useState(false);
+
+  // Whether the brand is the Rollup
+  const isBrandTheRollup = brand.data?.slug === THE_ROLLUP_BRAND_SLUG;
 
   // Reset image error state when coin changes
   useEffect(() => {
@@ -26,34 +33,64 @@ export const WebAppCreatorCoin = ({ coin }: WebAppCreatorCoinProps) => {
   return (
     <div className="flex flex-col justify-center items-start w-full gap-2.5">
       <h1 className="text-2xl font-bold">Creator Coin</h1>
-      <button
-        onClick={handleOpenTokenPage}
-        className="flex justify-between items-center w-full py-4 px-5 rounded-[8px] hover:opacity-90 transition-opacity cursor-pointer"
-        style={{ backgroundColor: "#57FFDD" }}>
-        <div className="flex justify-start items-center gap-4 flex-1 min-w-0">
-          {/* Icon with upward arrow */}
-          <div
-            className="size-16 rounded-full flex justify-center items-center shrink-0"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}>
-            {coin.logoUrl && !imageError ? (
-              <Image
-                src={buildImageUrlFromCid(coin.logoUrl)}
-                alt={coin.name || ""}
-                width={56}
-                height={56}
-                className="rounded-full"
-                onError={() => setImageError(true)}
-              />
-            ) : (
-              <ArrowUp className="size-8 text-white" strokeWidth={2} />
-            )}
+      {isBrandTheRollup ? (
+        <TheRollupButton
+          onClick={handleOpenTokenPage}
+          className="flex justify-between items-center w-full">
+          <div className="flex justify-start items-center gap-4 flex-1 min-w-0">
+            {/* Icon with upward arrow */}
+            <div
+              className="size-16 rounded-full flex justify-center items-center shrink-0"
+              style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}>
+              {coin.logoUrl && !imageError ? (
+                <Image
+                  src={buildImageUrlFromCid(coin.logoUrl)}
+                  alt={coin.name || ""}
+                  width={56}
+                  height={56}
+                  className="rounded-full"
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                <ArrowUp className="size-8 text-white" strokeWidth={2} />
+              )}
+            </div>
+            {/* Symbol */}
+            <p className="text-xl font-extrabold uppercase truncate">
+              ${coin.symbol || coin.name || ""}
+            </p>
           </div>
-          {/* Symbol */}
-          <p className="text-xl font-extrabold uppercase truncate text-black">
-            ${coin.symbol || coin.name || ""}
-          </p>
-        </div>
-      </button>
+        </TheRollupButton>
+      ) : (
+        <button
+          onClick={handleOpenTokenPage}
+          className="flex justify-between items-center w-full py-4 px-5 rounded-[8px] hover:opacity-90 transition-opacity cursor-pointer"
+          style={{ backgroundColor: "#57FFDD" }}>
+          <div className="flex justify-start items-center gap-4 flex-1 min-w-0">
+            {/* Icon with upward arrow */}
+            <div
+              className="size-16 rounded-full flex justify-center items-center shrink-0"
+              style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}>
+              {coin.logoUrl && !imageError ? (
+                <Image
+                  src={buildImageUrlFromCid(coin.logoUrl)}
+                  alt={coin.name || ""}
+                  width={56}
+                  height={56}
+                  className="rounded-full"
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                <ArrowUp className="size-8 text-white" strokeWidth={2} />
+              )}
+            </div>
+            {/* Symbol */}
+            <p className="text-xl font-extrabold uppercase truncate text-black">
+              ${coin.symbol || coin.name || ""}
+            </p>
+          </div>
+        </button>
+      )}
     </div>
   );
 };
