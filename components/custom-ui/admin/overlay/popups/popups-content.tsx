@@ -188,7 +188,7 @@ export const PopupsContent = () => {
     if (!brand.data?.id) return;
 
     const kalshiUrl =
-      "https://kalshi.com/markets/kxmayornycparty/mayor-of-nyc-party-winner/kxmayornycparty-25";
+      "https://kalshi.com/markets/kxfeddecision/fed-meeting/kxfeddecision-25dec";
     const urlParts = kalshiUrl.split("/");
     const kalshiEventId = urlParts[urlParts.length - 1]?.toUpperCase() || "";
     const durationMs = 20000;
