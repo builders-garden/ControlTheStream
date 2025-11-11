@@ -12,9 +12,9 @@ import {
 } from "@/hooks/use-creator-coin";
 import { CreatorCoin } from "@/lib/database/db.schema";
 import {
-  buildImageUrlFromCid,
   formatWalletAddress,
   getChainName,
+  getIpfsGatewayUrls,
 } from "@/lib/utils";
 
 interface AddedCreatorCoinProps {
@@ -28,7 +28,17 @@ export const AddedCreatorCoin = ({ coin, index }: AddedCreatorCoinProps) => {
   const { mutate: deleteCreatorCoin } = useDeleteCreatorCoin();
   const [isDeleting, setIsDeleting] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [gatewayIndex, setGatewayIndex] = useState(0);
 
+  // Get all gateway URLs for the coin logo
+  const gatewayUrls = coin.logoUrl ? getIpfsGatewayUrls(coin.logoUrl) : [];
+  const currentImageUrl = gatewayUrls[gatewayIndex] || "";
+
+  // Reset gateway index when coin changes
+  useEffect(() => {
+    setGatewayIndex(0);
+    setImageError(false);
+  }, [coin.logoUrl]);
 
   // Handles the deletion of the coin from the list
   const handleDeleteCoin = () => {
@@ -64,15 +74,23 @@ export const AddedCreatorCoin = ({ coin, index }: AddedCreatorCoinProps) => {
         {/* Coin information */}
         <div className="flex justify-between items-center w-full gap-3">
           <div className="flex justify-start items-center gap-2.5">
-            {coin.logoUrl && !imageError ? (
+            {coin.logoUrl && !imageError && currentImageUrl ? (
               <Image
-                src={buildImageUrlFromCid(coin.logoUrl)}
+                src={currentImageUrl}
                 alt={coin.name ?? ""}
                 className="size-10 rounded-full"
                 priority
                 width={40}
                 height={40}
-                onError={() => setImageError(true)}
+                onError={() => {
+                  // Try next gateway if available
+                  if (gatewayIndex < gatewayUrls.length - 1) {
+                    setGatewayIndex(gatewayIndex + 1);
+                  } else {
+                    // All gateways failed, show fallback
+                    setImageError(true);
+                  }
+                }}
               />
             ) : (
               <Image

@@ -15,7 +15,7 @@ import {
 import { CreatorCoin } from "@/lib/database/db.schema";
 import { PopupPositions } from "@/lib/enums";
 import { User } from "@/lib/types/user.type";
-import { buildImageUrlFromCid, cn, formatWalletAddress } from "@/lib/utils";
+import { cn, formatWalletAddress, getIpfsGatewayUrls } from "@/lib/utils";
 import { formatSingleToken } from "@/lib/utils/farcaster-tokens";
 
 interface MiniAppCreatorCoinProps {
@@ -31,16 +31,22 @@ export const MiniAppCreatorCoin = ({
 }: MiniAppCreatorCoinProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [gatewayIndex, setGatewayIndex] = useState(0);
   const { tokenTraded } = useSocketUtils();
   const { address } = useAccount();
 
   // Whether the brand is the Rollup
   const isBrandTheRollup = brandSlug === THE_ROLLUP_BRAND_SLUG;
 
-  // Reset image error state when coin changes
+  // Get all gateway URLs for the coin logo
+  const gatewayUrls = coin.logoUrl ? getIpfsGatewayUrls(coin.logoUrl) : [];
+  const currentImageUrl = gatewayUrls[gatewayIndex] || "";
+
+  // Reset image error state and gateway index when coin changes
   useEffect(() => {
     setImageError(false);
-  }, [coin]);
+    setGatewayIndex(0);
+  }, [coin.logoUrl]);
 
   // Get the first wallet address with a base name
   const baseName = user?.wallets.find((wallet) => wallet.baseName)?.baseName;
@@ -53,7 +59,7 @@ export const MiniAppCreatorCoin = ({
       const tokenName = coin.symbol || coin.name || "";
       const tokenAddress = coin.address || ZERO_ADDRESS;
       const tokenChainId = coin.chainId || 8453;
-      const tokenImageUrl = buildImageUrlFromCid(coin.logoUrl) || "";
+      const tokenImageUrl = gatewayUrls[0] || "";
 
       const sellToken = formatSingleToken(BASE_USDC_ADDRESS); // USDC on Base
       const buyToken = formatSingleToken(tokenAddress, tokenChainId);
@@ -144,14 +150,22 @@ export const MiniAppCreatorCoin = ({
             style={{
               backgroundColor: "rgba(0, 0, 0, 0.2)",
             }}>
-            {coin.logoUrl && !imageError ? (
+            {coin.logoUrl && !imageError && currentImageUrl ? (
               <Image
-                src={buildImageUrlFromCid(coin.logoUrl)}
+                src={currentImageUrl}
                 alt={coin.name || ""}
                 width={40}
                 height={40}
                 className="rounded-full"
-                onError={() => setImageError(true)}
+                onError={() => {
+                  // Try next gateway if available
+                  if (gatewayIndex < gatewayUrls.length - 1) {
+                    setGatewayIndex(gatewayIndex + 1);
+                  } else {
+                    // All gateways failed, show fallback
+                    setImageError(true);
+                  }
+                }}
               />
             ) : (
               <ArrowUp className="size-6 text-white" strokeWidth={2} />

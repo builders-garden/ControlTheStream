@@ -236,26 +236,47 @@ export const getChainLogoUrl = (chainId: string) => {
 };
 
 /**
+ * IPFS gateway URLs in order of preference (with fallbacks)
+ */
+const IPFS_GATEWAYS = [
+  "dweb.link",
+  "ipfs.io",
+  "latam.orbitor.dev",
+  "eu.orbitor.dev",
+] as const;
+
+/**
+ * Gets all gateway URLs for an IPFS CID in order of preference
+ * @param cidOrUrl - IPFS CID (e.g., "bafybeia2m2j2aouj7mr7h2jk7k5algr4lx5vzq5hr5x3tl2m2gz67i6si4") or full URL
+ * @returns Array of gateway URLs, or single-element array with the original URL if it's already a full URL
+ */
+export const getIpfsGatewayUrls = (cidOrUrl?: string | null): string[] => {
+  if (!cidOrUrl) return [];
+
+  // If it's already a full URL (starts with http:// or https://), return as-is
+  if (cidOrUrl.startsWith("http://") || cidOrUrl.startsWith("https://")) {
+    return [cidOrUrl];
+  }
+
+  // If it starts with "/", it's a relative path, return as-is
+  if (cidOrUrl.startsWith("/")) {
+    return [cidOrUrl];
+  }
+
+  // Otherwise, it's an IPFS CID - build URLs for all gateways
+  // Format: https://{cid}.ipfs.{gateway}/
+  return IPFS_GATEWAYS.map((gateway) => `https://${cidOrUrl}.ipfs.${gateway}/`);
+};
+
+/**
  * Builds a full image URL from an IPFS CID using the public dweb gateway or returns the URL as-is if it's already a full URL
  * @param cidOrUrl - IPFS CID (e.g., "bafybeia2m2j2aouj7mr7h2jk7k5algr4lx5vzq5hr5x3tl2m2gz67i6si4") or full URL
  * @returns Full URL using dweb gateway (https://{cid}.ipfs.dweb.link/), or the original URL if it's already a full URL
+ * @deprecated Use getIpfsGatewayUrls for fallback support
  */
 export const buildImageUrlFromCid = (cidOrUrl?: string | null): string => {
-  if (!cidOrUrl) return "";
-  
-  // If it's already a full URL (starts with http:// or https://), return as-is
-  if (cidOrUrl.startsWith("http://") || cidOrUrl.startsWith("https://")) {
-    return cidOrUrl;
-  }
-  
-  // If it starts with "/", it's a relative path, return as-is
-  if (cidOrUrl.startsWith("/")) {
-    return cidOrUrl;
-  }
-  
-  // Otherwise, it's an IPFS CID - build the full URL using the public dweb gateway
-  // Format: https://{cid}.ipfs.dweb.link/
-  return `https://${cidOrUrl}.ipfs.dweb.link/`;
+  const urls = getIpfsGatewayUrls(cidOrUrl);
+  return urls[0] || "";
 };
 
 /**

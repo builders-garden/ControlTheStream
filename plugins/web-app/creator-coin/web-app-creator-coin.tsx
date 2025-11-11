@@ -5,7 +5,7 @@ import { TheRollupButton } from "@/components/custom-ui/tr-button";
 import { useWebAppAuth } from "@/contexts/auth/web-app-auth-context";
 import { THE_ROLLUP_BRAND_SLUG } from "@/lib/constants";
 import { CreatorCoin } from "@/lib/database/db.schema";
-import { buildImageUrlFromCid } from "@/lib/utils";
+import { getIpfsGatewayUrls } from "@/lib/utils";
 
 interface WebAppCreatorCoinProps {
   coin: CreatorCoin;
@@ -14,14 +14,20 @@ interface WebAppCreatorCoinProps {
 export const WebAppCreatorCoin = ({ coin }: WebAppCreatorCoinProps) => {
   const { brand } = useWebAppAuth();
   const [imageError, setImageError] = useState(false);
+  const [gatewayIndex, setGatewayIndex] = useState(0);
 
   // Whether the brand is the Rollup
   const isBrandTheRollup = brand.data?.slug === THE_ROLLUP_BRAND_SLUG;
 
-  // Reset image error state when coin changes
+  // Get all gateway URLs for the coin logo
+  const gatewayUrls = coin.logoUrl ? getIpfsGatewayUrls(coin.logoUrl) : [];
+  const currentImageUrl = gatewayUrls[gatewayIndex] || "";
+
+  // Reset image error state and gateway index when coin changes
   useEffect(() => {
     setImageError(false);
-  }, [coin]);
+    setGatewayIndex(0);
+  }, [coin.logoUrl]);
 
   // Handle open token page (_blank)
   const handleOpenTokenPage = () => {
@@ -42,14 +48,22 @@ export const WebAppCreatorCoin = ({ coin }: WebAppCreatorCoinProps) => {
             <div
               className="size-16 rounded-full flex justify-center items-center shrink-0"
               style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}>
-              {coin.logoUrl && !imageError ? (
+              {coin.logoUrl && !imageError && currentImageUrl ? (
                 <Image
-                  src={buildImageUrlFromCid(coin.logoUrl)}
+                  src={currentImageUrl}
                   alt={coin.name || ""}
                   width={56}
                   height={56}
                   className="rounded-full"
-                  onError={() => setImageError(true)}
+                  onError={() => {
+                    // Try next gateway if available
+                    if (gatewayIndex < gatewayUrls.length - 1) {
+                      setGatewayIndex(gatewayIndex + 1);
+                    } else {
+                      // All gateways failed, show fallback
+                      setImageError(true);
+                    }
+                  }}
                 />
               ) : (
                 <ArrowUp className="size-8 text-white" strokeWidth={2} />
@@ -71,14 +85,22 @@ export const WebAppCreatorCoin = ({ coin }: WebAppCreatorCoinProps) => {
             <div
               className="size-16 rounded-full flex justify-center items-center shrink-0"
               style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}>
-              {coin.logoUrl && !imageError ? (
+              {coin.logoUrl && !imageError && currentImageUrl ? (
                 <Image
-                  src={buildImageUrlFromCid(coin.logoUrl)}
+                  src={currentImageUrl}
                   alt={coin.name || ""}
                   width={56}
                   height={56}
                   className="rounded-full"
-                  onError={() => setImageError(true)}
+                  onError={() => {
+                    // Try next gateway if available
+                    if (gatewayIndex < gatewayUrls.length - 1) {
+                      setGatewayIndex(gatewayIndex + 1);
+                    } else {
+                      // All gateways failed, show fallback
+                      setImageError(true);
+                    }
+                  }}
                 />
               ) : (
                 <ArrowUp className="size-8 text-white" strokeWidth={2} />
