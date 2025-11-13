@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import ky from "ky";
+import ky, { HTTPError } from "ky";
 import { NextRequest, NextResponse } from "next/server";
 import { parseStringPromise } from "xml2js";
 import {
@@ -16,6 +16,59 @@ import { env } from "@/lib/zod";
 
 const FOUR_MINUTES_MILLISECONDS = 1000 * 60 * 4;
 const TWO_MINUTES_MILLISECONDS = 1000 * 60 * 2;
+
+/**
+ * Fetches YouTube content using the specified API key
+ * @param channelId - YouTube channel ID
+ * @param apiKey - YouTube API key to use
+ * @returns YouTube content response
+ * @throws HTTPError if the request fails
+ */
+async function fetchYoutubeContent(
+  channelId: string,
+  apiKey: string,
+): Promise<YoutubeContent> {
+  return await ky
+    .get<YoutubeContent>("https://www.googleapis.com/youtube/v3/search", {
+      searchParams: {
+        channelId,
+        type: "video",
+        part: "snippet",
+        key: apiKey,
+        maxResults: 1,
+        eventType: "live",
+      },
+    })
+    .json();
+}
+
+/**
+ * Checks if the error is a quota exceeded error from YouTube API
+ * @param error - The error to check
+ * @returns true if the error is a quota exceeded error
+ */
+async function isQuotaExceededError(error: unknown): Promise<boolean> {
+  if (!(error instanceof HTTPError)) {
+    return false;
+  }
+
+  // Check if status is 403
+  if (error.response.status !== 403) {
+    return false;
+  }
+
+  // Try to parse the error response to check for quotaExceeded reason
+  try {
+    const errorBody = await error.response.json();
+    return (
+      errorBody?.error?.errors?.some(
+        (err: any) => err.reason === "quotaExceeded",
+      ) ?? false
+    );
+  } catch {
+    return false;
+  }
+}
 
 export const GET = async (
   _: NextRequest,
@@ -78,19 +131,27 @@ export const GET = async (
     let newExpirationDate = 0;
 
     try {
-      // Try to fetch an active live event first
-      const lastYoutubeContent = await ky
-        .get<YoutubeContent>("https://www.googleapis.com/youtube/v3/search", {
-          searchParams: {
+      // Try to fetch an active live event first with YOUTUBE_API_KEY1
+      // If quota exceeded, fallback to YOUTUBE_API_KEY2
+      let lastYoutubeContent: YoutubeContent;
+      try {
+        lastYoutubeContent = await fetchYoutubeContent(
+          channelId,
+          env.YOUTUBE_API_KEY1,
+        );
+      } catch (error) {
+        // Check if it's a quota exceeded error
+        if (await isQuotaExceededError(error)) {
+          // Try with the second API key
+          lastYoutubeContent = await fetchYoutubeContent(
             channelId,
-            type: "video",
-            part: "snippet",
-            key: env.YOUTUBE_API_KEY,
-            maxResults: 1,
-            eventType: "live",
-          },
-        })
-        .json();
+            env.YOUTUBE_API_KEY2,
+          );
+        } else {
+          // Re-throw if it's not a quota exceeded error
+          throw error;
+        }
+      }
 
       let youtubeLiveUrl: string;
       let title: string;
