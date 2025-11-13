@@ -72,10 +72,12 @@ export const WebAppStreamPage = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="flex justify-between items-center min-h-screen w-full">
+      className="flex flex-col md:flex-row justify-between items-center min-h-screen w-full">
       {/* Video and info area - scrollable vertically */}
-      <ScrollArea scrollBarClassName="w-0" className="w-full">
-        <div className="flex flex-col justify-start items-center h-screen w-full p-6 gap-5">
+      <ScrollArea
+        scrollBarClassName="w-0"
+        className="w-full md:w-auto md:flex-1">
+        <div className="flex flex-col justify-start items-center min-h-screen md:h-screen w-full p-4 md:p-6 gap-4 md:gap-5">
           {/* Video */}
           <div className="flex justify-center items-center w-full aspect-video bg-black/10 rounded-[8px] overflow-hidden">
             <AnimatePresence mode="wait">
@@ -150,53 +152,55 @@ export const WebAppStreamPage = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, ease: "easeInOut" }}
-                className="flex flex-col justify-start items-center w-full gap-5">
-                <div className="flex justify-between items-center w-full px-5">
-                  <div className="flex justify-start items-center gap-5">
-                    <div className="relative flex justify-center items-center bg-black/10 rounded-full">
+                className="flex flex-col justify-start items-center w-full gap-4 md:gap-5">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full gap-3 md:gap-0 px-2 md:px-5">
+                  <div className="flex flex-col sm:flex-row justify-start items-start sm:items-center gap-3 sm:gap-5 w-full md:w-auto">
+                    <div className="relative flex justify-center items-center bg-black/10 rounded-full shrink-0">
                       {brand.data?.logoUrl ? (
                         <Image
                           src={brand.data?.logoUrl}
                           alt={brand.data?.name || ""}
                           width={86}
                           height={86}
-                          className="rounded-full object-cover shrink-0"
+                          className="rounded-full object-cover shrink-0 size-16 sm:size-[86px]"
                         />
                       ) : (
-                        <div className="flex justify-center items-center size-[86px] bg-black/10 rounded-full">
-                          <p className="text-5xl font-bold text-center text-black/60">
+                        <div className="flex justify-center items-center size-16 sm:size-[86px] bg-black/10 rounded-full">
+                          <p className="text-3xl sm:text-5xl font-bold text-center text-black/60">
                             {brand.data?.name?.slice(0, 1).toUpperCase() || ""}
                           </p>
                         </div>
                       )}
                       {lastYoutubeContent?.data?.isLive && (
-                        <div className="absolute bottom-0 left-0 right-0 top-0 size-[86px] border-3 border-destructive rounded-full" />
+                        <div className="absolute bottom-0 left-0 right-0 top-0 size-16 sm:size-[86px] border-3 border-destructive rounded-full" />
                       )}
                       {lastYoutubeContent?.data?.isLive && (
                         <div className="absolute flex justify-center items-center -bottom-1 left-1/2 transform -translate-x-1/2 bg-destructive rounded-sm w-fit px-2 py-[1px]">
-                          <p className="text-base text-foreground font-bold">
+                          <p className="text-sm sm:text-base text-foreground font-bold">
                             LIVE
                           </p>
                         </div>
                       )}
                     </div>
-                    <div className="flex flex-col justify-center items-start gap-1 h-full">
-                      <h1 className="text-3xl font-bold">
+                    <div className="flex flex-col justify-center items-start gap-1 h-full flex-1 min-w-0">
+                      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold break-words">
                         {lastYoutubeContent?.data?.title || ""}
                       </h1>
-                      <p className="text-lg text-gray-500">
+                      <p className="text-base sm:text-lg text-gray-500">
                         by {brand.data?.name}
                       </p>
                     </div>
                   </div>
 
                   {/* Share button */}
-                  <ShareButton
-                    copyLinkText={`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}`}
-                    buttonClassName="shrink-1 w-min cursor-pointer"
-                    buttonSize="lg"
-                    brandName={brand.data?.name}
-                  />
+                  <div className="self-end md:self-auto">
+                    <ShareButton
+                      copyLinkText={`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}`}
+                      buttonClassName="shrink-1 w-min cursor-pointer"
+                      buttonSize="lg"
+                      brandName={brand.data?.name}
+                    />
+                  </div>
                 </div>
 
                 <WebAppAboutSection
@@ -222,22 +226,23 @@ export const WebAppStreamPage = () => {
       </ScrollArea>
 
       {/* Sidebar - fixed width and no scroll */}
-      <div className="flex flex-col justify-center items-center min-h-screen h-screen w-[31%] pr-6 py-6">
+      <div className="flex flex-col justify-center items-center w-full md:w-[31%] md:min-h-screen md:h-screen md:pr-6 py-4 md:py-6 px-4 md:px-0">
         <CTSCard
           brandSlug={brand.data?.slug || ""}
           className={cn(
-            "flex flex-col justify-between items-center h-full w-full bg-card p-5",
+            "flex flex-col justify-between items-center w-full bg-card p-4 md:p-5",
+            "min-h-[400px] md:h-full",
             brand.data?.slug === THE_ROLLUP_BRAND_SLUG && "bg-white",
           )}>
-          <div className="flex flex-col justify-start items-start w-full h-full gap-5">
+          <div className="flex flex-col justify-start items-start w-full h-full gap-4 md:gap-5">
             <div className="flex justify-start items-center w-full gap-2.5">
               <Sparkles
                 className={cn(
-                  "size-8 text-foreground",
+                  "size-6 md:size-8 text-foreground shrink-0",
                   brand.data?.slug === THE_ROLLUP_BRAND_SLUG && "text-black",
                 )}
               />
-              <h1 className="text-3xl font-bold w-full text-start">
+              <h1 className="text-2xl md:text-3xl font-bold w-full text-start">
                 Interact with the stream
               </h1>
             </div>
@@ -268,7 +273,7 @@ export const WebAppStreamPage = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2, ease: "easeInOut" }}
-                  className="flex flex-col justify-start items-start w-full h-full gap-8">
+                  className="flex flex-col justify-start items-start w-full h-full gap-6 md:gap-8">
                   {/* Tip Buttons */}
                   {brand.tipSettings.data?.payoutAddress && (
                     <WebAppTips
@@ -317,27 +322,27 @@ export const WebAppStreamPage = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, ease: "easeInOut" }}
-                className="flex justify-between items-center w-full">
-                <div className="flex justify-start items-center gap-2.5 w-full">
+                className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-3 sm:gap-0">
+                <div className="flex justify-start items-center gap-2.5 w-full sm:w-auto min-w-0 flex-1">
                   {user.data?.avatarUrl ? (
                     <Image
                       src={user.data.avatarUrl}
                       alt="user avatar"
                       width={32}
                       height={32}
-                      className="rounded-full object-cover"
+                      className="rounded-full object-cover shrink-0"
                     />
                   ) : (
                     <div
                       className={cn(
-                        "size-8 rounded-full bg-muted flex justify-center items-center",
+                        "size-8 rounded-full bg-muted flex justify-center items-center shrink-0",
                         brand.data?.slug === THE_ROLLUP_BRAND_SLUG &&
                           "bg-gray-200",
                       )}>
                       <User className="size-6 text-foreground" />
                     </div>
                   )}
-                  <h1 className="text-[21px] font-bold">
+                  <h1 className="text-lg sm:text-[21px] font-bold truncate">
                     {user.data?.username ||
                       formatWalletAddress(connectedAddress)}
                   </h1>
@@ -347,7 +352,7 @@ export const WebAppStreamPage = () => {
                   brandSlug={brand.data?.slug || ""}
                   disabled={isLoggingOut}
                   executeLogout={handleLogout}
-                  className="h-[42px]">
+                  className="h-[42px] w-full sm:w-auto">
                   <AnimatePresence mode="wait">
                     {isLoggingOut ? (
                       <motion.div
@@ -388,7 +393,7 @@ export const WebAppStreamPage = () => {
                   <TheRollupButton
                     onClick={() => signInWithWebApp()}
                     disabled={isSigningIn}
-                    className="bg-accent w-full h-[42px]">
+                    className="bg-accent w-full sm:w-auto h-[42px]">
                     <AnimatePresence mode="wait">
                       {isSigningIn ? (
                         <motion.div
@@ -419,7 +424,7 @@ export const WebAppStreamPage = () => {
                   <CTSButton
                     onClick={() => signInWithWebApp()}
                     disabled={isSigningIn}
-                    className="w-full h-[42px]">
+                    className="w-full sm:w-auto h-[42px]">
                     <AnimatePresence mode="wait">
                       {isSigningIn ? (
                         <motion.div
