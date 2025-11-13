@@ -2,7 +2,7 @@ import { ChevronDownIcon, Globe, Send, Twitch, Youtube } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -139,6 +139,23 @@ export const WebAppAboutSection = ({
     enabled: !!brandId,
   });
 
+  // Set accordion to open by default on mobile, closed on desktop
+  useEffect(() => {
+    const checkMobile = () => {
+      if (typeof window !== "undefined") {
+        const isMobile = window.innerWidth < 768; // md breakpoint
+        setAccordionValue(isMobile ? "item-1" : undefined);
+      }
+    };
+
+    // Set initial value
+    checkMobile();
+
+    // Update on resize
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   if (!text && !coverUrl) {
     return (
       <Links
@@ -158,16 +175,18 @@ export const WebAppAboutSection = ({
       className="w-full"
       value={accordionValue}
       onValueChange={setAccordionValue}>
-      <AccordionItem value="item-1">
-        <AccordionTrigger className="w-full cursor-pointer" hideChevron>
+      <AccordionItem value="item-1" className="border-0">
+        <AccordionTrigger
+          className="w-full cursor-pointer py-2 md:py-4"
+          hideChevron>
           <div className="flex justify-between items-center w-full">
             <div className="flex justify-start items-center gap-2.5 w-full">
-              <h1 className="text-lg font-bold">{label}</h1>
+              <h1 className="text-base md:text-lg font-bold">{label}</h1>
               <motion.div
                 initial={{ rotate: 180 }}
                 animate={{ rotate: !!accordionValue ? 180 : 0 }}
                 transition={{ duration: 0.2 }}>
-                <ChevronDownIcon className="text-muted-foreground size-6 shrink-0" />
+                <ChevronDownIcon className="text-muted-foreground size-5 md:size-6 shrink-0" />
               </motion.div>
             </div>
             <Links
@@ -179,22 +198,24 @@ export const WebAppAboutSection = ({
             />
           </div>
         </AccordionTrigger>
-        <AccordionContent className="flex flex-col justify-between items-start w-full h-full gap-6 my-2 focus-visible:outline-none">
-          <div className="flex justify-between items-start w-full h-full gap-10">
+        <AccordionContent className="flex flex-col justify-between items-start w-full gap-4 md:gap-6 my-2 focus-visible:outline-none data-[state=closed]:!pb-0 data-[state=closed]:!my-0 data-[state=closed]:!pt-0">
+          <div className="flex flex-col md:flex-row justify-between items-start w-full gap-4 md:gap-10">
             {coverUrl && (
               <Image
                 src={coverUrl}
                 alt="Cover"
-                className="h-[250px] w-auto object-cover rounded-[12px]"
+                className="h-[200px] md:h-[250px] w-full md:w-auto object-cover rounded-[12px]"
                 width={1000}
                 height={200}
               />
             )}
-            <div className="flex flex-1 flex-col justify-between items-start w-full h-[250px]">
+            <div className="flex flex-1 flex-col justify-between items-start w-full gap-4 md:gap-0 min-h-[200px] md:h-[250px]">
               {text && (
                 <div className="flex flex-col justify-start items-start gap-2">
-                  <h1 className="text-lg font-bold">What happens here?</h1>
-                  <p className="text-lg w-full text-start">{text}</p>
+                  <h1 className="text-base md:text-lg font-bold">
+                    What happens here?
+                  </h1>
+                  <p className="text-sm md:text-lg w-full text-start">{text}</p>
                 </div>
               )}
 
