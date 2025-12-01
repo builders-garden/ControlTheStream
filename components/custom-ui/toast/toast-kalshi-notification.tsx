@@ -355,12 +355,12 @@ export const ToastKalshiNotification = ({
               return (
                 <div
                   key={m.ticker}
-                  className="rounded-sm bg-white px-2 py-1 text-center border border-white/40">
-                  <div className="text-black font-extrabold text-sm leading-tight mb-0.5 truncate tracking-tight">
+                  className="relative flex justify-center items-center rounded-sm bg-white px-2 py-1 text-center h-[64px]">
+                  <div className="text-black font-extrabold tracking-tight mb-0.5 truncate text-lg">
                     {m.name}
                   </div>
-                  <div>
-                    <span className="text-black font-black tracking-tight text-lg align-middle">
+                  <div className="absolute flex justify-center items-center px-1.5 top-0 right-0 rounded-bl-sm rounded-tr-sm bg-primary">
+                    <span className="text-black font-extrabold tracking-tight align-middle">
                       {percentLabel}
                     </span>
                   </div>
