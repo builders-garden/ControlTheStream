@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useAccount } from "wagmi";
 import { CTSButton } from "@/components/custom-ui/cts-button";
 import { TheRollupButton } from "@/components/custom-ui/tr-button";
+import { useCreateFeaturedTokenOpen } from "@/hooks/use-featured-tokens-opens";
 import { useSocketUtils } from "@/hooks/use-socket-utils";
 import {
   BASE_USDC_ADDRESS,
@@ -14,9 +15,9 @@ import {
   ZERO_ADDRESS,
 } from "@/lib/constants";
 import { FeaturedToken } from "@/lib/database/db.schema";
-import { PopupPositions } from "@/lib/enums";
+import { AuthTokenType, PopupPositions } from "@/lib/enums";
 import { User } from "@/lib/types/user.type";
-import { cn, formatWalletAddress } from "@/lib/utils";
+import { cn, formatWalletAddress, getChainLogoUrl } from "@/lib/utils";
 import { formatSingleToken } from "@/lib/utils/farcaster-tokens";
 
 interface MiniAppFeaturedTokensProps {
@@ -33,6 +34,11 @@ export const MiniAppFeaturedTokens = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const { tokenTraded } = useSocketUtils();
   const { address } = useAccount();
+
+  // Mutation hook for creating a featured token open
+  const { mutate: createFeaturedTokenOpen } = useCreateFeaturedTokenOpen(
+    AuthTokenType.MINI_APP_AUTH_TOKEN,
+  );
 
   // Get the first wallet address with a base name
   const baseName = user?.wallets.find((wallet) => wallet.baseName)?.baseName;
@@ -56,48 +62,68 @@ export const MiniAppFeaturedTokens = ({
         sellToken,
         buyToken,
         sellAmount: "30000",
-
       });
       // await 5 seconds
       await new Promise((resolve) => setTimeout(resolve, 5000));
 
       if (result.success && result.swap.transactions) {
+        const chainLogoUrl = tokenChainId
+          ? getChainLogoUrl(tokenChainId.toString())
+          : null;
+        const externalUrl =
+          tokenChainId && tokenAddress
+            ? `https://matcha.xyz/tokens/${tokenChainId}/${tokenAddress}`
+            : null;
+
+        const featuredTokenOpenData = {
+          brandId: token.brandId || "",
+          address: tokenAddress,
+          chainId: tokenChainId,
+          symbol: tokenName,
+          name: tokenName,
+          logoUrl: tokenImageUrl,
+          chainLogoUrl: chainLogoUrl,
+          externalUrl: externalUrl,
+          openerId: user?.id || "",
+        };
+
+        const tokenTradedData = {
+          brandId: token.brandId || "",
+          position: PopupPositions.TOP_CENTER,
+          username: baseName || formatWalletAddress(address),
+          profilePicture: user?.avatarUrl || "",
+          tokenInAmount: "",
+          tokenInName: "USDC",
+          tokenInDecimals: 6,
+          tokenInImageUrl: BASE_USDC_LOGO_URL,
+          tokenOutAmount: "",
+          tokenOutDecimals: tokenDecimals,
+          tokenOutName: tokenName,
+          tokenOutImageUrl: tokenImageUrl,
+        };
+
         if (
           (await sdk.context).client.clientFid ===
           FARCASTER_CLIENT_FID.farcaster
         ) {
           if (result.swap.transactions.length > 0) {
             // Send socket message to the server
-            tokenTraded({
-              brandId: token.brandId || "",
-              position: PopupPositions.TOP_CENTER,
-              username: baseName || formatWalletAddress(address),
-              profilePicture: user?.avatarUrl || "",
-              tokenInAmount: "",
-              tokenInName: "USDC",
-              tokenInDecimals: 6,
-              tokenInImageUrl: BASE_USDC_LOGO_URL,
-              tokenOutAmount: "",
-              tokenOutDecimals: tokenDecimals,
-              tokenOutName: tokenName,
-              tokenOutImageUrl: tokenImageUrl,
-            });
+            tokenTraded(tokenTradedData);
           }
+
+          // Create a record in the database
+          createFeaturedTokenOpen({
+            ...featuredTokenOpenData,
+            platform: "farcaster",
+          });
         } else {
           // Send socket message to the server
-          tokenTraded({
-            brandId: token.brandId || "",
-            position: PopupPositions.TOP_CENTER,
-            username: baseName || formatWalletAddress(address),
-            profilePicture: user?.avatarUrl || "",
-            tokenInAmount: "",
-            tokenInName: "USDC",
-            tokenInDecimals: 6,
-            tokenInImageUrl: BASE_USDC_LOGO_URL,
-            tokenOutAmount: "",
-            tokenOutDecimals: tokenDecimals,
-            tokenOutName: tokenName,
-            tokenOutImageUrl: tokenImageUrl,
+          tokenTraded(tokenTradedData);
+
+          // Create a record in the database
+          createFeaturedTokenOpen({
+            ...featuredTokenOpenData,
+            platform: "base",
           });
         }
       }

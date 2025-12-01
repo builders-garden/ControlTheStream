@@ -119,3 +119,111 @@ export const usePollsAnalytics = ({
     tokenType,
   });
 };
+
+// Creator Coins analytics types
+interface CreatorCoinsAnalyticsUser {
+  userId: string;
+  username: string | null;
+  farcasterUsername: string | null;
+  farcasterDisplayName: string | null;
+  farcasterAvatarUrl: string | null;
+  totalOpens: number;
+  firstOpen: string;
+  lastOpen: string;
+}
+
+interface CreatorCoinsAnalyticsSort {
+  field: "totalOpens" | "firstOpen" | "lastOpen";
+  direction: "asc" | "desc";
+}
+
+interface CreatorCoinsAnalyticsResponse {
+  data: CreatorCoinsAnalyticsUser[];
+  pagination: BrandAnalyticsPagination;
+  sort: CreatorCoinsAnalyticsSort;
+}
+
+interface UseCreatorCoinsAnalyticsOptions {
+  page?: number;
+  limit?: number;
+  sortBy?: CreatorCoinsAnalyticsSort["field"];
+  sortDir?: CreatorCoinsAnalyticsSort["direction"];
+  enabled?: boolean;
+  tokenType: AuthTokenType;
+  brandId?: string;
+}
+
+// Featured Coins analytics types
+interface FeaturedCoinsAnalyticsUser {
+  userId: string;
+  username: string | null;
+  farcasterUsername: string | null;
+  farcasterDisplayName: string | null;
+  farcasterAvatarUrl: string | null;
+  totalOpens: number;
+  firstOpen: string;
+  lastOpen: string;
+}
+
+interface FeaturedCoinsAnalyticsSort {
+  field: "totalOpens" | "firstOpen" | "lastOpen";
+  direction: "asc" | "desc";
+}
+
+interface FeaturedCoinsAnalyticsResponse {
+  data: FeaturedCoinsAnalyticsUser[];
+  pagination: BrandAnalyticsPagination;
+  sort: FeaturedCoinsAnalyticsSort;
+}
+
+interface UseFeaturedCoinsAnalyticsOptions {
+  page?: number;
+  limit?: number;
+  sortBy?: FeaturedCoinsAnalyticsSort["field"];
+  sortDir?: FeaturedCoinsAnalyticsSort["direction"];
+  enabled?: boolean;
+  tokenType: AuthTokenType;
+  brandId?: string;
+}
+
+// Creator Coins analytics hook
+export const useCreatorCoinsAnalytics = ({
+  page = 1,
+  limit = 10,
+  sortBy = "totalOpens",
+  sortDir = "desc",
+  enabled = true,
+  brandId,
+  tokenType,
+}: UseCreatorCoinsAnalyticsOptions) => {
+  return useApiQuery<CreatorCoinsAnalyticsResponse>({
+    queryKey: ["creator-coins-analytics", page, limit, sortBy, sortDir],
+    url: `/api/analytics/${brandId}/creator-coins?page=${page}&limit=${limit}&sortBy=${sortBy}&sortDir=${sortDir}`,
+    enabled,
+    isProtected: true,
+    // Cache analytics data for 5 minutes
+    staleTime: 5 * 60 * 1000,
+    tokenType,
+  });
+};
+
+// Featured Coins analytics hook
+export const useFeaturedCoinsAnalytics = ({
+  page = 1,
+  limit = 10,
+  sortBy = "totalOpens",
+  sortDir = "desc",
+  enabled = true,
+  brandId,
+  tokenType,
+}: UseFeaturedCoinsAnalyticsOptions) => {
+  return useApiQuery<FeaturedCoinsAnalyticsResponse>({
+    queryKey: ["featured-coins-analytics", page, limit, sortBy, sortDir],
+    url: `/api/analytics/${brandId}/featured-coins?page=${page}&limit=${limit}&sortBy=${sortBy}&sortDir=${sortDir}`,
+    enabled,
+    isProtected: true,
+    // Cache analytics data for 5 minutes
+    staleTime: 5 * 60 * 1000,
+    tokenType,
+  });
+};

@@ -22,6 +22,8 @@ export enum AdminPageContent {
 export enum AnalyticsTabs {
   TIPS = "tips",
   POLLS = "polls",
+  CREATOR_COINS = "creator-coins",
+  FEATURED_COINS = "featured-coins",
 }
 
 // Brand Tabs

@@ -66,3 +66,59 @@ export const usePollsAnalyticsMetrics = ({
     tokenType,
   });
 };
+
+// Creator Coins analytics metrics types
+interface CreatorCoinsAnalyticsMetrics {
+  totalOpens: number;
+  uniqueOpeners: number;
+}
+
+interface CreatorCoinsAnalyticsMetricsResponse {
+  data: CreatorCoinsAnalyticsMetrics;
+}
+
+// Featured Coins analytics metrics types
+interface FeaturedCoinsAnalyticsMetrics {
+  totalOpens: number;
+  uniqueOpeners: number;
+}
+
+interface FeaturedCoinsAnalyticsMetricsResponse {
+  data: FeaturedCoinsAnalyticsMetrics;
+}
+
+// Creator Coins analytics metrics hook
+export const useCreatorCoinsAnalyticsMetrics = ({
+  tokenType,
+  brandId,
+  enabled,
+}: UseBrandAnalyticsMetricsOptions) => {
+  return useApiQuery<CreatorCoinsAnalyticsMetricsResponse>({
+    queryKey: ["creator-coins-analytics-metrics", brandId],
+    url: `/api/analytics/${brandId}/creator-coins/metrics`,
+    enabled,
+    isProtected: true,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
+    tokenType,
+  });
+};
+
+// Featured Coins analytics metrics hook
+export const useFeaturedCoinsAnalyticsMetrics = ({
+  tokenType,
+  brandId,
+  enabled,
+}: UseBrandAnalyticsMetricsOptions) => {
+  return useApiQuery<FeaturedCoinsAnalyticsMetricsResponse>({
+    queryKey: ["featured-coins-analytics-metrics", brandId],
+    url: `/api/analytics/${brandId}/featured-coins/metrics`,
+    enabled,
+    isProtected: true,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
+    tokenType,
+  });
+};

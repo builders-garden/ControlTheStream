@@ -294,7 +294,10 @@ export const WebAppStreamPage = () => {
 
                   {/* Creator Coin */}
                   {brand.creatorCoin.data && (
-                    <WebAppCreatorCoin coin={brand.creatorCoin.data} />
+                    <WebAppCreatorCoin
+                      coin={brand.creatorCoin.data}
+                      user={user.data}
+                    />
                   )}
 
                   {/* Featured Tokens */}

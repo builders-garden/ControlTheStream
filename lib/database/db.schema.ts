@@ -189,6 +189,49 @@ export type CreateFeaturedToken = typeof featuredTokensTable.$inferInsert;
 export type UpdateFeaturedToken = Partial<CreateFeaturedToken>;
 
 /**
+ * Featured Tokens Opens Table
+ */
+export const featuredTokensOpensTable = sqliteTable(
+  "featured_tokens_opens",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => ulid()),
+    // The token information is cloned to prevent losing information if the admin
+    // deletes the token from his list of featured tokens
+    brandId: text("brand_id")
+      .notNull()
+      .references(() => brandsTable.id, { onDelete: "cascade" }),
+    name: text("name"),
+    symbol: text("symbol"),
+    decimals: integer("decimals"),
+    chainId: integer("chain_id"),
+    chainLogoUrl: text("chain_logo_url"),
+    address: text("address"),
+    logoUrl: text("logo_url"),
+    description: text("description"),
+    externalUrl: text("external_url"),
+    openerId: text("opener_id")
+      .notNull()
+      .references(() => userTable.id, { onDelete: "cascade" }),
+    platform: text("platform")
+      .$type<"farcaster" | "base" | "web-app" | null>()
+      .default(null),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (t) => [
+    index("idx_featured_tokens_opens_brand_id").on(t.brandId),
+    index("idx_featured_tokens_opens_opener_id").on(t.openerId),
+  ],
+);
+
+export type FeaturedTokenOpen = typeof featuredTokensOpensTable.$inferSelect;
+export type CreateFeaturedTokenOpen =
+  typeof featuredTokensOpensTable.$inferInsert;
+export type UpdateFeaturedTokenOpen = Partial<CreateFeaturedTokenOpen>;
+
+/**
  * Farcaster User table
  */
 export const userTable = sqliteTable(
@@ -422,3 +465,43 @@ export const creatorCoinTable = sqliteTable(
 export type CreatorCoin = typeof creatorCoinTable.$inferSelect;
 export type CreateCreatorCoin = typeof creatorCoinTable.$inferInsert;
 export type UpdateCreatorCoin = Partial<CreateCreatorCoin>;
+
+/**
+ * Creator Coin Opens table
+ */
+export const creatorCoinOpensTable = sqliteTable(
+  "creator_coin_opens",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => ulid()),
+    // The creator coin information is cloned to prevent losing information if the admin
+    // deletes the creator coin from his list of creator coins
+    brandId: text("brand_id")
+      .notNull()
+      .references(() => brandsTable.id, { onDelete: "cascade" }),
+    address: text("address").$type<Address>().notNull(),
+    chainId: integer("chain_id").notNull(),
+    symbol: text("symbol").notNull(),
+    name: text("name").notNull(),
+    chainLogoUrl: text("chain_logo_url"),
+    externalUrl: text("external_url"),
+    logoUrl: text("logo_url"),
+    openerId: text("opener_id")
+      .notNull()
+      .references(() => userTable.id, { onDelete: "cascade" }),
+    platform: text("platform")
+      .$type<"farcaster" | "base" | "web-app" | null>()
+      .default(null),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (t) => [
+    index("idx_creator_coin_opens_brand_id").on(t.brandId),
+    index("idx_creator_coin_opens_opener_id").on(t.openerId),
+  ],
+);
+
+export type CreatorCoinOpen = typeof creatorCoinOpensTable.$inferSelect;
+export type CreateCreatorCoinOpen = typeof creatorCoinOpensTable.$inferInsert;
+export type UpdateCreatorCoinOpen = Partial<CreateCreatorCoinOpen>;

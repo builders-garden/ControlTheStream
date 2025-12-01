@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { TheRollupButton } from "@/components/custom-ui/tr-button";
+import { useCreateCreatorCoinOpen } from "@/hooks/use-creator-coin-opens";
 import { useSocketUtils } from "@/hooks/use-socket-utils";
 import {
   BASE_USDC_ADDRESS,
@@ -13,9 +14,14 @@ import {
   ZERO_ADDRESS,
 } from "@/lib/constants";
 import { CreatorCoin } from "@/lib/database/db.schema";
-import { PopupPositions } from "@/lib/enums";
+import { AuthTokenType, PopupPositions } from "@/lib/enums";
 import { User } from "@/lib/types/user.type";
-import { cn, formatWalletAddress, getIpfsGatewayUrls } from "@/lib/utils";
+import {
+  cn,
+  formatWalletAddress,
+  getChainLogoUrl,
+  getIpfsGatewayUrls,
+} from "@/lib/utils";
 import { formatSingleToken } from "@/lib/utils/farcaster-tokens";
 
 interface MiniAppCreatorCoinProps {
@@ -34,6 +40,11 @@ export const MiniAppCreatorCoin = ({
   const [gatewayIndex, setGatewayIndex] = useState(0);
   const { tokenTraded } = useSocketUtils();
   const { address } = useAccount();
+
+  // Mutation hook for creating a creator coin open
+  const { mutate: createCreatorCoinOpen } = useCreateCreatorCoinOpen(
+    AuthTokenType.MINI_APP_AUTH_TOKEN,
+  );
 
   // Whether the brand is the Rollup
   const isBrandTheRollup = brandSlug === THE_ROLLUP_BRAND_SLUG;
@@ -71,40 +82,63 @@ export const MiniAppCreatorCoin = ({
       await new Promise((resolve) => setTimeout(resolve, 5000));
 
       if (result.success && result.swap.transactions) {
+        const chainLogoUrl = tokenChainId
+          ? getChainLogoUrl(tokenChainId.toString())
+          : null;
+        const externalUrl =
+          tokenChainId && tokenAddress
+            ? `https://matcha.xyz/tokens/${tokenChainId}/${tokenAddress}`
+            : null;
+
+        const creatorCoinOpenData = {
+          brandId: coin.brandId || "",
+          address: tokenAddress,
+          chainId: tokenChainId,
+          symbol: tokenName,
+          name: tokenName,
+          logoUrl: tokenImageUrl,
+          externalUrl: externalUrl,
+          chainLogoUrl: chainLogoUrl,
+          openerId: user?.id || "",
+        };
+
+        const tokenTradedData = {
+          brandId: coin.brandId || "",
+          position: PopupPositions.TOP_CENTER,
+          username: baseName || formatWalletAddress(address),
+          profilePicture: user?.avatarUrl || "",
+          tokenInAmount: "",
+          tokenInName: "USDC",
+          tokenInDecimals: 6,
+          tokenInImageUrl: BASE_USDC_LOGO_URL,
+          tokenOutAmount: "",
+          tokenOutDecimals: 18,
+          tokenOutName: tokenName,
+          tokenOutImageUrl: tokenImageUrl,
+        };
+
         if (
           (await sdk.context).client.clientFid ===
           FARCASTER_CLIENT_FID.farcaster
         ) {
           if (result.swap.transactions.length > 0) {
-            tokenTraded({
-              brandId: coin.brandId || "",
-              position: PopupPositions.TOP_CENTER,
-              username: baseName || formatWalletAddress(address),
-              profilePicture: user?.avatarUrl || "",
-              tokenInAmount: "",
-              tokenInName: "USDC",
-              tokenInDecimals: 6,
-              tokenInImageUrl: BASE_USDC_LOGO_URL,
-              tokenOutAmount: "",
-              tokenOutDecimals: 18,
-              tokenOutName: tokenName,
-              tokenOutImageUrl: tokenImageUrl,
-            });
+            // Send socket message to the server
+            tokenTraded(tokenTradedData);
           }
+
+          // Create a record in the database
+          createCreatorCoinOpen({
+            ...creatorCoinOpenData,
+            platform: "farcaster",
+          });
         } else {
-          tokenTraded({
-            brandId: coin.brandId || "",
-            position: PopupPositions.TOP_CENTER,
-            username: baseName || formatWalletAddress(address),
-            profilePicture: user?.avatarUrl || "",
-            tokenInAmount: "",
-            tokenInName: "USDC",
-            tokenInDecimals: 6,
-            tokenInImageUrl: BASE_USDC_LOGO_URL,
-            tokenOutAmount: "",
-            tokenOutDecimals: 18,
-            tokenOutName: tokenName,
-            tokenOutImageUrl: tokenImageUrl,
+          // Send socket message to the server
+          tokenTraded(tokenTradedData);
+
+          // Create a record in the database
+          createCreatorCoinOpen({
+            ...creatorCoinOpenData,
+            platform: "base",
           });
         }
       }

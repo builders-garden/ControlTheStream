@@ -3,18 +3,26 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { TheRollupButton } from "@/components/custom-ui/tr-button";
 import { useWebAppAuth } from "@/contexts/auth/web-app-auth-context";
+import { useCreateCreatorCoinOpen } from "@/hooks/use-creator-coin-opens";
 import { THE_ROLLUP_BRAND_SLUG } from "@/lib/constants";
-import { CreatorCoin } from "@/lib/database/db.schema";
-import { getIpfsGatewayUrls } from "@/lib/utils";
+import { CreatorCoin, User } from "@/lib/database/db.schema";
+import { AuthTokenType } from "@/lib/enums";
+import { getChainLogoUrl, getIpfsGatewayUrls } from "@/lib/utils";
 
 interface WebAppCreatorCoinProps {
   coin: CreatorCoin;
+  user?: User;
 }
 
-export const WebAppCreatorCoin = ({ coin }: WebAppCreatorCoinProps) => {
+export const WebAppCreatorCoin = ({ coin, user }: WebAppCreatorCoinProps) => {
   const { brand } = useWebAppAuth();
   const [imageError, setImageError] = useState(false);
   const [gatewayIndex, setGatewayIndex] = useState(0);
+
+  // Mutation hook for creating a creator coin open
+  const { mutate: createCreatorCoinOpen } = useCreateCreatorCoinOpen(
+    AuthTokenType.WEB_APP_AUTH_TOKEN,
+  );
 
   // Whether the brand is the Rollup
   const isBrandTheRollup = brand.data?.slug === THE_ROLLUP_BRAND_SLUG;
@@ -33,6 +41,27 @@ export const WebAppCreatorCoin = ({ coin }: WebAppCreatorCoinProps) => {
   const handleOpenTokenPage = () => {
     if (!coin.chainId) return;
     const matchaTokenUrl = `https://matcha.xyz/tokens/${coin.chainId}/${coin.address || "eth"}`;
+
+    // Get the chain logo URL
+    const chainLogoUrl = coin.chainId
+      ? getChainLogoUrl(coin.chainId.toString())
+      : null;
+
+    // Create a record in the database
+    createCreatorCoinOpen({
+      name: coin.name || "",
+      brandId: coin.brandId || "",
+      address: coin.address || "",
+      chainId: coin.chainId || 0,
+      chainLogoUrl: chainLogoUrl,
+      logoUrl: coin.logoUrl || "",
+      symbol: coin.symbol || "",
+      openerId: user?.id || "",
+      externalUrl: matchaTokenUrl,
+      platform: "web-app",
+    });
+
+    // Open the token page in a new tab
     window.open(matchaTokenUrl, "_blank");
   };
 
