@@ -105,10 +105,7 @@ export async function getFarcasterManifest() {
       signature: env.NEXT_PUBLIC_FARCASTER_SIGNATURE,
     },
     baseBuilder: {
-      allowedAddresses: [
-        "0xf5e33aAc21Fd4C98740A7083C90374cd9741087C",
-        "0xaAaF152e29BC2994047C8e38b87D5ef13B9bceFA",
-      ],
+      ownerAddress: "0xf5e33aAc21Fd4C98740A7083C90374cd9741087C",
     },
     miniapp: {
       version: "1",
