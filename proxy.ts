@@ -7,7 +7,7 @@ export const config = {
   matcher: ["/api/:path*"],
 };
 
-export default async function middleware(req: NextRequest) {
+export default async function proxy(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
   const tokenType = req.headers.get("x-token-type");
 
