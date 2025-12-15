@@ -4,7 +4,6 @@ import { Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { QRCodeSVG } from "qrcode.react";
 import { useEffect } from "react";
-import { NumberTicker } from "@/components/shadcn-ui/number-ticker";
 import { useKalshiGet } from "@/hooks/use-kalshi-get";
 import { useSocket } from "@/hooks/use-socket";
 import { useSocketUtils } from "@/hooks/use-socket-utils";
@@ -92,142 +91,6 @@ export const ToastKalshiNotification = ({
   const isTop = data.position?.startsWith("top");
   const xOffset = isLeft ? 100 : isRight ? -100 : 0;
   const yOffset = isCenter ? (isTop ? 100 : -100) : 0;
-
-  // Percentage results bar (mirrors poll ResultsBar but uses YES/NO)
-  const ResultsBarYesNo = ({
-    yesPercent,
-    noPercent,
-  }: {
-    yesPercent: number;
-    noPercent: number;
-  }) => {
-    const clampedYes = Math.max(0, Math.min(100, yesPercent));
-    const clampedNo = Math.max(0, Math.min(100, noPercent));
-    const total = clampedYes + clampedNo;
-    const normalizedYes = total === 0 ? 50 : (clampedYes / total) * 100;
-    const normalizedNo = 100 - normalizedYes;
-
-    const yesSizeClass =
-      normalizedYes < 8
-        ? "text-xs"
-        : normalizedYes < 16
-          ? "text-lg"
-          : "text-2xl";
-    const noSizeClass =
-      normalizedNo < 8 ? "text-xs" : normalizedNo < 16 ? "text-lg" : "text-2xl";
-    const yesStack = normalizedYes < 10;
-    const noStack = normalizedNo < 10;
-
-    return (
-      <motion.div
-        className={cn(
-          "flex items-center w-full min-w-[1000px] rounded-xl overflow-hidden border-4",
-          isBrandTheRollup ? "border-[#E6B45E]" : "border-white",
-        )}
-        initial={{ opacity: 0, scale: 0, rotate: -6 }}
-        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-        transition={{
-          duration: 0.4,
-          scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
-          rotate: { type: "spring", visualDuration: 0.45, bounce: 0.3 },
-        }}>
-        <motion.div
-          className={cn(
-            "h-14 flex items-center justify-center bg-[#CF5953]",
-            normalizedNo > 0 ? "px-2" : "px-0",
-          )}
-          initial={{ width: "50%" }}
-          animate={{ width: `${normalizedNo}%` }}
-          transition={{
-            type: "spring",
-            stiffness: 100,
-            damping: 60,
-            delay: 0.45,
-          }}>
-          {noStack ? (
-            <div
-              className={cn(
-                "flex flex-col items-center leading-4 text-white font-overused-grotesk font-black",
-                noSizeClass,
-              )}>
-              <div>NO</div>
-              <div className="flex items-center gap-0.5">
-                <NumberTicker
-                  value={normalizedNo}
-                  startValue={50}
-                  className={cn("tracking-tighter text-white", noSizeClass)}
-                  delay={0.45}
-                />
-                %
-              </div>
-            </div>
-          ) : (
-            <span
-              className={cn(
-                "flex items-center gap-1 text-white font-overused-grotesk font-black tracking-tighter shrink-0",
-                noSizeClass,
-              )}>
-              NO
-              <NumberTicker
-                value={normalizedNo}
-                startValue={50}
-                className={cn("tracking-tighter text-white", noSizeClass)}
-                delay={0.45}
-              />
-              %
-            </span>
-          )}
-        </motion.div>
-        <motion.div
-          className={cn(
-            "h-14 flex items-center justify-center bg-[#4CAF50]",
-            normalizedYes > 0 ? "px-2" : "px-0",
-          )}
-          initial={{ width: "50%" }}
-          animate={{ width: `${normalizedYes}%` }}
-          transition={{
-            type: "spring",
-            stiffness: 100,
-            damping: 60,
-            delay: 0.45,
-          }}>
-          {yesStack ? (
-            <div
-              className={cn(
-                "flex flex-col items-center leading-4 text-white font-overused-grotesk font-black",
-                yesSizeClass,
-              )}>
-              <div>YES</div>
-              <div className="flex items-center gap-0.5">
-                <NumberTicker
-                  value={normalizedYes}
-                  startValue={50}
-                  className={cn("tracking-tighter text-white", yesSizeClass)}
-                  delay={0.45}
-                />
-                %
-              </div>
-            </div>
-          ) : (
-            <span
-              className={cn(
-                "flex items-center gap-1 text-white font-overused-grotesk font-black tracking-tighter shrink-0",
-                yesSizeClass,
-              )}>
-              YES
-              <NumberTicker
-                value={normalizedYes}
-                startValue={50}
-                className={cn("tracking-tighter text-white", yesSizeClass)}
-                delay={0.45}
-              />
-              %
-            </span>
-          )}
-        </motion.div>
-      </motion.div>
-    );
-  };
 
   // Render single market
   const renderSingleMarket = (_market: {
@@ -319,8 +182,6 @@ export const ToastKalshiNotification = ({
     }));
 
     const scored = scoredAll.slice(0, 3);
-    const extraCount = Math.max(0, scoredAll.length - 3);
-    const maxPct = scored.reduce((acc, m) => (m.pct > acc ? m.pct : acc), 0);
 
     return (
       <div

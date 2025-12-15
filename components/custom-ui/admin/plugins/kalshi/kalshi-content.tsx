@@ -27,7 +27,6 @@ export const KalshiContent = () => {
   const [isLoadingActiveMarketData, setIsLoadingActiveMarketData] =
     useState(false);
   const [marketStartTime, setMarketStartTime] = useState<number | null>(null);
-  const [marketDurationMs, setMarketDurationMs] = useState<number | null>(null);
   const timerStartedRef = useRef(false);
   const lastFetchedUrlRef = useRef<string | null>(null);
 
@@ -49,7 +48,6 @@ export const KalshiContent = () => {
         timerStartedRef.current = false;
       }
       setMarketStartTime(null);
-      setMarketDurationMs(null);
       lastFetchedUrlRef.current = null;
       await refetchActiveEvent();
     },
@@ -70,7 +68,6 @@ export const KalshiContent = () => {
   const {
     data: activeKalshiEvent,
     isLoading: isLoadingActiveEvent,
-    error: activeEventError,
     refetch: refetchActiveEvent,
   } = useActiveKalshiEvent(brand?.data?.id || "");
 
@@ -118,7 +115,6 @@ export const KalshiContent = () => {
               });
 
               setMarketStartTime(activatedTimeMs);
-              setMarketDurationMs(durationMs);
               timerStartedRef.current = true;
               startTimer(remainingSeconds);
             } else if (remainingSeconds <= 0) {
@@ -144,7 +140,6 @@ export const KalshiContent = () => {
           timerStartedRef.current = false;
         }
         setMarketStartTime(null);
-        setMarketDurationMs(null);
       }
     };
 
@@ -222,7 +217,6 @@ export const KalshiContent = () => {
 
       // Set timer for the market
       setMarketStartTime(Date.now());
-      setMarketDurationMs(durationMs);
       const durationSeconds = Math.floor(durationMs / 1000);
       timerStartedRef.current = true;
       startTimer(durationSeconds);
@@ -285,7 +279,6 @@ export const KalshiContent = () => {
         timerStartedRef.current = false;
       }
       setMarketStartTime(null);
-      setMarketDurationMs(null);
       lastFetchedUrlRef.current = null;
       setActiveMarketData(null);
 

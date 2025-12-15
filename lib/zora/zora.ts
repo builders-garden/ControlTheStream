@@ -1,12 +1,11 @@
-import { env } from "@/lib/zod";
 import {
-  createCoin,
   getCoin,
   getCoins,
   getProfile,
   getProfileCoins,
   setApiKey,
 } from "@zoralabs/coins-sdk";
+import { env } from "@/lib/zod";
 
 export class ZoraService {
   constructor() {
@@ -100,7 +99,12 @@ export class ZoraService {
   /**
    * Gets coins created by a profile
    */
-  async getProfileCoins(address: string, chainId: number, count: number = 10, after?: string) {
+  async getProfileCoins(
+    address: string,
+    chainId: number,
+    count: number = 10,
+    after?: string,
+  ) {
     try {
       const response = await getProfileCoins({
         identifier: address,
