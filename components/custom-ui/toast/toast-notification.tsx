@@ -73,7 +73,7 @@ export const ToastNotification = ({
               className="w-8 h-8 rounded-full object-cover shrink-0"
             />
             <div className="flex justify-start items-center gap-2 text-foreground overflow-hidden w-full">
-              <p className="text-lg font-medium truncate">
+              <p className="text-white text-lg font-medium truncate">
                 {data.username}{" "}
                 {data.text && (
                   <span className="shrink-0 font-normal pr-1 italic">
