@@ -72,12 +72,8 @@ export const ToastNotification = ({
               alt={data.username}
               className="w-8 h-8 rounded-full object-cover shrink-0"
             />
-            <div
-              className="flex justify-start items-center gap-2 overflow-hidden w-full"
-              style={{
-                color: "white !important",
-              }}>
-              <p className="text-lg font-medium truncate">
+            <div className="flex justify-start items-center gap-2 text-foreground overflow-hidden w-full">
+              <p className="text-white text-lg font-medium truncate">
                 {data.username}{" "}
                 {data.text && (
                   <span className="shrink-0 font-normal pr-1 italic">
@@ -89,12 +85,8 @@ export const ToastNotification = ({
           </div>
 
           {data.customMessage && (
-            <div
-              className="flex justify-center items-center gap-3 w-full"
-              style={{
-                color: "white !important",
-              }}>
-              <p className="text-2xl font-medium">
+            <div className="flex justify-center items-center gap-3 w-full">
+              <p className="text-foreground text-2xl font-medium">
                 &quot;{data.customMessage}&quot;
               </p>
             </div>
@@ -118,33 +110,17 @@ export const ToastNotification = ({
             alt={data.username}
             className="w-12 h-12 rounded-full object-cover shrink-0"
           />
-          <div className="flex-1 flex items-center gap-2 overflow-hidden">
-            <p
-              className="w-full flex gap-1 text-2xl font-medium"
-              style={{
-                color: "white !important",
-              }}>
+          <div className="flex-1 flex items-center gap-2 text-foreground overflow-hidden">
+            <p className="w-full flex gap-1 text-2xl font-medium">
               <span className="truncate">{data.username}</span>
               {data.text &&
                 (textContainsBullish ? (
                   <p className="shrink-0 font-bold">
-                    is{" "}
-                    <span
-                      style={{
-                        color: "green",
-                      }}>
-                      bullish
-                    </span>
+                    is <span className="text-success">bullish</span>
                   </p>
                 ) : textContainsBearish ? (
                   <p className="shrink-0 font-bold">
-                    is{" "}
-                    <span
-                      style={{
-                        color: "red",
-                      }}>
-                      bearish
-                    </span>
+                    is <span className="text-destructive">bearish</span>
                   </p>
                 ) : (
                   <p className="shrink-0 font-bold">{data.text}</p>
