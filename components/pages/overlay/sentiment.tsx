@@ -18,16 +18,6 @@ export const OverlaySentiment = ({ brand }: { brand: Brand }) => {
   const { data: activeBullMeter, isLoading: isLoadingActiveBullMeter } =
     useActiveBullMeter(brand.id);
 
-  // OBS Studio 30.1.2 compatibility - ensure body has transparent background
-  useEffect(() => {
-    document.body.style.backgroundColor = "transparent";
-    document.body.style.color = "#ffffff";
-    return () => {
-      document.body.style.backgroundColor = "";
-      document.body.style.color = "";
-    };
-  }, []);
-
   // Unified poll state and visibility flag
   type NormalizedPoll = {
     id: string;

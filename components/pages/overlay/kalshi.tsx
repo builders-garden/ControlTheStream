@@ -16,16 +16,6 @@ export const OverlayKalshi = ({ brand }: { brand: Brand }) => {
   const { subscribe, unsubscribe } = useSocket();
   const { joinStream } = useSocketUtils();
 
-  // OBS Studio 30.1.2 compatibility - ensure body has transparent background
-  useEffect(() => {
-    document.body.style.backgroundColor = "transparent";
-    document.body.style.color = "#ffffff";
-    return () => {
-      document.body.style.backgroundColor = "";
-      document.body.style.color = "";
-    };
-  }, []);
-
   // Unified Kalshi market state and visibility flag
   type NormalizedKalshiMarket = {
     id: string;

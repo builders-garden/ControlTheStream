@@ -64,7 +64,7 @@ export const ToastNotification = ({
             "rounded-3xl shadow-lg p-4 flex flex-col justify-center items-center gap-3 min-w-[500px] border-8 font-overused-grotesk cursor-default",
             isBrandTheRollup
               ? "border-[#E6B45E] bg-[#1B2541]"
-              : "border-[#3b82f6] bg-[#1B2541]",
+              : "border-primary bg-background",
           )}>
           <div className="flex justify-start items-center gap-3 w-full">
             <img
@@ -72,7 +72,7 @@ export const ToastNotification = ({
               alt={data.username}
               className="w-8 h-8 rounded-full object-cover shrink-0"
             />
-            <div className="flex justify-start items-center gap-2 text-white overflow-hidden w-full">
+            <div className="flex justify-start items-center gap-2 text-foreground overflow-hidden w-full">
               <p className="text-white text-lg font-medium truncate">
                 {data.username}{" "}
                 {data.text && (
@@ -86,7 +86,7 @@ export const ToastNotification = ({
 
           {data.customMessage && (
             <div className="flex justify-center items-center gap-3 w-full">
-              <p className="text-white text-2xl font-medium">
+              <p className="text-foreground text-2xl font-medium">
                 &quot;{data.customMessage}&quot;
               </p>
             </div>
@@ -103,24 +103,24 @@ export const ToastNotification = ({
             "rounded-3xl shadow-lg p-4 flex justify-start items-center gap-3 min-w-[500px] border-8 font-overused-grotesk cursor-default",
             isBrandTheRollup
               ? "border-[#E6B45E] bg-[#1B2541]"
-              : "border-[#3b82f6] bg-[#1B2541]",
+              : "border-primary bg-background",
           )}>
           <img
             src={data.profilePicture}
             alt={data.username}
             className="w-12 h-12 rounded-full object-cover shrink-0"
           />
-          <div className="flex-1 flex items-center gap-2 text-white overflow-hidden">
-            <p className="w-full flex gap-1 text-2xl font-medium text-white">
+          <div className="flex-1 flex items-center gap-2 text-foreground overflow-hidden">
+            <p className="w-full flex gap-1 text-2xl font-medium">
               <span className="truncate">{data.username}</span>
               {data.text &&
                 (textContainsBullish ? (
                   <p className="shrink-0 font-bold">
-                    is <span className="text-[#4CAF50]">bullish</span>
+                    is <span className="text-success">bullish</span>
                   </p>
                 ) : textContainsBearish ? (
                   <p className="shrink-0 font-bold">
-                    is <span className="text-[#CF5953]">bearish</span>
+                    is <span className="text-destructive">bearish</span>
                   </p>
                 ) : (
                   <p className="shrink-0 font-bold">{data.text}</p>

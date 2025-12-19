@@ -114,7 +114,7 @@ export const ToastKalshiNotification = ({
           "rounded-xl shadow-lg px-3 py-3 min-w-[760px] min-h-[96px] border-4 backdrop-blur-[150px]",
           isBrandTheRollup
             ? "bg-black/70 border-[#E6B45E]"
-            : "bg-black/70 border-[#3b82f6]",
+            : "bg-black/70 border-primary",
         )}>
         {/* Header: title + QR + green label */}
         <div className="flex items-center justify-between gap-4">
@@ -189,7 +189,7 @@ export const ToastKalshiNotification = ({
           "rounded-xl shadow-lg px-3 py-3 min-w-[760px] min-h-[96px] border-4 backdrop-blur-[150px]",
           isBrandTheRollup
             ? "bg-black/70 border-[#E6B45E]"
-            : "bg-black/70 border-[#3b82f6]",
+            : "bg-black/70 border-primary",
         )}>
         {/* Header: title + QR */}
         <div className="flex items-center justify-between gap-4">
@@ -277,7 +277,7 @@ export const ToastKalshiNotification = ({
                 "rounded-xl shadow-lg px-3 py-5 min-w-[680px] min-h-[88px] border-4 flex justify-center items-center",
                 isBrandTheRollup
                   ? "bg-[#1B2541] border-[#E6B45E]"
-                  : "bg-[#1B2541] border-[#3b82f6]",
+                  : "bg-background border-primary",
               )}>
               <div className="flex flex-col items-center gap-4">
                 <Loader2 className="size-8 text-[#E6B45E] animate-spin" />
@@ -297,7 +297,7 @@ export const ToastKalshiNotification = ({
                 "rounded-xl shadow-lg px-3 py-5 min-w-[680px] min-h-[88px] border-4 flex justify-center items-center",
                 isBrandTheRollup
                   ? "bg-[#1B2541] border-red-500"
-                  : "bg-[#1B2541] border-red-500",
+                  : "bg-background border-red-500",
               )}>
               <div className="text-center">
                 <div className="text-red-500 font-bold text-lg mb-2">Error</div>

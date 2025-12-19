@@ -17,16 +17,6 @@ export const OverlayPopups = ({ brand }: { brand: Brand }) => {
   const { subscribe, unsubscribe } = useSocket();
   const { joinStream } = useSocketUtils();
 
-  // OBS Studio 30.1.2 compatibility - ensure body has transparent background
-  useEffect(() => {
-    document.body.style.backgroundColor = "transparent";
-    document.body.style.color = "#ffffff";
-    return () => {
-      document.body.style.backgroundColor = "";
-      document.body.style.color = "";
-    };
-  }, []);
-
   const showPopupCallback = useCallback(
     (
       data: {

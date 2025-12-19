@@ -1,9 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* OBS Studio 30.1.2 compatibility - commented out custom variant */
-/* @custom-variant dark (&:is(.dark *), .dark &); */
-
 @font-face {
   font-family: "Overused Grotesk";
   src: url("/fonts/overused-grotesk.woff2") format("woff2-variations");
