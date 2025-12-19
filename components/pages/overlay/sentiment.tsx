@@ -18,6 +18,14 @@ export const OverlaySentiment = ({ brand }: { brand: Brand }) => {
   const { data: activeBullMeter, isLoading: isLoadingActiveBullMeter } =
     useActiveBullMeter(brand.id);
 
+  // Force dark mode for OBS Studio compatibility
+  useEffect(() => {
+    document.documentElement.classList.add("dark");
+    return () => {
+      document.documentElement.classList.remove("dark");
+    };
+  }, []);
+
   // Unified poll state and visibility flag
   type NormalizedPoll = {
     id: string;

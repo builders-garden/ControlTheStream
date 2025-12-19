@@ -17,6 +17,14 @@ export const OverlayPopups = ({ brand }: { brand: Brand }) => {
   const { subscribe, unsubscribe } = useSocket();
   const { joinStream } = useSocketUtils();
 
+  // Force dark mode for OBS Studio compatibility
+  useEffect(() => {
+    document.documentElement.classList.add("dark");
+    return () => {
+      document.documentElement.classList.remove("dark");
+    };
+  }, []);
+
   const showPopupCallback = useCallback(
     (
       data: {

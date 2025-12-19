@@ -72,7 +72,7 @@ export const ToastNotification = ({
               alt={data.username}
               className="w-8 h-8 rounded-full object-cover shrink-0"
             />
-            <div className="flex justify-start items-center gap-2 text-foreground overflow-hidden w-full">
+            <div className="flex justify-start items-center gap-2 text-white overflow-hidden w-full">
               <p className="text-white text-lg font-medium truncate">
                 {data.username}{" "}
                 {data.text && (
@@ -86,7 +86,7 @@ export const ToastNotification = ({
 
           {data.customMessage && (
             <div className="flex justify-center items-center gap-3 w-full">
-              <p className="text-foreground text-2xl font-medium">
+              <p className="text-white text-2xl font-medium">
                 &quot;{data.customMessage}&quot;
               </p>
             </div>
@@ -110,8 +110,8 @@ export const ToastNotification = ({
             alt={data.username}
             className="w-12 h-12 rounded-full object-cover shrink-0"
           />
-          <div className="flex-1 flex items-center gap-2 text-foreground overflow-hidden">
-            <p className="w-full flex gap-1 text-2xl font-medium">
+          <div className="flex-1 flex items-center gap-2 text-white overflow-hidden">
+            <p className="w-full flex gap-1 text-2xl font-medium text-white">
               <span className="truncate">{data.username}</span>
               {data.text &&
                 (textContainsBullish ? (

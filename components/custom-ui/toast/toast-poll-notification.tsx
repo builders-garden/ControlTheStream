@@ -85,12 +85,12 @@ const ResultsBar = ({
           damping: 60,
           delay: 0.45,
         }}>
-        <span className="flex items-center gap-2 text-foreground font-overused-grotesk font-black text-2xl">
+        <span className="flex items-center gap-2 text-white font-overused-grotesk font-black text-2xl">
           <BearIcon className="w-8 h-8" />{" "}
           <NumberTicker
             value={normalizedBear}
             startValue={50}
-            className="whitespace-pre-wrap text-foreground font-overused-grotesk font-black text-2xl tracking-tighter shrink-0"
+            className="whitespace-pre-wrap text-white font-overused-grotesk font-black text-2xl tracking-tighter shrink-0"
             delay={0.45}
           />
           %
@@ -110,12 +110,12 @@ const ResultsBar = ({
           damping: 60,
           delay: 0.45,
         }}>
-        <span className="flex items-center gap-2 text-foreground font-overused-grotesk font-black text-2xl">
+        <span className="flex items-center gap-2 text-white font-overused-grotesk font-black text-2xl">
           <BullIcon className="w-8 h-8 fill-white" />{" "}
           <NumberTicker
             value={normalizedBull}
             startValue={50}
-            className="whitespace-pre-wrap text-foreground font-overused-grotesk font-black text-2xl tracking-tighter shrink-0"
+            className="whitespace-pre-wrap text-white font-overused-grotesk font-black text-2xl tracking-tighter shrink-0"
             delay={0.45}
           />
           %
@@ -259,7 +259,7 @@ export const ToastPollNotification = ({
 
         <div
           className={cn(
-            "rounded-xl shadow-lg px-6 flex items-center justify-between gap-6 min-w-[1000px] min-h-[100px] border-4 font-grotesk text-foreground",
+            "rounded-xl shadow-lg px-6 flex items-center justify-between gap-6 min-w-[1000px] min-h-[100px] border-4 font-grotesk text-white",
             isBrandTheRollup
               ? "bg-gradient-to-b bg-[#1B2541] border-[#E6B45E]"
               : "border-primary bg-background",
@@ -269,7 +269,7 @@ export const ToastPollNotification = ({
             <p className="shrink-0">or</p>
             <BearIcon className="w-[34px] h-[34px] fill-[#CF5953]" />
           </div>
-          <span className="text-[27px] font-black leading-8">
+          <span className="text-[27px] font-black leading-8 text-white">
             {data.pollQuestion}
           </span>
           <div className="flex justify-center items-center shrink-0 w-[31%]">
@@ -282,7 +282,7 @@ export const ToastPollNotification = ({
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.15, ease: "easeInOut" }}
                   className="flex justify-center items-center w-full">
-                  <Loader2 className="size-6 text-foreground animate-spin" />
+                  <Loader2 className="size-6 text-white animate-spin" />
                 </motion.div>
               ) : (
                 <motion.div className="flex flex-col items-center justify-center gap-0 w-full">

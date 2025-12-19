@@ -16,6 +16,14 @@ export const OverlayKalshi = ({ brand }: { brand: Brand }) => {
   const { subscribe, unsubscribe } = useSocket();
   const { joinStream } = useSocketUtils();
 
+  // Force dark mode for OBS Studio compatibility
+  useEffect(() => {
+    document.documentElement.classList.add("dark");
+    return () => {
+      document.documentElement.classList.remove("dark");
+    };
+  }, []);
+
   // Unified Kalshi market state and visibility flag
   type NormalizedKalshiMarket = {
     id: string;
