@@ -18,11 +18,13 @@ export const OverlaySentiment = ({ brand }: { brand: Brand }) => {
   const { data: activeBullMeter, isLoading: isLoadingActiveBullMeter } =
     useActiveBullMeter(brand.id);
 
-  // Force dark mode for OBS Studio compatibility
+  // OBS Studio 30.1.2 compatibility - ensure body has transparent background
   useEffect(() => {
-    document.documentElement.classList.add("dark");
+    document.body.style.backgroundColor = "transparent";
+    document.body.style.color = "#ffffff";
     return () => {
-      document.documentElement.classList.remove("dark");
+      document.body.style.backgroundColor = "";
+      document.body.style.color = "";
     };
   }, []);
 

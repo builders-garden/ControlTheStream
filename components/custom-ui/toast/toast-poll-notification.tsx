@@ -262,7 +262,7 @@ export const ToastPollNotification = ({
             "rounded-xl shadow-lg px-6 flex items-center justify-between gap-6 min-w-[1000px] min-h-[100px] border-4 font-grotesk text-white",
             isBrandTheRollup
               ? "bg-gradient-to-b bg-[#1B2541] border-[#E6B45E]"
-              : "border-primary bg-background",
+              : "border-[#3b82f6] bg-[#1B2541]",
           )}>
           <div className="flex items-center gap-2 text-xl shrink-0">
             <BullIcon className="w-[34px] h-[34px] fill-[#4CAF50]" />
@@ -289,7 +289,7 @@ export const ToastPollNotification = ({
                   <span
                     className={cn(
                       "font-bold text-[22px] text-center",
-                      isBrandTheRollup ? "text-[#E6B45E]" : "text-primary",
+                      isBrandTheRollup ? "text-[#E6B45E]" : "text-[#3b82f6]",
                     )}>
                     {timeLabel}
                   </span>

@@ -64,7 +64,7 @@ export const ToastNotification = ({
             "rounded-3xl shadow-lg p-4 flex flex-col justify-center items-center gap-3 min-w-[500px] border-8 font-overused-grotesk cursor-default",
             isBrandTheRollup
               ? "border-[#E6B45E] bg-[#1B2541]"
-              : "border-primary bg-background",
+              : "border-[#3b82f6] bg-[#1B2541]",
           )}>
           <div className="flex justify-start items-center gap-3 w-full">
             <img
@@ -103,7 +103,7 @@ export const ToastNotification = ({
             "rounded-3xl shadow-lg p-4 flex justify-start items-center gap-3 min-w-[500px] border-8 font-overused-grotesk cursor-default",
             isBrandTheRollup
               ? "border-[#E6B45E] bg-[#1B2541]"
-              : "border-primary bg-background",
+              : "border-[#3b82f6] bg-[#1B2541]",
           )}>
           <img
             src={data.profilePicture}
@@ -116,11 +116,11 @@ export const ToastNotification = ({
               {data.text &&
                 (textContainsBullish ? (
                   <p className="shrink-0 font-bold">
-                    is <span className="text-success">bullish</span>
+                    is <span className="text-[#4CAF50]">bullish</span>
                   </p>
                 ) : textContainsBearish ? (
                   <p className="shrink-0 font-bold">
-                    is <span className="text-destructive">bearish</span>
+                    is <span className="text-[#CF5953]">bearish</span>
                   </p>
                 ) : (
                   <p className="shrink-0 font-bold">{data.text}</p>
