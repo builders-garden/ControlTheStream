@@ -1,5 +1,6 @@
 import { createBaseAccountSDK } from "@base-org/account";
 import ky from "ky";
+import { Attribution } from "ox/erc8021";
 import { useCallback, useState } from "react";
 import {
   Address,
@@ -8,7 +9,11 @@ import {
   isAddress,
 } from "viem";
 import { bullMeterAbi } from "@/lib/abi/bull-meter-abi";
-import { BULLMETER_ADDRESS, ZERO_ADDRESS } from "@/lib/constants";
+import {
+  BULLMETER_ADDRESS,
+  TRANSACTION_ATTRIBUTION_BUILDER_CODE,
+  ZERO_ADDRESS,
+} from "@/lib/constants";
 import { BullMeter, CreateBullMeter } from "@/lib/database/db.schema";
 import {
   getAddressFromBaseName,
@@ -106,6 +111,17 @@ const executeBatchTransactionHelper = async (
 export const useBullmeterPlugin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Builder code for transaction attribution
+  const builderCode = TRANSACTION_ATTRIBUTION_BUILDER_CODE;
+
+  // Helper function to add builder code attribution to transaction data
+  const addAttributionSuffix = useCallback((data: string): string => {
+    const dataSuffix = Attribution.toDataSuffix({
+      codes: [builderCode],
+    });
+    return data + dataSuffix.slice(2); // strip 0x from suffix
+  }, []);
 
   // Helper function to get wallet connection and switch to Base
   const getWalletConnection = useCallback(async () => {
@@ -249,7 +265,7 @@ export const useBullmeterPlugin = () => {
           {
             to: BULLMETER_ADDRESS,
             value: "0x0",
-            data: encodedFunctionCall,
+            data: addAttributionSuffix(encodedFunctionCall),
           },
         ];
 
@@ -352,7 +368,7 @@ export const useBullmeterPlugin = () => {
         setIsLoading(false);
       }
     },
-    [executeBatch],
+    [executeBatch, addAttributionSuffix],
   );
 
   // Bullmeter extend function calls
@@ -375,7 +391,7 @@ export const useBullmeterPlugin = () => {
           {
             to: BULLMETER_ADDRESS,
             value: "0x0",
-            data: encodedFunctionCall,
+            data: addAttributionSuffix(encodedFunctionCall),
           },
         ];
 
@@ -477,7 +493,7 @@ export const useBullmeterPlugin = () => {
         setIsLoading(false);
       }
     },
-    [executeBatch],
+    [executeBatch, addAttributionSuffix],
   );
 
   // Bullmeter terminate function calls
@@ -497,7 +513,7 @@ export const useBullmeterPlugin = () => {
           {
             to: BULLMETER_ADDRESS,
             value: "0x0",
-            data: encodedFunctionCall,
+            data: addAttributionSuffix(encodedFunctionCall),
           },
         ];
 
@@ -603,7 +619,7 @@ export const useBullmeterPlugin = () => {
         setIsLoading(false);
       }
     },
-    [executeBatch],
+    [executeBatch, addAttributionSuffix],
   );
 
   // Bullmeter read history from an address function calls
