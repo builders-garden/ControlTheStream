@@ -5,7 +5,7 @@ import { ChainImages, PopupPositions } from "./enums";
 export const THE_ROLLUP_BRAND_SLUG = "the_rollup";
 
 // Builder code for transaction attribution
-export const TRANSACTION_ATTRIBUTION_BUILDER_CODE = "bc_psb43h8d";
+export const TRANSACTION_ATTRIBUTION_BUILDER_CODE = "bc_75b9zmna";
 
 // Message expiration time for JWT token
 export const MESSAGE_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 30; // 30 day
