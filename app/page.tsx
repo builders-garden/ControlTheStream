@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import App from "@/components/pages/App/app";
-import { env } from "@/lib/zod";
 import { THE_ROLLUP_BRAND_SLUG } from "@/lib/constants";
+import { env } from "@/lib/zod";
 
 const appUrl = env.NEXT_PUBLIC_URL;
 
@@ -47,6 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     other: {
       "fc:miniapp": JSON.stringify(miniapp),
+      "base:app_id": env.NEXT_PUBLIC_BASE_APP_ID,
     },
   };
 }

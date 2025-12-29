@@ -5,6 +5,7 @@ import Providers from "@/app/providers";
 import "./globals.css";
 import { headers } from "next/headers";
 import { MiniAppProvider } from "@/contexts/mini-app-context";
+import { env } from "@/lib/zod";
 
 const nunitoSans = Nunito_Sans({
   subsets: ["latin"],
@@ -18,7 +19,10 @@ const overusedGrotesk = localFont({
 
 export const metadata: Metadata = {
   title: "Control The Stream",
-  description: "Parti",
+  description: "Turn viewing into action",
+  other: {
+    "base:app_id": env.NEXT_PUBLIC_BASE_APP_ID,
+  },
 };
 
 export default async function RootLayout({

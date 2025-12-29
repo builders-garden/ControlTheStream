@@ -28,6 +28,9 @@ export const env = createEnv({
     NEXT_PUBLIC_FARCASTER_HEADER: z.string().min(1),
     NEXT_PUBLIC_FARCASTER_PAYLOAD: z.string().min(1),
     NEXT_PUBLIC_FARCASTER_SIGNATURE: z.string().min(1),
+    // base.dev
+    NEXT_PUBLIC_BASE_APP_ID: z.string().min(1),
+    NEXT_PUBLIC_BASE_BUILDER_ADDRESS: z.string().min(1),
     // reown
     NEXT_PUBLIC_REOWN_PROJECT_ID: z.string().min(1),
     // maintenance
@@ -51,6 +54,9 @@ export const env = createEnv({
     NEXT_PUBLIC_FARCASTER_PAYLOAD: process.env.NEXT_PUBLIC_FARCASTER_PAYLOAD,
     NEXT_PUBLIC_FARCASTER_SIGNATURE:
       process.env.NEXT_PUBLIC_FARCASTER_SIGNATURE,
+    NEXT_PUBLIC_BASE_APP_ID: process.env.NEXT_PUBLIC_BASE_APP_ID,
+    NEXT_PUBLIC_BASE_BUILDER_ADDRESS:
+      process.env.NEXT_PUBLIC_BASE_BUILDER_ADDRESS,
     NEXT_PUBLIC_REOWN_PROJECT_ID: process.env.NEXT_PUBLIC_REOWN_PROJECT_ID,
     NEXT_PUBLIC_IS_IN_MAINTENANCE: process.env.NEXT_PUBLIC_IS_IN_MAINTENANCE,
     NEXT_PUBLIC_MAINTENANCE_END_TIME:

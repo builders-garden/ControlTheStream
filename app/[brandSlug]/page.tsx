@@ -66,6 +66,7 @@ export async function generateMetadata({
     },
     other: {
       "fc:miniapp": JSON.stringify(miniapp),
+      "base:app_id": env.NEXT_PUBLIC_BASE_APP_ID,
     },
   };
 }

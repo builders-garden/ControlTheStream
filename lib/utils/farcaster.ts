@@ -1,8 +1,8 @@
-import {
+import type {
   ImpactOccurredType,
   NotificationOccurredType,
 } from "@farcaster/miniapp-core/dist/actions/Haptics";
-import { MiniAppContext } from "@farcaster/miniapp-core/dist/context";
+import type { MiniAppContext } from "@farcaster/miniapp-core/dist/context";
 import miniappSdk, { type MiniAppHostCapability } from "@farcaster/miniapp-sdk";
 import { env } from "@/lib/zod";
 
@@ -105,7 +105,7 @@ export async function getFarcasterManifest() {
       signature: env.NEXT_PUBLIC_FARCASTER_SIGNATURE,
     },
     baseBuilder: {
-      ownerAddress: "0xf5e33aAc21Fd4C98740A7083C90374cd9741087C",
+      ownerAddress: env.NEXT_PUBLIC_BASE_BUILDER_ADDRESS,
     },
     miniapp: {
       version: "1",
