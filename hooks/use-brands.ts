@@ -78,22 +78,3 @@ export const useUpdateBrand = (tokenType: AuthTokenType) => {
   });
 };
 
-export const useDeleteBrand = (tokenType: AuthTokenType) => {
-  return useApiMutation<
-    { success: boolean; message: string },
-    { brandSlug: string }
-  >({
-    url: (variables) => `/api/brands/${variables.brandSlug}`,
-    method: "DELETE",
-    tokenType,
-  });
-};
-
-export const useToggleBrandActive = (tokenType: AuthTokenType) => {
-  return useApiMutation<BrandApiResponse, { brandSlug: string }>({
-    url: (variables) => `/api/brands/${variables.brandSlug}`,
-    method: "PATCH",
-    body: () => ({ action: "toggle-active" }),
-    tokenType,
-  });
-};

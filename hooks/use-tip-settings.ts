@@ -61,13 +61,3 @@ export const useUpdateTipSettings = (tokenType: AuthTokenType) => {
   });
 };
 
-export const useDeleteTipSettings = (tokenType: AuthTokenType) => {
-  return useApiMutation<
-    { success: boolean; message: string },
-    { tipId: string }
-  >({
-    url: (variables) => `/api/tip-settings/${variables.tipId}`,
-    method: "DELETE",
-    tokenType,
-  });
-};

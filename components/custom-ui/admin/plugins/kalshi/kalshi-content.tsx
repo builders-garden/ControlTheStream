@@ -2,12 +2,12 @@ import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { CTSButton } from "@/components/custom-ui/cts-button";
 import { useAdminAuth } from "@/contexts/auth/admin-auth-context";
-import { useKalshiGet } from "@/hooks/use-kalshi-get";
 import {
   useActiveKalshiEvent,
   useKalshiDeactivate,
+  useKalshiGet,
   useKalshiStore,
-} from "@/hooks/use-kalshi-store";
+} from "@/hooks/use-kalshi";
 import { useSocketUtils } from "@/hooks/use-socket-utils";
 import { useTimer } from "@/hooks/use-timer";
 import { PopupPositions } from "@/lib/enums";

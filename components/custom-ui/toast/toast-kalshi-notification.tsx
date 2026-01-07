@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { QRCodeSVG } from "qrcode.react";
 import { useEffect } from "react";
-import { useKalshiGet } from "@/hooks/use-kalshi-get";
+import { useKalshiGet } from "@/hooks/use-kalshi";
 import { useSocket } from "@/hooks/use-socket";
 import { useSocketUtils } from "@/hooks/use-socket-utils";
 import { THE_ROLLUP_BRAND_SLUG } from "@/lib/constants";

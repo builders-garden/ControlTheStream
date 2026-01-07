@@ -53,16 +53,6 @@ export const useFeaturedTokens = (params?: {
   });
 };
 
-export const useFeaturedToken = (tokenType: AuthTokenType, tokenId: string) => {
-  return useApiQuery<FeaturedTokenApiResponse>({
-    queryKey: ["featured-tokens", tokenId],
-    url: `/api/featured-tokens/${tokenId}`,
-    enabled: !!tokenId,
-    isProtected: true,
-    tokenType,
-  });
-};
-
 // Mutation hooks
 export const useCreateFeaturedTokens = (tokenType: AuthTokenType) => {
   return useApiMutation<FeaturedTokenApiResponse, CreateFeaturedToken[]>({
@@ -92,15 +82,6 @@ export const useDeleteFeaturedToken = (tokenType: AuthTokenType) => {
   >({
     url: (variables) => `/api/featured-tokens/${variables.tokenId}`,
     method: "DELETE",
-    tokenType,
-  });
-};
-
-export const useToggleFeaturedTokenActive = (tokenType: AuthTokenType) => {
-  return useApiMutation<FeaturedTokenApiResponse, { tokenId: string }>({
-    url: (variables) => `/api/featured-tokens/${variables.tokenId}`,
-    method: "PATCH",
-    body: () => ({ action: "toggle-active" }),
     tokenType,
   });
 };

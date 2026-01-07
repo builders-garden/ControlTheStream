@@ -269,17 +269,6 @@ export const getIpfsGatewayUrls = (cidOrUrl?: string | null): string[] => {
 };
 
 /**
- * Builds a full image URL from an IPFS CID using the public dweb gateway or returns the URL as-is if it's already a full URL
- * @param cidOrUrl - IPFS CID (e.g., "bafybeia2m2j2aouj7mr7h2jk7k5algr4lx5vzq5hr5x3tl2m2gz67i6si4") or full URL
- * @returns Full URL using dweb gateway (https://{cid}.ipfs.dweb.link/), or the original URL if it's already a full URL
- * @deprecated Use getIpfsGatewayUrls for fallback support
- */
-export const buildImageUrlFromCid = (cidOrUrl?: string | null): string => {
-  const urls = getIpfsGatewayUrls(cidOrUrl);
-  return urls[0] || "";
-};
-
-/**
  * Slugify a text (replace spaces and special characters with underscores and convert to lowercase, reduce multiple underscores to a single underscore)
  * @param text - The text to slugify
  * @returns The slugified text
