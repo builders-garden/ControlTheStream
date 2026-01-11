@@ -33,6 +33,8 @@ export const brandsTable = sqliteTable("brands", {
   twitchUrl: text("twitch_url"),
   xUrl: text("x_url"),
   telegramUrl: text("telegram_url"),
+  pyroMint: text("pyro_mint"),
+  pyroEmail: text("pyro_email"),
   isActive: integer("is_active", { mode: "boolean" }).default(false),
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),

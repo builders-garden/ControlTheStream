@@ -5,15 +5,17 @@ import { AdminTabs } from "../admin-tabs";
 import { AccessContent } from "./access/access-content";
 import { HostsContent } from "./hosts/hosts-content";
 import { InfoContent } from "./info/info-content";
+import { PyroContent } from "./pyro/pyro-content";
 
 export const BrandContent = () => {
   // Brand tabs states
   const [selectedTab, setSelectedTab] = useState<BrandTabs>(BrandTabs.INFO);
 
-  // Whether the tab is info, access, or hosts
+  // Whether the tab is info, access, hosts, or pyro
   const isInfoTab = selectedTab === BrandTabs.INFO;
   const isAccessTab = selectedTab === BrandTabs.ACCESS;
   const isHostsTab = selectedTab === BrandTabs.HOSTS;
+  const isPyroTab = selectedTab === BrandTabs.PYRO;
 
   return (
     <motion.div
@@ -40,6 +42,11 @@ export const BrandContent = () => {
             onClick: () => setSelectedTab(BrandTabs.HOSTS),
             isSelected: isHostsTab,
           },
+          {
+            label: "Pyro",
+            onClick: () => setSelectedTab(BrandTabs.PYRO),
+            isSelected: isPyroTab,
+          },
         ]}
       />
 
@@ -48,6 +55,7 @@ export const BrandContent = () => {
         {isInfoTab && <InfoContent key="info" />}
         {isAccessTab && <AccessContent key="access" />}
         {isHostsTab && <HostsContent key="hosts" />}
+        {isPyroTab && <PyroContent key="pyro" />}
       </AnimatePresence>
     </motion.div>
   );

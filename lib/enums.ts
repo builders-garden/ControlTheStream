@@ -31,6 +31,7 @@ export enum BrandTabs {
   INFO = "info",
   ACCESS = "access",
   HOSTS = "hosts",
+  PYRO = "pyro",
 }
 
 // Plugins Tabs
