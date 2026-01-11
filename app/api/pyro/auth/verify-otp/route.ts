@@ -1,0 +1,110 @@
+import { NextRequest, NextResponse } from "next/server";
+import { updateBrand } from "@/lib/database/queries";
+import { PyroVerifyOtpResponse } from "@/lib/types/pyro.types";
+
+const PYRO_BASE_URL = process.env.PYRO_API_URL || "https://www.pyro.buzz";
+const PYRO_API_PATH = PYRO_BASE_URL.includes("localhost")
+  ? "/api/externalauth/verify-otp"
+  : "/api/backend/externalauth/verify-otp";
+const PYRO_API_URL = `${PYRO_BASE_URL}${PYRO_API_PATH}`;
+
+export const POST = async (req: NextRequest) => {
+  try {
+    const { email, otp, brandSlug } = await req.json();
+
+    if (!email || !otp) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Email and OTP are required",
+        },
+        { status: 400 },
+      );
+    }
+
+    if (!brandSlug) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Brand slug is required",
+        },
+        { status: 400 },
+      );
+    }
+
+    const apiKey = process.env.PYRO_API_KEY;
+
+    if (!apiKey) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Pyro API key not configured",
+        },
+        { status: 500 },
+      );
+    }
+
+    const response = await fetch(PYRO_API_URL, {
+      method: "POST",
+      headers: {
+        "X-External-API-Key": apiKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, otp }),
+    });
+
+    const data: PyroVerifyOtpResponse = await response.json();
+
+    if (!response.ok || !data.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid or expired OTP",
+        },
+        { status: 400 },
+      );
+    }
+
+    // Check if user has a creator account
+    if (!data.creator) {
+      return NextResponse.json({
+        success: true,
+        hasCreator: false,
+        user: data.user,
+        creator: null,
+      });
+    }
+
+    // Update brand with Pyro info
+    const updatedBrand = await updateBrand(brandSlug, {
+      pyroMint: data.creator.creatorMint,
+      pyroEmail: email,
+    });
+
+    if (!updatedBrand) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Failed to update brand with Pyro info",
+        },
+        { status: 500 },
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      hasCreator: true,
+      user: data.user,
+      creator: data.creator,
+    });
+  } catch (error) {
+    console.error("Pyro verify OTP error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to verify OTP",
+      },
+      { status: 500 },
+    );
+  }
+};
