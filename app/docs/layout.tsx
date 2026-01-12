@@ -15,10 +15,21 @@ export const metadata: Metadata = {
 };
 
 const navbar = (
-  <Navbar
-    logo={null}
-    projectLink="https://github.com/builders-garden/ControlTheStream"
-  />
+  <div className="mobile-navbar-wrapper">
+    <Navbar
+      logo={
+        <div className="navbar-logo flex items-center gap-2">
+          <img
+            src="/images/cts_logo.svg"
+            alt="ControlTheStream"
+            className="h-5"
+          />
+          <span className="font-bold text-lg text-white">ControlTheStream</span>
+        </div>
+      }
+      projectLink="https://github.com/builders-garden/ControlTheStream"
+    />
+  </div>
 );
 
 const sidebarHeader = (
