@@ -29,6 +29,17 @@ nav button svg[class*="sun"] {
   display: none !important;
 }
 
+/* Hide search bar */
+[class*="nextra-search"],
+[class*="search"],
+input[type="search"],
+button[aria-label*="Search"],
+[data-search],
+nav input,
+nav button:has(svg[class*="search"]) {
+  display: none !important;
+}
+
 /* Hide sidebar collapse button */
 button[aria-label="Hide sidebar"],
 button[aria-label="Show sidebar"],
@@ -43,16 +54,35 @@ aside.nextra-sidebar-container,
   background-color: oklch(0.18 0.015 270) !important;
 }
 
-/* Increase sidebar menu text size */
+/* Increase sidebar menu text size and normalize styles */
 aside a,
 aside li,
 aside nav a {
   font-size: 1rem !important;
 }
 
+/* Style for direct links */
 aside ul li a {
   font-size: 1rem !important;
   padding: 0.5rem 0.75rem !important;
+}
+
+/* Style for folder/submenu items to match direct links */
+aside ul li button,
+aside ul li summary,
+aside ul li > div > button,
+aside ul li > button:first-child,
+aside [class*="folder"] > button,
+aside [class*="menu"] button {
+  font-size: 1rem !important;
+  padding: 0.5rem 0.75rem !important;
+}
+
+/* Ensure submenu children have consistent padding */
+aside ul ul li a {
+  font-size: 1rem !important;
+  padding: 0.5rem 0.75rem !important;
+  padding-left: 1.5rem !important;
 }
 
 /* Custom layout for logo in sidebar */
@@ -96,9 +126,21 @@ aside.nextra-sidebar-container {
   padding-top: 0 !important;
 }
 
-/* Hide the default logo area in navbar */
-nav a[href="/docs"] {
+/* Hide navbar logo on desktop (sidebar logo is shown instead) */
+.navbar-logo {
   display: none !important;
+}
+
+/* Make navbar wrapper transparent on desktop */
+.mobile-navbar-wrapper {
+  display: contents;
+}
+
+@media (max-width: 767px) {
+  /* Show navbar logo on mobile */
+  .navbar-logo {
+    display: flex !important;
+  }
 }
 
 /* Increase paragraph text size */
@@ -131,5 +173,102 @@ main > div > nav {
 /* Add padding at bottom of sidebar to make room for footer */
 aside.nextra-sidebar-container > div {
   padding-bottom: 60px !important;
+}
+
+/* Mobile styles */
+@media (max-width: 767px) {
+  /* Mobile menu background */
+  aside.nextra-sidebar-container,
+  [class*="sidebar"],
+  nav.nextra-nav-container + aside,
+  .nextra-sidebar-container {
+    background-color: oklch(0.18 0.015 270) !important;
+  }
+
+  /* Reset navbar to full width on mobile */
+  nav.nextra-nav-container,
+  .nextra-nav-container {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Hide sidebar logo on mobile - use navbar logo instead */
+  .sidebar-logo {
+    display: none !important;
+  }
+
+  /* Make footer full width on mobile - same color as header */
+  .sidebar-footer {
+    position: fixed;
+    width: 100%;
+    background-color: oklch(0.18 0.015 270) !important;
+    border-top: 1px solid rgb(38 38 38);
+    text-align: center;
+  }
+
+  /* Mobile menu overlay - position below navbar */
+  aside.nextra-sidebar-container {
+    top: var(--nextra-navbar-height, 64px) !important;
+    height: calc(100vh - var(--nextra-navbar-height, 64px)) !important;
+  }
+
+  /* Make navbar wrapper sticky on mobile */
+  .mobile-navbar-wrapper {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: oklch(0.18 0.015 270) !important;
+  }
+
+  /* Make navbar dark and opaque on mobile - same color as footer */
+  .mobile-navbar-wrapper *,
+  .mobile-navbar-wrapper nav {
+    background-color: oklch(0.18 0.015 270) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Ensure menu items are visible with proper background */
+  aside.nextra-sidebar-container > div {
+    padding-top: 0 !important;
+    background-color: oklch(0.18 0.015 270) !important;
+  }
+
+  /* Mobile menu container full background */
+  aside.nextra-sidebar-container,
+  aside.nextra-sidebar-container nav,
+  aside.nextra-sidebar-container ul,
+  aside.nextra-sidebar-container > div,
+  aside.nextra-sidebar-container *,
+  aside[class*="sidebar"],
+  [class*="sidebar-container"] {
+    background-color: oklch(0.18 0.015 270) !important;
+  }
+
+  /* Target Nextra mobile menu specifically */
+  aside,
+  [class*="nextra-sidebar"],
+  [class*="x:"] aside,
+  .docs-layout aside,
+  div[class*="fixed"][class*="inset"],
+  nav + aside,
+  aside[class*="x:"] {
+    background-color: oklch(0.18 0.015 270) !important;
+  }
+
+  /* Force all aside children to have background */
+  aside > *,
+  aside div,
+  aside nav,
+  aside ul,
+  aside li {
+    background-color: oklch(0.18 0.015 270) !important;
+  }
+
+  /* Smooth transition for mobile menu */
+  aside {
+    transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out, visibility 0.25s ease-in-out !important;
+  }
 }
 

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build --webpack",
+    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:pull": "drizzle-kit pull",
@@ -93,6 +94,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
     "eslint-config-prettier": "^10.1.8",
+    "pagefind": "^1.4.0",
     "postcss": "^8",
     "prettier": "^3.6.2",
     "prettier-plugin-packagejson": "^2.5.19",
