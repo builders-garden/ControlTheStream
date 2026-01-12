@@ -3,6 +3,13 @@
   color-scheme: dark;
 }
 
+/* Fix sidebar shift caused by Nextra's mx-auto on content wrapper */
+.x\:mx-auto,
+[class*="x:mx-auto"] {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
 html,
 .dark {
   color-scheme: dark;
