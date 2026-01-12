@@ -27,6 +27,7 @@ const navbar = (
           <span className="font-bold text-lg text-white">ControlTheStream</span>
         </div>
       }
+      logoLink="/docs"
       projectLink="https://github.com/builders-garden/ControlTheStream"
     />
   </div>
