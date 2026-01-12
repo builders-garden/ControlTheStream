@@ -1,10 +1,15 @@
 import { fileURLToPath } from "node:url";
 import createJiti from "jiti";
+import nextra from "nextra";
 
 const jiti = createJiti(fileURLToPath(import.meta.url));
 
 // Import env here to validate during build. Using jiti@^1 we can import .ts files :)
 jiti("./lib/zod");
+
+const withNextra = nextra({
+  // Nextra options
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -51,4 +56,4 @@ const nextConfig = {
   turbopack: {},
 };
 
-export default nextConfig;
+export default withNextra(nextConfig);

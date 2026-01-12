@@ -1,0 +1,135 @@
+/* Force dark mode */
+:root {
+  color-scheme: dark;
+}
+
+html,
+.dark {
+  color-scheme: dark;
+  --nextra-bg: #111;
+}
+
+/* Apply dark theme styles */
+[data-theme="dark"] {
+  --nextra-primary-hue: 212deg;
+  --nextra-primary-saturation: 100%;
+}
+
+/* Hide theme toggle button */
+button[aria-label="Toggle theme"],
+nav button[title*="theme" i],
+nav button svg[class*="moon"],
+nav button svg[class*="sun"] {
+  display: none !important;
+}
+
+/* Hide any theme-related controls */
+[class*="theme-toggle"],
+[class*="ThemeToggle"] {
+  display: none !important;
+}
+
+/* Hide sidebar collapse button */
+button[aria-label="Hide sidebar"],
+button[aria-label="Show sidebar"],
+aside button[class*="collapse"],
+aside > div > button:first-child {
+  display: none !important;
+}
+
+/* Sidebar styling */
+aside.nextra-sidebar-container,
+[class*="sidebar"] {
+  background-color: oklch(0.18 0.015 270) !important;
+}
+
+/* Increase sidebar menu text size */
+aside a,
+aside li,
+aside nav a {
+  font-size: 1rem !important;
+}
+
+aside ul li a {
+  font-size: 1rem !important;
+  padding: 0.5rem 0.75rem !important;
+}
+
+/* Custom layout for logo in sidebar */
+.docs-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Position the sidebar logo at the top of the sidebar */
+.sidebar-logo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--nextra-sidebar-width, 256px);
+  height: var(--nextra-navbar-height, 64px);
+  z-index: 50;
+  background-color: oklch(0.18 0.015 270);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgb(38 38 38) !important;
+}
+
+/* Push sidebar content down to account for logo */
+aside.nextra-sidebar-container > div {
+  padding-top: var(--nextra-navbar-height, 64px) !important;
+}
+
+/* Make navbar not cover the sidebar area */
+nav.nextra-nav-container,
+.nextra-nav-container {
+  margin-left: var(--nextra-sidebar-width, 256px) !important;
+  width: calc(100% - var(--nextra-sidebar-width, 256px)) !important;
+}
+
+/* Extend sidebar to full height */
+aside.nextra-sidebar-container {
+  top: 0 !important;
+  height: 100vh !important;
+  padding-top: 0 !important;
+}
+
+/* Hide the default logo area in navbar */
+nav a[href="/docs"] {
+  display: none !important;
+}
+
+/* Increase paragraph text size */
+article p,
+article li,
+article td,
+article blockquote {
+  font-size: 1.05rem !important;
+  line-height: 1.75 !important;
+}
+
+/* Hide page name/breadcrumb at top of each page */
+nav[aria-label="breadcrumb"],
+[class*="breadcrumb"],
+article > div:first-child > span:first-child,
+main > div > nav {
+  display: none !important;
+}
+
+/* Sidebar footer */
+.sidebar-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: var(--nextra-sidebar-width, 256px);
+  z-index: 100;
+  background-color: oklch(0.18 0.015 270);
+}
+
+/* Add padding at bottom of sidebar to make room for footer */
+aside.nextra-sidebar-container > div {
+  padding-bottom: 60px !important;
+}
+

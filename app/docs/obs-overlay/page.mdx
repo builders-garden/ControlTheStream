@@ -1,0 +1,40 @@
+# Setting Up Your Overlay on OBS
+
+The magic of ControlTheStream happens through custom browser sources (i.e. dynamic overlays). This allows your OBS stream to "react" to onchain events in real-time, showing popups while viewers interact via the miniapp or webapp.
+
+## How to Setup a ControlTheStream Browser Overlay on OBS
+
+### Step 1: Copy Your Overlay URL
+
+In your Dashboard, find the **Overlay URLs** on the **Overlay tab**. These are unique links generated specifically for your brand.
+
+### Step 2: Add the Multiple Browser Sources
+
+1. Open **OBS Studio**
+2. In the **Sources** box, click the **+** icon and select **Browser**
+3. Name it something clear, like *"ControlTheStream Popups Overlay"*
+4. Paste your unique URLs into the URL field
+
+### Step 3: Match Your Resolution
+
+Set the width and height to match your stream output:
+
+| Plugin Type | Resolution |
+|------------|------------|
+| Bull-meter poll | 1100x250 |
+| Kalshi | 1100x250 |
+| Popups | 600x150 |
+
+### Step 4: Stay on Top
+
+Ensure this source is at the **very top** of your Sources list so the interactions appear over your video.
+
+### Step 5: Test in Real-Time
+
+Once you configured the overlays:
+
+1. Click the buttons on the **Overlay Tab** on ControlTheStream
+2. Watch a preview of how the different popups will look like on screen
+3. Move them around according to your preferences
+
+> **Note:** Each overlay URL is unique to your brand. Make sure to use the correct URL for each overlay type.
