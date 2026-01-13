@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PyroRequestOtpResponse } from "@/lib/types/pyro.types";
 
-const PYRO_BASE_URL = process.env.PYRO_API_URL || "https://www.pyro.buzz";
-const PYRO_API_URL = `${PYRO_BASE_URL}/api/externalauth/request-otp`;
+const PYRO_BASE_URL = process.env.PYRO_API_URL;
+const PYRO_API_URL = `${PYRO_BASE_URL}/externalauth/request-otp`;
 
 export const POST = async (req: NextRequest) => {
   try {

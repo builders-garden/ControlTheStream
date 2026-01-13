@@ -1,5 +1,5 @@
 import { useAppKit } from "@reown/appkit/react";
-import { Loader2, LogOut, Sparkles, User, Heart, Zap } from "lucide-react";
+import { Loader2, LogOut, Sparkles, User, Heart, Flame } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -51,9 +51,10 @@ export const WebAppStreamPage = () => {
 
   // Check if the creator exists on Pyro
   const { data: pyroCreatorExists } = usePyroCreatorExists({
-    mint: brand.data?.pyroMint,
-  });
+    // mint: brand.data?.pyroMint,
+        mint: "0xfaac6a5816f2734f231119c2cf0b16227ee83328",
 
+  });
   // If the user was not connected before the page loaded
   // Automatically start the sign in process
   useEffect(() => {
@@ -308,7 +309,7 @@ export const WebAppStreamPage = () => {
                               ? "bg-background shadow-sm text-foreground"
                               : "text-muted-foreground hover:text-foreground",
                           )}>
-                          <Zap className="size-4" />
+                          <Flame className="size-4" />
                           Sponsor with Pyro
                         </button>
                       </div>
@@ -353,6 +354,7 @@ export const WebAppStreamPage = () => {
                             <WebAppPyroSponsor
                               showLabel={false}
                               creatorTokenAddress={brand.data.pyroMint}
+                              zoraHandle={pyroCreatorExists?.creatorInfo?.zoraHandle}
                               user={user.data}
                             />
                           </motion.div>

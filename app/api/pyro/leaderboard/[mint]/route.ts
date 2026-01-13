@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PyroLeaderboardResponse } from "@/lib/types/pyro.types";
 
-const PYRO_BASE_URL = process.env.PYRO_API_URL || "https://www.pyro.buzz";
-const PYRO_API_PATH = PYRO_BASE_URL.includes("localhost")
-  ? "/api/leaderboard"
-  : "/api/backend/leaderboard";
-const PYRO_API_URL = `${PYRO_BASE_URL}${PYRO_API_PATH}`;
+const PYRO_BASE_URL = process.env.PYRO_API_URL!;
+const PYRO_API_URL = `${PYRO_BASE_URL}/leaderboard`;
 
 export const GET = async (
   _: NextRequest,

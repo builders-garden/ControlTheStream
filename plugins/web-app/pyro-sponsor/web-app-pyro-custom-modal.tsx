@@ -14,13 +14,18 @@ import { AuthTokenType } from "@/lib/enums";
 import { cn } from "@/lib/utils";
 
 const MAX_SPONSOR_MESSAGE_LENGTH = 100;
-const MIN_ETH_AMOUNT = 0.0001;
+const MIN_ETH_AMOUNT = 0.000001;
 
 interface WebAppPyroCustomModalProps {
   isProcessing: boolean;
-  handleSponsor: (amount: number, customMessage?: string) => Promise<void>;
+  handleSponsor: (
+    amount: number,
+    customMessage?: string,
+    sponsorName?: string,
+  ) => Promise<void>;
   connectedAddress?: string;
   brandSlug?: string;
+  selectedSponsorName?: string;
 }
 
 export const WebAppPyroCustomModal = ({
@@ -28,6 +33,7 @@ export const WebAppPyroCustomModal = ({
   handleSponsor,
   connectedAddress,
   brandSlug,
+  selectedSponsorName,
 }: WebAppPyroCustomModalProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditingMessage, setIsEditingMessage] = useState(false);
@@ -67,18 +73,18 @@ export const WebAppPyroCustomModal = ({
         { text: customMessage },
         {
           onSuccess: async (data) => {
-            await handleSponsor(amount, data.censoredText);
+            await handleSponsor(amount, data.censoredText, selectedSponsorName);
             handleModalToggle();
           },
           onError: async () => {
             const censoredText = censorTextLocally(customMessage);
-            await handleSponsor(amount, censoredText);
+            await handleSponsor(amount, censoredText, selectedSponsorName);
             handleModalToggle();
           },
         },
       );
     } else {
-      await handleSponsor(amount);
+      await handleSponsor(amount, undefined, selectedSponsorName);
       handleModalToggle();
     }
   };
@@ -106,7 +112,7 @@ export const WebAppPyroCustomModal = ({
       <div className="flex flex-col justify-center items-center w-full gap-1">
         <div className="flex items-center gap-2">
           <Flame className="size-6 text-orange-500" />
-          <h1 className="text-2xl font-bold text-center">Custom Sponsorship</h1>
+          <h1 className="text-2xl font-bold text-center">PYRO</h1>
         </div>
         <p className="text-sm text-muted-foreground text-center">
           Enter your ETH amount and optional advertising message

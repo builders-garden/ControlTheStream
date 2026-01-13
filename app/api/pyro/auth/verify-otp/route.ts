@@ -2,11 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { updateBrand } from "@/lib/database/queries";
 import { PyroVerifyOtpResponse } from "@/lib/types/pyro.types";
 
-const PYRO_BASE_URL = process.env.PYRO_API_URL || "https://www.pyro.buzz";
-const PYRO_API_PATH = PYRO_BASE_URL.includes("localhost")
-  ? "/api/externalauth/verify-otp"
-  : "/api/backend/externalauth/verify-otp";
-const PYRO_API_URL = `${PYRO_BASE_URL}${PYRO_API_PATH}`;
+const PYRO_BASE_URL = process.env.PYRO_API_URL!;
+const PYRO_API_URL = `${PYRO_BASE_URL}/externalauth/verify-otp`;
 
 export const POST = async (req: NextRequest) => {
   try {

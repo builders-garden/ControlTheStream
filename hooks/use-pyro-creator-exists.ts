@@ -6,6 +6,7 @@ interface PyroCreatorExistsResponse {
   mint: string;
   creatorInfo?: {
     streamerUsername: string;
+    zoraHandle?: string;
     isSplit: boolean;
   };
   error?: string;

@@ -3,13 +3,7 @@ import { useState } from "react";
 import { parseEther } from "viem";
 
 // Pyro deposit address for Base chain burns
-const PYRO_DEPOSIT_ADDRESS =
-  process.env.NEXT_PUBLIC_PYRO_DEPOSIT_ADDRESS ||
-  "0x6e66d6724f971dcf90a1c8aa8ca9da097c9694a4";
-
-// Pyro API base URL
-const PYRO_API_URL =
-  process.env.NEXT_PUBLIC_PYRO_API_URL || "https://api.pyro.com";
+const PYRO_DEPOSIT_ADDRESS = process.env.NEXT_PUBLIC_PYRO_DEPOSIT_ADDRESS!;
 
 interface UsePyroBurnProps {
   wagmiConfig: Config;
@@ -76,9 +70,9 @@ export const usePyroBurn = ({ wagmiConfig }: UsePyroBurnProps) => {
         confirmations: 1,
       });
 
-      // Step 3: Call Pyro burn API
+      // Step 3: Call Pyro burn API via internal proxy
       setIsProcessingBurn(true);
-      const response = await fetch(`${PYRO_API_URL}/burns/base`, {
+      const response = await fetch("/api/pyro/burns/base", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,11 +83,7 @@ export const usePyroBurn = ({ wagmiConfig }: UsePyroBurnProps) => {
           creatorTokenAddress,
           zoraHandle,
           slippage: 0.05,
-          ...(advertisingMessage && {
-            advertisingMetadata: {
-              message: advertisingMessage,
-            },
-          }),
+          ...(advertisingMessage && { advertisingMessage }),
           ...(externalSponsorName && { externalSponsorName }),
         }),
       });

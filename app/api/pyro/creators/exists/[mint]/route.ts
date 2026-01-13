@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PYRO_BASE_URL = process.env.PYRO_API_URL || "https://www.pyro.buzz";
-const PYRO_API_URL = `${PYRO_BASE_URL}/api/backend/creators/exists`;
+const PYRO_BASE_URL = process.env.PYRO_API_URL;
+const PYRO_API_URL = `${PYRO_BASE_URL}/creators/exists`;
 
 export interface PyroCreatorExistsResponse {
   success: boolean;
