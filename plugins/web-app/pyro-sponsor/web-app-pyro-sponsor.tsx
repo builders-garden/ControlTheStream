@@ -62,6 +62,8 @@ export const WebAppPyroSponsor = ({
   });
   const externalSponsors = communitiesData?.data || [];
 
+  console.log("External sponsors:", externalSponsors, communitiesData);
+
   // Get user display name
   const baseName = user?.wallets.find((wallet) => wallet.baseName)?.baseName;
   const displayName =

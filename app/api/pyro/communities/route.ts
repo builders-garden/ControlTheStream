@@ -52,6 +52,7 @@ export const GET = async (request: NextRequest) => {
     }
 
     const url = new URL(PYRO_API_URL);
+    console.log("DEBUG: Calling Pyro communities URL:", url.toString());
     if (limit) {
       url.searchParams.set("limit", limit);
     }

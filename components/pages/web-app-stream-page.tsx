@@ -51,10 +51,9 @@ export const WebAppStreamPage = () => {
 
   // Check if the creator exists on Pyro
   const { data: pyroCreatorExists } = usePyroCreatorExists({
-    // mint: brand.data?.pyroMint,
-        mint: "0xfaac6a5816f2734f231119c2cf0b16227ee83328",
-
+     mint: brand.data?.pyroMint,
   });
+
   // If the user was not connected before the page loaded
   // Automatically start the sign in process
   useEffect(() => {
