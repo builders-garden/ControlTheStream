@@ -13,8 +13,8 @@ export const OverlayPyro = ({ brand }: { brand: Brand }) => {
 
   const { data: leaderboardData, isLoading: isLoadingLeaderboard } =
     usePyroLeaderboard({
-      mint: "G5qKomPSAbPPt5ms4wAzDAC8Xin5zD8McXuVypuFpump",
-      enabled: !!"G5qKomPSAbPPt5ms4wAzDAC8Xin5zD8McXuVypuFpump",
+      mint: pyroMint,
+      enabled: !!pyroMint,
     });
 
   const leaderboard = leaderboardData?.data?.leaderboard || [];
