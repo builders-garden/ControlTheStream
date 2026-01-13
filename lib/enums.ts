@@ -31,7 +31,6 @@ export enum BrandTabs {
   INFO = "info",
   ACCESS = "access",
   HOSTS = "hosts",
-  PYRO = "pyro",
 }
 
 // Plugins Tabs
@@ -40,6 +39,7 @@ export enum PluginsTabs {
   TOKENS = "tokens",
   SENTIMENT = "sentiment",
   KALSHI = "kalshi",
+  PYRO = "pyro",
   CREATOR_COIN = "creator-coin",
 }
 
