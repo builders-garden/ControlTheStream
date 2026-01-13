@@ -1,16 +1,18 @@
 import { useAppKit } from "@reown/appkit/react";
-import { Loader2, LogOut, Sparkles, User } from "lucide-react";
+import { Loader2, LogOut, Sparkles, User, Heart, Zap } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { useWebAppAuth } from "@/contexts/auth/web-app-auth-context";
 import { useLastYoutubeContent } from "@/hooks/use-last-youtube-content";
+import { usePyroCreatorExists } from "@/hooks/use-pyro-creator-exists";
 import { THE_ROLLUP_BRAND_SLUG } from "@/lib/constants";
 import { cn, formatWalletAddress } from "@/lib/utils";
 import { env } from "@/lib/zod";
 import { WebAppCreatorCoin } from "@/plugins/web-app/creator-coin/web-app-creator-coin";
 import { WebAppFeaturedTokens } from "@/plugins/web-app/featured-tokens/web-app-featured-tokens";
+import { WebAppPyroSponsor } from "@/plugins/web-app/pyro-sponsor/web-app-pyro-sponsor";
 import { WebAppTips } from "@/plugins/web-app/tips/web-app-tips";
 import { CTSButton } from "../custom-ui/cts-button";
 import { CTSCard } from "../custom-ui/cts-card";
@@ -40,9 +42,17 @@ export const WebAppStreamPage = () => {
   // This state memorizes if the user was not connected before the page loaded
   const [wasNotConnected, setWasNotConnected] = useState(!connectedAddress);
 
+  // TEMP: Toggle between Tip and Sponsor with Oyto
+  const [activeTab, setActiveTab] = useState<"tip" | "sponsor">("tip");
+
   // Get the last youtube content for this brand
   const { data: lastYoutubeContent, isLoading: isLastYoutubeContentLoading } =
     useLastYoutubeContent(brand.data?.slug || "");
+
+  // Check if the creator exists on Pyro
+  const { data: pyroCreatorExists } = usePyroCreatorExists({
+    mint: brand.data?.pyroMint,
+  });
 
   // If the user was not connected before the page loaded
   // Automatically start the sign in process
@@ -274,8 +284,85 @@ export const WebAppStreamPage = () => {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2, ease: "easeInOut" }}
                   className="flex flex-col justify-start items-start w-full h-full gap-6 md:gap-8">
-                  {/* Tip Buttons */}
-                  {brand.tipSettings.data?.payoutAddress && (
+                  {/* Tip/Sponsor Toggle - Show when creator exists on Pyro */}
+                  {pyroCreatorExists?.exists && brand.data?.pyroMint && (
+                    <div className="flex flex-col w-full gap-3">
+                      {/* Toggle Buttons */}
+                      <div className="flex w-full bg-muted/50 rounded-lg p-1 gap-1">
+                        <button
+                          onClick={() => setActiveTab("tip")}
+                          className={cn(
+                            "flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-md text-sm font-semibold transition-all",
+                            activeTab === "tip"
+                              ? "bg-background shadow-sm text-foreground"
+                              : "text-muted-foreground hover:text-foreground",
+                          )}>
+                          <Heart className="size-4" />
+                          Tip
+                        </button>
+                        <button
+                          onClick={() => setActiveTab("sponsor")}
+                          className={cn(
+                            "flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-md text-sm font-semibold transition-all",
+                            activeTab === "sponsor"
+                              ? "bg-background shadow-sm text-foreground"
+                              : "text-muted-foreground hover:text-foreground",
+                          )}>
+                          <Zap className="size-4" />
+                          Sponsor with Pyro
+                        </button>
+                      </div>
+
+                      {/* Content based on active tab */}
+                      <AnimatePresence mode="wait">
+                        {activeTab === "tip" ? (
+                          <motion.div
+                            key="tip-content"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.15 }}>
+                            {brand.tipSettings.data?.payoutAddress ? (
+                              <WebAppTips
+                                showLabel={false}
+                                tips={[
+                                  { amount: 0.01, buttonColor: "blue" },
+                                  { amount: 0.25, buttonColor: "blue" },
+                                  { amount: 1, buttonColor: "blue" },
+                                ]}
+                                customTipButton={{
+                                  color: "blue",
+                                  text: "Custom",
+                                }}
+                                tipSettings={brand.tipSettings.data}
+                                user={user.data}
+                              />
+                            ) : (
+                              <p className="text-sm text-muted-foreground text-center py-4">
+                                Tipping is not configured for this stream
+                              </p>
+                            )}
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            key="sponsor-content"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.15 }}>
+                            <WebAppPyroSponsor
+                              showLabel={false}
+                              creatorTokenAddress={brand.data.pyroMint}
+                              user={user.data}
+                            />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  )}
+
+                  {/* Tips Only - Show if tip settings exist but no pyro (no toggle needed) */}
+                  {brand.tipSettings.data?.payoutAddress && !brand.data?.pyroMint && (
                     <WebAppTips
                       showLabel
                       tips={[
