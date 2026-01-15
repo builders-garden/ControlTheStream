@@ -54,6 +54,7 @@ export async function sendNotification({
   const responseJson = await response.json();
 
   if (response.status === 200) {
+    console.log("[sendNotification] responseJson", responseJson);
     const responseBody = sendNotificationResponseSchema.safeParse(responseJson);
     if (!responseBody.success) {
       console.error(
@@ -183,7 +184,7 @@ export async function sendNotificationToUsers({
       }
 
       if (responseBody.data.result.rateLimitedTokens.length > 0) {
-        console.warn(
+        console.error(
           `Error sending notification to chunk: rate limited`,
           responseBody.data.result.rateLimitedTokens,
         );
@@ -192,7 +193,7 @@ export async function sendNotificationToUsers({
 
       successfulTokens.push(...responseBody.data.result.successfulTokens);
     } else {
-      console.log("[sendNotificationToUsers] error", await response.json());
+      console.error("[sendNotificationToUsers] error", await response.json());
       errorFids.push(...chunk.map((user) => user.fid));
     }
   }
