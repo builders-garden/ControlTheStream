@@ -91,10 +91,21 @@ export async function POST(request: NextRequest) {
   const event = data.event;
   await getOrCreateUserFromFid(fid);
 
+  // Whether the client is Farcaster or Base
+  const isFarcasterClient = appFid === FARCASTER_CLIENT_FID.farcaster;
+  const isBaseClient = appFid === FARCASTER_CLIENT_FID.base;
+
+  // The webhook identifier type
+  const webhookIdentifier = isFarcasterClient
+    ? "farcaster"
+    : isBaseClient
+      ? "base"
+      : "unknown";
+
   switch (event.event) {
     case "miniapp_added":
       if (event.notificationDetails) {
-        console.log("[webhook/farcaster] miniapp_added", event);
+        console.log(`[webhook/${webhookIdentifier}] miniapp_added`, event);
         await setNotificationDetails(fid, appFid, event.notificationDetails);
         // Defer notification sending to after response is returned
         setImmediate(async () => {
@@ -111,13 +122,16 @@ export async function POST(request: NextRequest) {
 
       break;
     case "miniapp_removed": {
-      console.log("[webhook/farcaster] miniapp_removed", event);
+      console.log(`[webhook/${webhookIdentifier}] miniapp_removed`, event);
       await deleteNotificationDetails(fid, appFid);
 
       break;
     }
     case "notifications_enabled": {
-      console.log("[webhook/farcaster] notifications_enabled", event);
+      console.log(
+        `[webhook/${webhookIdentifier}] notifications_enabled`,
+        event,
+      );
       await setNotificationDetails(fid, appFid, event.notificationDetails);
 
       // Defer notification sending to after response is returned
@@ -132,7 +146,10 @@ export async function POST(request: NextRequest) {
       break;
     }
     case "notifications_disabled": {
-      console.log("[webhook/farcaster] notifications_disabled", event);
+      console.log(
+        `[webhook/${webhookIdentifier}] notifications_disabled`,
+        event,
+      );
       await deleteNotificationDetails(fid, appFid);
 
       break;
