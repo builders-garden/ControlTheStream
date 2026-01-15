@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
     webhookIdentifier,
   };
 
-  console.log(`[webhook/${webhookIdentifier}] parsed event data`, data);
+  console.log(`[webhook/${webhookIdentifier}] parsed event data:`, data);
   await getOrCreateUserFromFid(fid);
 
   switch (event.event) {
