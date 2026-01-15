@@ -94,6 +94,7 @@ export async function POST(request: NextRequest) {
   switch (event.event) {
     case "miniapp_added":
       if (event.notificationDetails) {
+        console.log("[webhook/farcaster] miniapp_added", event);
         await setNotificationDetails(fid, appFid, event.notificationDetails);
         // Defer notification sending to after response is returned
         setImmediate(async () => {
