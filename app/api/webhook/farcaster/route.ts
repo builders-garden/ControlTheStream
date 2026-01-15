@@ -16,45 +16,61 @@ import {
 import { sendNotification } from "@/lib/utils/notifications";
 
 /**
+ * Type for the client that is calling the webhook
+ */
+type CallingClient = {
+  appFid: number;
+  isFarcasterClient: boolean;
+  isBaseClient: boolean;
+  webhookIdentifier: "farcaster" | "base" | "unknown";
+};
+
+/**
  * A function to delete the notification details for a user given the Farcaster FID and the app FID
  * @param fid - The Farcaster FID of the user
- * @param appFid - The app FID of the user
+ * @param callingClient - The client that is calling the webhook
  * @returns void
  */
-const deleteNotificationDetails = async (fid: number, appFid: number) => {
-  if (appFid === FARCASTER_CLIENT_FID.farcaster) {
+const deleteNotificationDetails = async (
+  fid: number,
+  callingClient: CallingClient,
+) => {
+  if (callingClient.isFarcasterClient) {
     await deleteUserFarcasterNotificationDetails(fid);
-  } else if (appFid === FARCASTER_CLIENT_FID.base) {
+  } else if (callingClient.isBaseClient) {
     await deleteUserBaseNotificationDetails(fid);
   } else {
-    console.error(`[webhook/farcaster] Invalid app FID: ${appFid}`);
+    console.error(
+      `[webhook/${callingClient.webhookIdentifier}] Invalid app FID: ${callingClient.appFid}`,
+    );
   }
 };
 
 /**
  * A function to set the notification details for a user given the Farcaster FID and the app FID and the notification details
  * @param fid - The Farcaster FID of the user
- * @param appFid - The app FID of the user
+ * @param callingClient - The client that is calling the webhook
  * @param notificationDetails - The notification details to set
  * @returns void
  */
 const setNotificationDetails = async (
   fid: number,
-  appFid: number,
+  callingClient: CallingClient,
   notificationDetails: MiniAppNotificationDetails,
 ) => {
-  if (appFid === FARCASTER_CLIENT_FID.farcaster) {
+  if (callingClient.isFarcasterClient) {
     await setUserFarcasterNotificationDetails(fid, notificationDetails);
-  } else if (appFid === FARCASTER_CLIENT_FID.base) {
+  } else if (callingClient.isBaseClient) {
     await setUserBaseNotificationDetails(fid, notificationDetails);
   } else {
-    console.error(`[webhook/farcaster] Invalid app FID: ${appFid}`);
+    console.error(
+      `[webhook/${callingClient.webhookIdentifier}] Invalid app FID: ${callingClient.appFid}`,
+    );
   }
 };
 
 export async function POST(request: NextRequest) {
   const requestJson = await request.json();
-  console.log("[webhook/farcaster] requestJson", requestJson);
 
   let data;
   try {
@@ -85,11 +101,9 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  console.log("[webhook/farcaster] parsed event data", data);
   const fid = data.fid;
   const appFid = data.appFid;
   const event = data.event;
-  await getOrCreateUserFromFid(fid);
 
   // Whether the client is Farcaster or Base
   const isFarcasterClient = appFid === FARCASTER_CLIENT_FID.farcaster;
@@ -102,11 +116,26 @@ export async function POST(request: NextRequest) {
       ? "base"
       : "unknown";
 
+  // The client that is calling the webhook
+  const callingClient: CallingClient = {
+    appFid,
+    isFarcasterClient,
+    isBaseClient,
+    webhookIdentifier,
+  };
+
+  console.log(`[webhook/${webhookIdentifier}] parsed event data`, data);
+  await getOrCreateUserFromFid(fid);
+
   switch (event.event) {
     case "miniapp_added":
       if (event.notificationDetails) {
         console.log(`[webhook/${webhookIdentifier}] miniapp_added`, event);
-        await setNotificationDetails(fid, appFid, event.notificationDetails);
+        await setNotificationDetails(
+          fid,
+          callingClient,
+          event.notificationDetails,
+        );
         // Defer notification sending to after response is returned
         setImmediate(async () => {
           await sendNotification({
@@ -117,13 +146,13 @@ export async function POST(request: NextRequest) {
           });
         });
       } else {
-        await deleteNotificationDetails(fid, appFid);
+        await deleteNotificationDetails(fid, callingClient);
       }
 
       break;
     case "miniapp_removed": {
       console.log(`[webhook/${webhookIdentifier}] miniapp_removed`, event);
-      await deleteNotificationDetails(fid, appFid);
+      await deleteNotificationDetails(fid, callingClient);
 
       break;
     }
@@ -132,7 +161,11 @@ export async function POST(request: NextRequest) {
         `[webhook/${webhookIdentifier}] notifications_enabled`,
         event,
       );
-      await setNotificationDetails(fid, appFid, event.notificationDetails);
+      await setNotificationDetails(
+        fid,
+        callingClient,
+        event.notificationDetails,
+      );
 
       // Defer notification sending to after response is returned
       setImmediate(async () => {
@@ -150,7 +183,7 @@ export async function POST(request: NextRequest) {
         `[webhook/${webhookIdentifier}] notifications_disabled`,
         event,
       );
-      await deleteNotificationDetails(fid, appFid);
+      await deleteNotificationDetails(fid, callingClient);
 
       break;
     }
