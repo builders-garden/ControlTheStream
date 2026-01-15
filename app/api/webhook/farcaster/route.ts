@@ -138,6 +138,10 @@ export async function POST(request: NextRequest) {
         );
         // Defer notification sending to after response is returned
         setImmediate(async () => {
+          console.log(
+            `[webhook/${webhookIdentifier}] sending notification to ${fid}`,
+            event.notificationDetails,
+          );
           await sendNotification({
             fid,
             title: `Welcome to Control the Stream!`,
@@ -169,6 +173,10 @@ export async function POST(request: NextRequest) {
 
       // Defer notification sending to after response is returned
       setImmediate(async () => {
+        console.log(
+          `[webhook/${webhookIdentifier}] sending notification to ${fid}`,
+          event.notificationDetails,
+        );
         await sendNotification({
           fid,
           title: `Ding ding dong`,

@@ -53,6 +53,8 @@ export async function sendNotification({
 
   const responseJson = await response.json();
 
+  console.log("[sendNotification] responseJson", responseJson);
+
   if (response.status === 200) {
     console.log("[sendNotification] responseJson", responseJson);
     const responseBody = sendNotificationResponseSchema.safeParse(responseJson);
