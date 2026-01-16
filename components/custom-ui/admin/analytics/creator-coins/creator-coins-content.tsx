@@ -168,12 +168,16 @@ export const CreatorCoinsContent = () => {
                     key={user.userId}
                     className="border-border hover:bg-muted/10">
                     <TableCell className="flex items-center gap-2">
-                      {user.farcasterAvatarUrl && (
+                      {user.farcasterAvatarUrl ? (
                         <img
                           src={user.farcasterAvatarUrl}
-                          alt=""
+                          alt="User avatar"
                           className="size-8 rounded-full"
                         />
+                      ) : (
+                        <div className="size-8 rounded-full bg-muted/20 flex justify-center items-center">
+                          {user.farcasterUsername?.charAt(0).toUpperCase()}
+                        </div>
                       )}
                       <a
                         href={`https://farcaster.xyz/${user.farcasterUsername || user.username}`}
