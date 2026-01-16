@@ -184,6 +184,18 @@ aside.nextra-sidebar-container > div {
 
 /* Mobile styles */
 @media (max-width: 767px) {
+  /* Make all images and videos full width on mobile */
+  article img,
+  article video {
+    width: 100% !important;
+  }
+
+  /* Stack flex containers vertically on mobile */
+  article div[style*="display: flex"],
+  article div[style*="display:flex"] {
+    flex-direction: column !important;
+  }
+
   /* Mobile menu background */
   aside.nextra-sidebar-container,
   [class*="sidebar"],
@@ -275,7 +287,17 @@ aside.nextra-sidebar-container > div {
 
   /* Smooth transition for mobile menu */
   aside {
-    transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out, visibility 0.25s ease-in-out !important;
+    transition:
+      transform 0.25s ease-in-out,
+      opacity 0.25s ease-in-out,
+      visibility 0.25s ease-in-out !important;
+  }
+
+  /* Fix dropdown menu text color on mobile */
+  [role="listbox"],
+  [id^="headlessui-listbox-options"],
+  [id^="headlessui-listbox-option"] {
+    color: white !important;
+    border-color: oklch(0.7 0.015 270 / 0.3) !important; /*Light gray line*/
   }
 }
-
