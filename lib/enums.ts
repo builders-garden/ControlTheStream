@@ -39,6 +39,7 @@ export enum PluginsTabs {
   TOKENS = "tokens",
   SENTIMENT = "sentiment",
   KALSHI = "kalshi",
+  PYRO = "pyro",
   CREATOR_COIN = "creator-coin",
 }
 

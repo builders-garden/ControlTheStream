@@ -315,7 +315,7 @@ export const PopupsContent = () => {
           <div className="flex flex-col justify-start items-start gap-1">
             <p className="text-muted-foreground font-bold">
               <span className="font-bold">1.</span> Copy the URLs below and add
-              three Browser Sources to your setup
+              Browser Sources to your setup
             </p>
             <div className="flex flex-col justify-start items-start w-full gap-2.5">
               <div className="flex justify-start items-start w-full gap-2.5">
@@ -359,7 +359,17 @@ export const PopupsContent = () => {
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
-                  {/* Empty div for spacing */}
+                  <p className="font-bold text-muted/70 text-sm">
+                    Pyro Sponsor URL
+                  </p>
+                  <div className="flex justify-between items-center w-full gap-2.5 border border-muted rounded-md p-2">
+                    {`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}/overlay/pyro`}
+                    <CopyButton
+                      key="copy-button-pyro"
+                      size="sm"
+                      stringToCopy={`${env.NEXT_PUBLIC_URL}/${brand.data?.slug}/overlay/pyro`}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -367,8 +377,8 @@ export const PopupsContent = () => {
           <div className="flex flex-col justify-start items-start gap-1">
             <p className="text-muted-foreground font-bold">
               <span className="font-bold">2.</span> Set width and height to
-              600x150 for popups, 1100x250 for bull-meter poll, and 1100x250 for
-              Kalshi market
+              600x150 for popups, 1100x250 for bull-meter poll, 1100x250 for
+              Kalshi market, and 600x150 for Pyro sponsor
             </p>
             <p className="text-sm text-muted/70">
               These are suggested sizes, feel free to adjust them to your

@@ -66,7 +66,7 @@ export const WebAppTips = ({
     error: transferError,
   } = useUsdcTransfer({
     amount: "1", // Default value
-    receiver: tipSettings.payoutAddress || "",
+    receiver: tipSettings?.payoutAddress || "",
     wagmiConfig: wagmiConfigWebApp,
   });
 

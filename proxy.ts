@@ -22,7 +22,8 @@ export default async function proxy(req: NextRequest) {
     pathname === "/api/current-time" ||
     pathname.includes("/api/og") ||
     pathname.includes("/api/webhook/farcaster") ||
-    pathname.includes("/api/kalshi/get")
+    pathname.includes("/api/kalshi/get") ||
+    pathname.includes("/api/pyro")
   ) {
     return NextResponse.next();
   }

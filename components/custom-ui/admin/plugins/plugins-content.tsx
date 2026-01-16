@@ -4,6 +4,7 @@ import { PluginsTabs } from "@/lib/enums";
 import { AdminTabs } from "../admin-tabs";
 import { CreatorCoinContent } from "./creator-coin/creator-coin-content";
 import { KalshiContent } from "./kalshi/kalshi-content";
+import { PyroContent } from "./pyro/pyro-content";
 import { SentimentContent } from "./sentiment/sentiment-content";
 import { TipsContent } from "./tips/tips-content";
 import { TokensContent } from "./tokens/tokens-content";
@@ -11,11 +12,12 @@ import { TokensContent } from "./tokens/tokens-content";
 export const PluginsContent = ({ brandId }: { brandId: string }) => {
   const [selectedTab, setSelectedTab] = useState<PluginsTabs>(PluginsTabs.TIPS);
 
-  // Whether the tab is tips, tokens, sentiments, kalshi or creator coin
+  // Whether the tab is tips, tokens, sentiments, kalshi, pyro or creator coin
   const isTipsTab = selectedTab === PluginsTabs.TIPS;
   const isTokensTab = selectedTab === PluginsTabs.TOKENS;
   const isSentimentTab = selectedTab === PluginsTabs.SENTIMENT;
   const isKalshiTab = selectedTab === PluginsTabs.KALSHI;
+  const isPyroTab = selectedTab === PluginsTabs.PYRO;
   const isCreatorCoinTab = selectedTab === PluginsTabs.CREATOR_COIN;
 
   return (
@@ -49,6 +51,11 @@ export const PluginsContent = ({ brandId }: { brandId: string }) => {
             isSelected: isKalshiTab,
           },
           {
+            label: "Pyro",
+            onClick: () => setSelectedTab(PluginsTabs.PYRO),
+            isSelected: isPyroTab,
+          },
+          {
             label: "Creator Coin",
             onClick: () => setSelectedTab(PluginsTabs.CREATOR_COIN),
             isSelected: isCreatorCoinTab,
@@ -64,6 +71,7 @@ export const PluginsContent = ({ brandId }: { brandId: string }) => {
         )}
         {isTokensTab && <TokensContent key="tokens" />}
         {isKalshiTab && <KalshiContent key="kalshi" />}
+        {isPyroTab && <PyroContent key="pyro" />}
         {isCreatorCoinTab && <CreatorCoinContent key="creator-coin" />}
       </AnimatePresence>
     </motion.div>
