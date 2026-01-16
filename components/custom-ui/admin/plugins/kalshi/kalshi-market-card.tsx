@@ -12,6 +12,8 @@ export const KalshiMarketCard = ({
   eventTitle,
   kalshiUrl,
 }: KalshiMarketCardProps) => {
+  if (!market) return null;
+
   // Calculate percentages from prices
   const yesPercentage = Math.round(parseFloat(market.yesPrice) * 100);
   const noPercentage = 100 - yesPercentage;
@@ -69,7 +71,9 @@ export const KalshiMarketCard = ({
           whileTap={{ scale: 0.98 }}
           className="bg-background border-2 border-red-500/20 rounded-lg p-4 text-center cursor-pointer hover:border-red-500/40 transition-colors duration-200">
           <div className="text-red-600 font-bold text-lg mb-1">No</div>
-          <div className="text-2xl font-bold text-white-600">{noPercentage}%</div>
+          <div className="text-2xl font-bold text-white-600">
+            {noPercentage}%
+          </div>
         </motion.div>
       </div>
 

@@ -10,7 +10,13 @@ import { ToastPollNotification } from "@/components/custom-ui/toast/toast-poll-n
 import { useAdminAuth } from "@/contexts/auth/admin-auth-context";
 import { useSocket } from "@/hooks/use-socket";
 import { useSocketUtils } from "@/hooks/use-socket-utils";
-import { THE_ROLLUP_BRAND_SLUG } from "@/lib/constants";
+import {
+  KALSHI_TESTING_EVENT_ID_MULTIPLE,
+  KALSHI_TESTING_EVENT_ID_SINGLE,
+  KALSHI_TESTING_URL_MULTIPLE,
+  KALSHI_TESTING_URL_SINGLE,
+  THE_ROLLUP_BRAND_SLUG,
+} from "@/lib/constants";
 import { PopupPositions } from "@/lib/enums";
 import { env } from "@/lib/zod";
 
@@ -184,62 +190,26 @@ export const PopupsContent = () => {
     );
   };
 
-  const handleTestKalshiNotification = () => {
+  // A single function to test both single and multiple Kalshi notifications
+  const handleTestKalshiNotification = (single: boolean) => {
     if (!brand.data?.id) return;
-
-    const kalshiUrl =
-      "https://kalshi.com/markets/kxfeddecision/fed-meeting/kxfeddecision-25dec";
-    const urlParts = kalshiUrl.split("/");
-    const kalshiEventId = urlParts[urlParts.length - 1]?.toUpperCase() || "";
     const durationMs = 20000;
 
-    const data = {
-      id: "test-kalshi-" + Date.now(),
-      brandId: brand.data.id,
-      kalshiUrl,
-      kalshiEventId,
-      position: selectedPopupPosition,
-    };
-
-    // Emit socket event so overlay can receive it
-    adminStartKalshiMarket({
-      id: data.id,
-      brandId: data.brandId,
-      kalshiUrl: data.kalshiUrl,
-      kalshiEventId: data.kalshiEventId,
-      position: data.position,
-      durationMs,
-    });
-
-    // Also show toast in admin panel
-    toast.custom(
-      () => (
-        <ToastKalshiNotification
-          data={data}
-          brandSlug={brand.data?.slug ?? THE_ROLLUP_BRAND_SLUG}
-        />
-      ),
-      {
-        duration: durationMs,
-        position: selectedPopupPosition,
-      },
-    );
-  };
-
-  const handleTestKalshiNotification2 = () => {
-    if (!brand.data?.id) return;
-
-    const kalshiUrl =
-      "https://kalshi.com/markets/kxdoed/doe-eliminated/kxdoed-26";
-    const urlParts = kalshiUrl.split("/");
-    const kalshiEventId = urlParts[urlParts.length - 1]?.toUpperCase() || "";
-    const durationMs = 20000;
+    const dataId = single
+      ? "test-kalshi-single-" + Date.now()
+      : "test-kalshi-multiple-" + Date.now();
+    const kalshiUrl = single
+      ? KALSHI_TESTING_URL_SINGLE
+      : KALSHI_TESTING_URL_MULTIPLE;
+    const kalshiEventId = single
+      ? KALSHI_TESTING_EVENT_ID_SINGLE
+      : KALSHI_TESTING_EVENT_ID_MULTIPLE;
 
     const data = {
-      id: "test-kalshi-2-" + Date.now(),
+      id: dataId,
       brandId: brand.data.id,
-      kalshiUrl,
-      kalshiEventId,
+      kalshiUrl: kalshiUrl,
+      kalshiEventId: kalshiEventId,
       position: selectedPopupPosition,
     };
 
@@ -323,12 +293,12 @@ export const PopupsContent = () => {
                 </CTSButton>
                 <CTSButton
                   className="w-full shrink-0"
-                  onClick={handleTestKalshiNotification2}>
+                  onClick={() => handleTestKalshiNotification(true)}>
                   Kalshi Market (single)
                 </CTSButton>
                 <CTSButton
                   className="w-full shrink-0"
-                  onClick={handleTestKalshiNotification}>
+                  onClick={() => handleTestKalshiNotification(false)}>
                   Kalshi Market (multiple)
                 </CTSButton>
               </div>

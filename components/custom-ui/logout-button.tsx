@@ -8,6 +8,7 @@ import { TheRollupButton } from "./tr-button";
 interface LogoutButtonProps {
   executeLogout: () => void;
   className?: string;
+  innerButtonClassName?: string;
   children?: React.ReactNode;
   disabled?: boolean;
   brandSlug?: string;
@@ -19,6 +20,7 @@ export const LogoutButton = ({
   children,
   disabled,
   brandSlug,
+  innerButtonClassName,
 }: LogoutButtonProps) => {
   return (
     <motion.div
@@ -26,11 +28,11 @@ export const LogoutButton = ({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="flex justify-center items-center">
+      className={cn("flex justify-center items-center w-full", className)}>
       {brandSlug === THE_ROLLUP_BRAND_SLUG ? (
         <TheRollupButton
           buttonColor="red"
-          className={cn("w-full", className)}
+          className={cn("w-full", innerButtonClassName)}
           variant="outline"
           onClick={executeLogout}
           disabled={disabled}>
@@ -43,7 +45,7 @@ export const LogoutButton = ({
         </TheRollupButton>
       ) : (
         <CTSButton
-          className={cn("w-full", className)}
+          className={cn("w-full", innerButtonClassName)}
           variant="outline"
           onClick={executeLogout}
           disabled={disabled}>

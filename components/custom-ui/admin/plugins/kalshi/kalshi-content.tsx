@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { CTSButton } from "@/components/custom-ui/cts-button";
@@ -74,7 +75,7 @@ export const KalshiContent = () => {
   // Fetch live market data when active event is found
   useEffect(() => {
     const fetchActiveMarketData = async () => {
-      if (activeKalshiEvent?.success && activeKalshiEvent.data.kalshiUrl) {
+      if (activeKalshiEvent?.success && activeKalshiEvent?.data?.kalshiUrl) {
         const currentUrl = activeKalshiEvent.data.kalshiUrl;
 
         // Only fetch if this is a different URL than the last one we fetched
@@ -244,7 +245,7 @@ export const KalshiContent = () => {
   const onDeactivateEvent = async () => {
     if (
       !activeKalshiEvent?.success ||
-      !activeKalshiEvent.data.eventId ||
+      !activeKalshiEvent?.data.eventId ||
       !brand?.data?.id
     ) {
       console.error("No active event ID found");
@@ -254,12 +255,12 @@ export const KalshiContent = () => {
     try {
       // End the Kalshi market in the overlay via socket
       adminEndKalshiMarket({
-        id: activeKalshiEvent.data.eventId,
+        id: activeKalshiEvent?.data.eventId,
         brandId: brand.data.id,
       });
 
       const response = await kalshiDeactivateMutation.mutateAsync({
-        eventId: activeKalshiEvent.data.eventId,
+        eventId: activeKalshiEvent?.data.eventId,
       });
 
       if (response.success) {
@@ -296,7 +297,10 @@ export const KalshiContent = () => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2, ease: "easeInOut" }}
         className="flex flex-col justify-center items-center w-full h-full py-5 pr-5 gap-5">
-        <div className="text-lg">Loading...</div>
+        <div className="flex justify-center items-center gap-2">
+          <Loader2 className="size-6 text-foreground animate-spin" />
+          <p className="text-lg">Loading...</p>
+        </div>
       </motion.div>
     );
   }

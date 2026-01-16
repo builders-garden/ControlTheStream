@@ -127,7 +127,7 @@ export const GuestPayout = ({
             className="flex flex-col justify-start items-start gap-2.5">
             <div className="flex justify-between items-center gap-2.5 mr-[34px]">
               <div className="flex w-[250px] shrink-0 justify-start items-center gap-2.5 rounded-[12px] border-muted border-[1px] ring-muted-foreground/40 px-5 py-2.5 transition-all duration-300">
-                <p className="text-sm font-medium">
+                <p className="text-sm font-medium truncate">
                   (You){" "}
                   <span className="font-bold h-[21px]">
                     {guests[0].nameOrAddress}
