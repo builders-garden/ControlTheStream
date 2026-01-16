@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { updateBrand } from "@/lib/database/queries";
+import { getBrandBySlug, updateBrand } from "@/lib/database/queries";
 import { PyroVerifyOtpResponse } from "@/lib/types/pyro.types";
 
 const PYRO_BASE_URL = process.env.PYRO_API_URL!;
@@ -72,20 +72,27 @@ export const POST = async (req: NextRequest) => {
       });
     }
 
-    // Update brand with Pyro info
-    const updatedBrand = await updateBrand(brandSlug, {
-      pyroMint: data.creator.creatorMint,
-      pyroEmail: email,
-    });
+    // Check if brand already has Pyro info set
+    const existingBrand = await getBrandBySlug(brandSlug);
+    const alreadyHasPyroInfo =
+      existingBrand?.pyroMint || existingBrand?.pyroEmail;
 
-    if (!updatedBrand) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Failed to update brand with Pyro info",
-        },
-        { status: 500 },
-      );
+    // Only update brand if Pyro info is not already set
+    if (!alreadyHasPyroInfo) {
+      const updatedBrand = await updateBrand(brandSlug, {
+        pyroMint: data.creator.creatorMint,
+        pyroEmail: email,
+      });
+
+      if (!updatedBrand) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Failed to update brand with Pyro info",
+          },
+          { status: 500 },
+        );
+      }
     }
 
     return NextResponse.json({

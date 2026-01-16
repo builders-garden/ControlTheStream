@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { updateBrand } from "@/lib/database/queries";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -15,22 +14,8 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
-    // Clear Pyro info from brand
-    const updatedBrand = await updateBrand(brandSlug, {
-      pyroMint: null,
-      pyroEmail: null,
-    });
-
-    if (!updatedBrand) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Failed to disconnect Pyro account",
-        },
-        { status: 500 },
-      );
-    }
-
+    // Note: We don't clear pyroMint/pyroEmail from DB on disconnect.
+    // The values are preserved so the pyro creator check still works.
     return NextResponse.json({
       success: true,
       message: "Pyro account disconnected successfully",

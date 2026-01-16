@@ -17,10 +17,15 @@ type PyroAuthStep = "email" | "otp" | "connected";
 export const PyroContent = () => {
   const { brand } = useAdminAuth();
   const brandData = useMemo(() => brand.data, [brand.data]);
+
+  console.log("brandData:", brandData);
+  // DB values - permanent association, used for leaderboard
   const pyroMint = useMemo(() => brandData?.pyroMint, [brandData?.pyroMint]);
   const pyroEmail = useMemo(() => brandData?.pyroEmail, [brandData?.pyroEmail]);
 
-  // Auth state
+  // UI session state - separate from DB values
+  // Users can disconnect/reconnect without affecting DB
+  const [isSessionActive, setIsSessionActive] = useState(!!pyroMint);
   const [authStep, setAuthStep] = useState<PyroAuthStep>(
     pyroMint ? "connected" : "email",
   );
@@ -46,7 +51,9 @@ export const PyroContent = () => {
 
   const leaderboard = leaderboardData?.data?.leaderboard || [];
   const hasLeaderboard = leaderboard.length > 0;
-  const isConnected = !!pyroMint;
+  // Show connected UI when session is active (regardless of DB state)
+  // Leaderboard still uses pyroMint from DB
+  const showConnectedUI = isSessionActive && pyroMint;
 
   // Handle request OTP
   const handleRequestOtp = useCallback(() => {
@@ -89,6 +96,7 @@ export const PyroContent = () => {
               toast.success("Pyro account connected successfully!");
               await brand.refetch();
               await refetchLeaderboard();
+              setIsSessionActive(true);
               setAuthStep("connected");
               setEmail("");
               setOtp("");
@@ -119,7 +127,7 @@ export const PyroContent = () => {
         onSuccess: async (data) => {
           if (data.success) {
             toast.success("Pyro account disconnected");
-            await brand.refetch();
+            setIsSessionActive(false);
             setAuthStep("email");
           } else {
             toast.error(data.error || "Failed to disconnect");
@@ -151,7 +159,7 @@ export const PyroContent = () => {
 
       <AnimatePresence mode="wait">
         {/* Email Input Step */}
-        {!isConnected && authStep === "email" && (
+        {!showConnectedUI && authStep === "email" && (
           <motion.div
             key="email-step"
             initial={{ opacity: 0, y: 10 }}
@@ -197,7 +205,7 @@ export const PyroContent = () => {
         )}
 
         {/* OTP Input Step */}
-        {!isConnected && authStep === "otp" && (
+        {!showConnectedUI && authStep === "otp" && (
           <motion.div
             key="otp-step"
             initial={{ opacity: 0, y: 10 }}
@@ -257,7 +265,7 @@ export const PyroContent = () => {
         )}
 
         {/* Connected State */}
-        {isConnected && (
+        {showConnectedUI && (
           <motion.div
             key="connected"
             initial={{ opacity: 0 }}
@@ -357,7 +365,7 @@ export const PyroContent = () => {
         )}
 
         {/* No Pyro Account - Show when verified but no creator */}
-        {!isConnected && authStep === "email" && (
+        {!showConnectedUI && authStep === "email" && (
           <PyroNoAccount key="no-account-cta" />
         )}
       </AnimatePresence>
