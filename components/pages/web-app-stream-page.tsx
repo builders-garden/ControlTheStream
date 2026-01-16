@@ -326,7 +326,7 @@ export const WebAppStreamPage = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, ease: "easeInOut" }}
                 className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-3 sm:gap-0">
-                <div className="flex justify-start items-center gap-2.5 w-full sm:w-auto min-w-0 flex-1">
+                <div className="flex justify-start items-center gap-2.5 w-full sm:w-auto min-w-0 sm:max-w-[80%] flex-1">
                   {user.data?.avatarUrl ? (
                     <Image
                       src={user.data.avatarUrl}
@@ -355,7 +355,8 @@ export const WebAppStreamPage = () => {
                   brandSlug={brand.data?.slug || ""}
                   disabled={isLoggingOut}
                   executeLogout={handleLogout}
-                  className="h-[42px] w-full sm:w-auto">
+                  className="sm:min-w-[30%]"
+                  innerButtonClassName="h-[42px] w-full sm:w-full">
                   <AnimatePresence mode="wait">
                     {isLoggingOut ? (
                       <motion.div
@@ -391,12 +392,12 @@ export const WebAppStreamPage = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, ease: "easeInOut" }}
-                className="flex justify-center items-center w-full">
+                className="flex justify-end items-center w-full">
                 {brand.data?.slug === THE_ROLLUP_BRAND_SLUG ? (
                   <TheRollupButton
                     onClick={() => signInWithWebApp()}
                     disabled={isSigningIn}
-                    className="bg-accent w-full sm:w-auto h-[42px]">
+                    className="bg-accent w-full h-[42px]">
                     <AnimatePresence mode="wait">
                       {isSigningIn ? (
                         <motion.div
@@ -427,7 +428,7 @@ export const WebAppStreamPage = () => {
                   <CTSButton
                     onClick={() => signInWithWebApp()}
                     disabled={isSigningIn}
-                    className="w-full sm:w-auto h-[42px]">
+                    className="w-full h-[42px]">
                     <AnimatePresence mode="wait">
                       {isSigningIn ? (
                         <motion.div

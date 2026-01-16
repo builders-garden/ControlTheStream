@@ -7,7 +7,13 @@ import { useEffect } from "react";
 import { useKalshiGet } from "@/hooks/use-kalshi-get";
 import { useSocket } from "@/hooks/use-socket";
 import { useSocketUtils } from "@/hooks/use-socket-utils";
-import { THE_ROLLUP_BRAND_SLUG } from "@/lib/constants";
+import {
+  KALSHI_TESTING_URL_MULTIPLE,
+  KALSHI_TESTING_URL_SINGLE,
+  TESTING_KALSHI_MULTIPLE,
+  TESTING_KALSHI_SINGLE,
+  THE_ROLLUP_BRAND_SLUG,
+} from "@/lib/constants";
 import { ServerToClientSocketEvents } from "@/lib/enums";
 import { KalshiMarketStartedEvent } from "@/lib/types/socket/server-to-client.type";
 import { cn } from "@/lib/utils";
@@ -37,10 +43,30 @@ export const ToastKalshiNotification = ({
   const { joinStream } = useSocketUtils();
   const kalshiGetMutation = useKalshiGet();
 
+  // Whether the data is testing single or multiple
+  const isTestingSingle = data.kalshiUrl.includes(KALSHI_TESTING_URL_SINGLE);
+  const isTestingMultiple = data.kalshiUrl.includes(
+    KALSHI_TESTING_URL_MULTIPLE,
+  );
+
+  // The testing data for single and multiple
+  const testingData = isTestingSingle
+    ? TESTING_KALSHI_SINGLE
+    : isTestingMultiple
+      ? TESTING_KALSHI_MULTIPLE
+      : null;
+
+  // Whether the data is testing or not
+  const isTesting = isTestingSingle || isTestingMultiple;
+
   // Use the mutation's built-in state instead of managing our own
-  const kalshiData = kalshiGetMutation.data || null;
-  const isLoading = kalshiGetMutation.isPending;
-  const error = kalshiGetMutation.error ? "Failed to load market data" : null;
+  const kalshiData = isTesting ? testingData : kalshiGetMutation.data || null;
+  const isLoading = isTesting ? false : kalshiGetMutation.isPending;
+  const error = isTesting
+    ? null
+    : kalshiGetMutation.error
+      ? "Failed to load market data"
+      : null;
 
   // Create event handler for Kalshi market started event
   const handleKalshiMarketStarted = (eventData: KalshiMarketStartedEvent) => {
@@ -98,6 +124,8 @@ export const ToastKalshiNotification = ({
     yesPrice: string;
     noPrice: string;
   }) => {
+    if (!_market) return null;
+
     const yesPriceFloat = Math.max(0, parseFloat(_market.yesPrice || "0"));
     const noPriceFloat = Math.max(
       0,

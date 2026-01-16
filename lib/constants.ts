@@ -28,6 +28,75 @@ export const FARCASTER_CLIENT_FID = {
   base: 309857, // base mobile client fid
 };
 
+// Kalshi Testing URLs
+export const KALSHI_TESTING_URL_SINGLE = "cta-testing-kalshi-url-single";
+export const KALSHI_TESTING_URL_MULTIPLE = "cta-testing-kalshi-url-multiple";
+
+// Kalshi Testing Event IDs
+export const KALSHI_TESTING_EVENT_ID_SINGLE =
+  "cta-testing-kalshi-event-id-single";
+export const KALSHI_TESTING_EVENT_ID_MULTIPLE =
+  "cta-testing-kalshi-event-id-multiple";
+
+// Testing Kalshi Data for single and multiple markets
+export const TESTING_KALSHI_SINGLE = {
+  success: true,
+  data: {
+    eventTitle: "Will the Supreme Court rule in favor of Trump's tariffs?",
+    markets: [
+      {
+        title:
+          "Will the Supreme Court rule in favor of Trump in V.O.S. Selections, Inc. v. Trump",
+        yesPrice: "0.3400",
+        noPrice: "0.6400",
+        status: "active",
+        ticker: "KXDJTVOSTARIFFS",
+        noSubTitle: "Before 2028",
+        closeTime: "2028-01-01T15:00:00Z",
+      },
+    ],
+    totalMarkets: 1,
+    kalshiUrl: "cta-testing-kalshi-url-single",
+  },
+};
+export const TESTING_KALSHI_MULTIPLE = {
+  success: true,
+  data: {
+    eventTitle: "Hellas Verona vs Bologna Winner?",
+    markets: [
+      {
+        title: "Hellas Verona vs Bologna Winner?",
+        yesPrice: "0.8000",
+        noPrice: "0.1800",
+        status: "active",
+        ticker: "KXSERIEAGAME-26JAN15VERBFC-BFC",
+        noSubTitle: "Bologna",
+        closeTime: "2026-01-29T17:30:00Z",
+      },
+      {
+        title: "Hellas Verona vs Bologna Winner?",
+        yesPrice: "0.1500",
+        noPrice: "0.8300",
+        status: "active",
+        ticker: "KXSERIEAGAME-26JAN15VERBFC-TIE",
+        noSubTitle: "Tie",
+        closeTime: "2026-01-29T17:30:00Z",
+      },
+      {
+        title: "Hellas Verona vs Bologna Winner?",
+        yesPrice: "0.0100",
+        noPrice: "0.9700",
+        status: "active",
+        ticker: "KXSERIEAGAME-26JAN15VERBFC-VER",
+        noSubTitle: "Hellas Verona",
+        closeTime: "2026-01-29T17:30:00Z",
+      },
+    ],
+    totalMarkets: 3,
+    kalshiUrl: "cta-testing-kalshi-url-multiple",
+  },
+};
+
 // USDC on Base constants
 export const BASE_USDC_ADDRESS = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
 export const BASE_USDC_LOGO_URL =

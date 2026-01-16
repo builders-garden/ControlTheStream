@@ -94,9 +94,9 @@ export const KalshiConfirmation = ({
             </p>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 w-full">
             <CTSButton
-              className="rounded-full"
+              className="rounded-full w-fit px-4"
               variant="default"
               disabled={isAddingToOverlay}
               onClick={onAddToOverlay}>

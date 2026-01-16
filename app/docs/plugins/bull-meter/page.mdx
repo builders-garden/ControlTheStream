@@ -1,17 +1,73 @@
 # Bull Meter (Polls)
 
-Create interactive, skin-in-the-game polls. Viewers vote by committing **1 cent of USDC on Base**. The overlay displays live voting, and once the timer expires, the final result is automatically announced to the stream.
+Create interactive, skin-in-the-game polls. Viewers vote by committing **1 cent of USDC on Base**.
+The overlay displays live voting, and once the timer expires, the final result is automatically announced to the stream.
 
-## How It Works
+## How to Set It Up
 
-1. Create a poll from your dashboard
-2. Viewers commit 1 cent USDC to vote
-3. Live voting is displayed on your overlay
-4. Results are announced automatically when timer expires
+<img
+  src="/docs/images/plugins/sentiment/how-to-setup.png"
+  alt="Bull Meter plugin setup"
+  style={{
+    borderRadius: "8px",
+    marginTop: "1rem",
+    marginBottom: "1rem",
+    width: "70%",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+  }}
+/>
 
-## Features
+1. Navigate to the **Sentiment** plugin in your dashboard
+2. Give your sentiment poll a name, a duration and, optionally, set up a guest that will receive part of the earned amount
+3. Click confirm and sign the transaction that starts the poll
 
-- Real-time vote tracking
-- Automatic result announcement
-- Skin-in-the-game engagement
-- Timer-based voting periods
+## What Your Users Will See
+
+<img
+  src="/docs/gifs/plugins/sentiment/overlay.gif"
+  alt="Bull Meter plugin overlay"
+  style={{
+    borderRadius: "8px",
+    marginTop: "1rem",
+    marginBottom: "1rem",
+    width: "70%",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+  }}
+/>
+
+- The question will stay up in the overlay until the timer ends; at that point the poll will be closed and the bull/bear percentages will be shown
+- When a user clicks on the bull or bear button, the manifestation of their sentiment will take the form of a popup on the overlay, stating the sentiment of that user
+
+## How They Can Interact
+
+<div
+  style={{
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    gap: "1rem",
+    marginTop: "1rem",
+    marginBottom: "1rem",
+  }}>
+  <img
+    src="/docs/images/plugins/sentiment/interact.png"
+    alt="Bull Meter plugin interaction"
+    style={{
+      borderRadius: "8px",
+      width: "67%",
+      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+    }}
+  />
+  <img
+    src="/docs/images/plugins/sentiment/interact-mobile.png"
+    alt="Bull Meter plugin mobile interaction"
+    style={{
+      borderRadius: "8px",
+      width: "33%",
+      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+    }}
+  />
+</div>
+
+- By clicking on the bull or bear button the user is prompted to sign a transaction that will allocate $1 maximum to the poll.
+- The user can spam-click the button they prefer in order to cumulate votes in that direction. Each vote costs $0.01

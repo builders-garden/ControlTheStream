@@ -55,8 +55,7 @@ export const BottomNavbar = ({ user }: BottomNavbarProps) => {
           </TheRollupButton>
         ) : (
           <CTSButton
-            className="rounded-full py-1 w-[116px] shrink-0 border-foreground "
-            variant="outline"
+            className="rounded-full py-1 w-[116px] shrink-0 border border-muted bg-background hover:bg-background text-muted"
             onClick={handleNavbarOpen}>
             <div className="flex justify-center items-center w-full gap-1.5">
               {user.avatarUrl ? (
@@ -104,7 +103,7 @@ export const BottomNavbar = ({ user }: BottomNavbarProps) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
+              transition={{ duration: 0.2, delay: 0.1, ease: "easeInOut" }}
               className="flex justify-center items-center shrink-0 font-bold">
               {baseName || formatWalletAddress(address)}
             </motion.div>
