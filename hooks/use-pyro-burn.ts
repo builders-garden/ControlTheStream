@@ -1,9 +1,14 @@
-import { Config, sendTransaction, waitForTransactionReceipt } from "@wagmi/core";
+import {
+  Config,
+  sendTransaction,
+  waitForTransactionReceipt,
+} from "@wagmi/core";
 import { useState } from "react";
 import { parseEther } from "viem";
+import { env } from "@/lib/zod";
 
 // Pyro deposit address for Base chain burns
-const PYRO_DEPOSIT_ADDRESS = process.env.NEXT_PUBLIC_PYRO_DEPOSIT_ADDRESS!;
+const PYRO_DEPOSIT_ADDRESS = env.NEXT_PUBLIC_PYRO_DEPOSIT_ADDRESS;
 
 interface UsePyroBurnProps {
   wagmiConfig: Config;

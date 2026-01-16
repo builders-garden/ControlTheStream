@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { env } from "@/lib/zod";
 
-const PYRO_BASE_URL = process.env.PYRO_API_URL;
-const PYRO_API_KEY = process.env.PYRO_API_KEY;
+const PYRO_BASE_URL = env.PYRO_API_URL;
+const PYRO_API_KEY = env.PYRO_API_KEY;
 
 export const POST = async (req: NextRequest) => {
   try {

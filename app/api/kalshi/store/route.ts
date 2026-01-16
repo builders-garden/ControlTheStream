@@ -8,6 +8,7 @@ import {
   getKalshiEventByBrandAndEventId,
   updateKalshiEvent,
 } from "@/lib/database/queries/kalshi.queries";
+import { env } from "@/lib/zod";
 
 // Validation schema for the request body
 const storeKalshiSchema = z.object({
@@ -66,10 +67,10 @@ export const POST = async (req: NextRequest) => {
 
     // Get current time from server to check if events are expired
     const currentTimeResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_SOCKET_URL}/current-time`,
+      `${env.NEXT_PUBLIC_SOCKET_URL}/current-time`,
       {
         headers: {
-          "x-api-secret": process.env.BACKEND_SECRET!,
+          "x-api-secret": env.BACKEND_SECRET,
           "Content-Type": "application/json",
         },
       },

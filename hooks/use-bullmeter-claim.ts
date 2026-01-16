@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { encodeFunctionData } from "viem";
 import { bullMeterAbi } from "@/lib/abi/bull-meter-abi";
 import { BULLMETER_ADDRESS } from "@/lib/constants";
+import { env } from "@/lib/zod";
 
 interface SendCallsCall {
   to: string;
@@ -51,7 +52,7 @@ const createSendCallsParams = (
     calls,
     capabilities: {
       paymasterService: {
-        url: process.env.NEXT_PUBLIC_PAYMASTER_URL || "",
+        url: env.NEXT_PUBLIC_PAYMASTER_URL,
       },
     },
   };

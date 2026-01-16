@@ -5,6 +5,7 @@ import {
   TokensApiError,
   TokensApiResponse,
 } from "@/lib/types/tokens.type";
+import { env } from "@/lib/zod";
 
 export const GET = async (req: NextRequest) => {
   try {
@@ -46,7 +47,7 @@ export const GET = async (req: NextRequest) => {
       method: "GET",
       headers: {
         accept: "application/json",
-        authorization: `Basic ${process.env.ZERION_API_KEY || ""}`,
+        authorization: `Basic ${env.ZERION_API_KEY}`,
       },
     });
 

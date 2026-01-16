@@ -17,6 +17,8 @@ export const env = createEnv({
     BACKEND_SECRET: z.string().min(1),
     OPENAI_API_KEY: z.string().min(1),
     ZORA_API_KEY: z.string().min(1),
+    PYRO_API_KEY: z.string().min(1),
+    PYRO_API_URL: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_APP_ENV: z
@@ -45,6 +47,8 @@ export const env = createEnv({
     NEXT_PUBLIC_PAYMASTER_URL: z.string().min(1),
     //PINATA
     NEXT_PUBLIC_GATEWAY_URL: z.string().min(1),
+    // PYRO
+    NEXT_PUBLIC_PYRO_DEPOSIT_ADDRESS: z.string().min(1),
   },
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   experimental__runtimeEnv: {
@@ -64,5 +68,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SOCKET_URL: process.env.NEXT_PUBLIC_SOCKET_URL,
     NEXT_PUBLIC_PAYMASTER_URL: process.env.NEXT_PUBLIC_PAYMASTER_URL,
     NEXT_PUBLIC_GATEWAY_URL: process.env.NEXT_PUBLIC_GATEWAY_URL,
+    NEXT_PUBLIC_PYRO_DEPOSIT_ADDRESS:
+      process.env.NEXT_PUBLIC_PYRO_DEPOSIT_ADDRESS,
   },
 });

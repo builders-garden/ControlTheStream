@@ -24,6 +24,7 @@ import {
   ReadPollData,
 } from "@/lib/types/bullmeter.type";
 import { Guest } from "@/lib/types/poll.type";
+import { env } from "@/lib/zod";
 
 // Types for wallet_sendCalls
 interface SendCallsCall {
@@ -60,7 +61,7 @@ const createSendCallsParams = (
     calls,
     capabilities: {
       paymasterService: {
-        url: process.env.NEXT_PUBLIC_PAYMASTER_URL || "",
+        url: env.NEXT_PUBLIC_PAYMASTER_URL,
       },
     },
   };

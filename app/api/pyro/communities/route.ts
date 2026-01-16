@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { env } from "@/lib/zod";
 
-const PYRO_BASE_URL = process.env.PYRO_API_URL!;
+const PYRO_BASE_URL = env.PYRO_API_URL;
 const PYRO_API_URL = `${PYRO_BASE_URL}/communities`;
 
 export interface ExternalSponsor {
@@ -39,7 +40,7 @@ export const GET = async (request: NextRequest) => {
     const limit = searchParams.get("limit");
     const sponsorType = searchParams.get("sponsorType");
 
-    const apiKey = process.env.PYRO_API_KEY;
+    const apiKey = env.PYRO_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json(

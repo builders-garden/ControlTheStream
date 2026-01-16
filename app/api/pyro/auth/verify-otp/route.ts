@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getBrandBySlug, updateBrand } from "@/lib/database/queries";
 import { PyroVerifyOtpResponse } from "@/lib/types/pyro.types";
+import { env } from "@/lib/zod";
 
-const PYRO_BASE_URL = process.env.PYRO_API_URL!;
+const PYRO_BASE_URL = env.PYRO_API_URL;
 const PYRO_API_URL = `${PYRO_BASE_URL}/externalauth/verify-otp`;
 
 export const POST = async (req: NextRequest) => {
@@ -29,7 +30,7 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
-    const apiKey = process.env.PYRO_API_KEY;
+    const apiKey = env.PYRO_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json(

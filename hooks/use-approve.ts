@@ -4,6 +4,7 @@ import { encodeFunctionData, erc20Abi, parseUnits } from "viem";
 import { useAccount, useSendTransaction } from "wagmi";
 import { BASE_USDC_ADDRESS, BULLMETER_ADDRESS } from "@/lib/constants";
 import { wagmiConfigMiniApp } from "@/lib/reown";
+import { env } from "@/lib/zod";
 
 interface UseApproveProps {
   amount?: string; // Amount in USDC (e.g., "1" for 1 USDC)
@@ -106,7 +107,7 @@ export const useApprove = ({
           ],
           capabilities: {
             paymasterService: {
-              url: process.env.NEXT_PUBLIC_PAYMASTER_URL || "",
+              url: env.NEXT_PUBLIC_PAYMASTER_URL,
             },
           },
         });
