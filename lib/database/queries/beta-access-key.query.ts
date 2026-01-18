@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db } from "..";
 import { BetaAccessKey, betaAccessKeysTable } from "../db.schema";
 
@@ -10,10 +10,17 @@ import { BetaAccessKey, betaAccessKeysTable } from "../db.schema";
 export const getBetaAccessKey = async (
   key: string,
 ): Promise<BetaAccessKey | null> => {
+  // Normalize key by removing all whitespace (including newlines)
+  const normalizedKey = key.replace(/\s+/g, "");
   const [betaAccessKey] = await db
     .select()
     .from(betaAccessKeysTable)
-    .where(eq(betaAccessKeysTable.key, key))
+    .where(
+      eq(
+        sql`REPLACE(REPLACE(REPLACE(${betaAccessKeysTable.key}, CHAR(10), ''), CHAR(13), ''), ' ', '')`,
+        normalizedKey,
+      ),
+    )
     .limit(1);
   return betaAccessKey || null;
 };
@@ -26,10 +33,17 @@ export const getBetaAccessKey = async (
 export const setBetaAccessKeyUsed = async (
   key: string,
 ): Promise<BetaAccessKey | null> => {
+  // Normalize key by removing all whitespace (including newlines)
+  const normalizedKey = key.replace(/\s+/g, "");
   const [betaAccessKey] = await db
     .update(betaAccessKeysTable)
     .set({ used: true })
-    .where(eq(betaAccessKeysTable.key, key))
+    .where(
+      eq(
+        sql`REPLACE(REPLACE(REPLACE(${betaAccessKeysTable.key}, CHAR(10), ''), CHAR(13), ''), ' ', '')`,
+        normalizedKey,
+      ),
+    )
     .returning();
   return betaAccessKey || null;
 };
