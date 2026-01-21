@@ -1,6 +1,5 @@
-import { Key, Loader2, Signature } from "lucide-react";
+import { Loader2, Signature } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Address } from "viem";
@@ -15,7 +14,6 @@ import { CTSButton } from "../cts-button";
 
 export const SignUpContent = () => {
   const [brandName, setBrandName] = useState("");
-  const [betaAccessKey, setBetaAccessKey] = useState("");
   const [isCreatingNewBrand, setIsCreatingNewBrand] = useState(false);
 
   const { mutate: createBrand } = useCreateBrand(
@@ -36,13 +34,7 @@ export const SignUpContent = () => {
 
   // Handles the create brand button click
   const handleCreateBrand = async () => {
-    if (
-      isCreatingNewBrand ||
-      !brandName ||
-      !connectedAdmin.address ||
-      !betaAccessKey
-    )
-      return;
+    if (isCreatingNewBrand || !brandName || !connectedAdmin.address) return;
     setIsCreatingNewBrand(true);
 
     // Create the brand
@@ -51,7 +43,6 @@ export const SignUpContent = () => {
         name: brandName.trim(),
         slug: slugifiedBrandName,
         isActive: true,
-        betaAccessKey,
       },
       {
         onSuccess: async (response) => {
@@ -147,35 +138,6 @@ export const SignUpContent = () => {
               </div>
             </div>
 
-            <div className="flex flex-col justify-start items-start gap-2.5 w-full">
-              {/* Label */}
-              <div className="flex justify-between items-center gap-2.5 w-full pr-1.5">
-                <div className="flex justify-start items-center gap-2.5">
-                  <Key className="size-5 text-muted-foreground" />
-                  <p className="text-base font-bold text-muted-foreground">
-                    Anticipated Access Key
-                  </p>
-                </div>
-                <Link href="https://farcaster.xyz/limone.eth" target="_blank">
-                  <p className="text-sm font-bold underline">
-                    Ask for an Access Key
-                  </p>
-                </Link>
-              </div>
-
-              <div className="flex w-full justify-start items-center gap-2.5 rounded-[12px] border-muted border-[1px] ring-muted-foreground/40 px-5 py-2.5 transition-all duration-300">
-                <input
-                  type="text"
-                  placeholder="Your access key here..."
-                  disabled={isCreatingNewBrand}
-                  className="w-full h-full outline-none focus:ring-none focus:ring-0 focus:border-none text-base"
-                  value={betaAccessKey}
-                  onChange={(e) => {
-                    setBetaAccessKey(e.target.value);
-                  }}
-                />
-              </div>
-            </div>
           </div>
 
           <motion.div
@@ -208,7 +170,7 @@ export const SignUpContent = () => {
           <CTSButton
             variant="success"
             className="w-full h-[42px]"
-            disabled={isCreatingNewBrand || !brandName || !betaAccessKey}
+            disabled={isCreatingNewBrand || !brandName}
             onClick={handleCreateBrand}>
             <AnimatePresence mode="wait">
               {isCreatingNewBrand ? (

@@ -58,10 +58,7 @@ export const useBrandBySlug = ({
 
 // Mutation hooks
 export const useCreateBrand = (tokenType: AuthTokenType) => {
-  return useApiMutation<
-    BrandApiResponse,
-    CreateBrand & { betaAccessKey: string }
-  >({
+  return useApiMutation<BrandApiResponse, CreateBrand>({
     url: "/api/brands",
     method: "POST",
     body: (variables) => variables,

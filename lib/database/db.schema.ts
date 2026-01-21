@@ -336,20 +336,6 @@ export type CreateAdmin = typeof adminsTable.$inferInsert;
 export type UpdateAdmin = Partial<CreateAdmin>;
 
 /**
- * Beta Access Keys table
- */
-export const betaAccessKeysTable = sqliteTable("beta_access_keys", {
-  key: text("key").primaryKey(),
-  used: integer("used", { mode: "boolean" }).default(false),
-  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
-});
-
-export type BetaAccessKey = typeof betaAccessKeysTable.$inferSelect;
-export type CreateBetaAccessKey = typeof betaAccessKeysTable.$inferInsert;
-export type UpdateBetaAccessKey = Partial<CreateBetaAccessKey>;
-
-/**
  * Notification subscriptions table
  */
 export const notificationSubscriptionsTable = sqliteTable(
