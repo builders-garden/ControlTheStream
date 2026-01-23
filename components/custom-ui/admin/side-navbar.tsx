@@ -1,4 +1,5 @@
 import {
+  ArrowUpRight,
   Bell,
   Blocks,
   ChartBar,
@@ -6,6 +7,7 @@ import {
   Palette,
   ShieldUser,
 } from "lucide-react";
+import Link from "next/link";
 import Image from "next/image";
 import { CTSCard } from "@/components/custom-ui/cts-card";
 import { useAdminAuth } from "@/contexts/auth/admin-auth-context";
@@ -91,8 +93,18 @@ export const SideNavbar = ({
         </div>
       </div>
 
-      {/* Logout Button on footer */}
-      <LogoutButton executeLogout={executeLogout} />
+      {/* Footer */}
+      <div className="flex flex-col items-start gap-3 w-full">
+        <Link
+          href="/docs"
+          target="_blank"
+          className="flex items-center gap-1 text-muted-foreground hover:text-foreground underline transition-colors ml-1"
+        >
+          Docs
+          <ArrowUpRight className="size-[18px]" />
+        </Link>
+        <LogoutButton executeLogout={executeLogout} />
+      </div>
     </CTSCard>
   );
 };

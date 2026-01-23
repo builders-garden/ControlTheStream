@@ -159,6 +159,40 @@ article blockquote {
   line-height: 1.75 !important;
 }
 
+/* Caption text for images/videos */
+article .caption {
+  font-size: 0.8rem !important;
+  color: #9ca3af !important;
+  margin-top: 0 !important;
+  margin-bottom: 2rem !important;
+}
+
+/* Slightly larger text on desktop */
+@media (min-width: 768px) {
+  article p,
+  article li,
+  article td,
+  article blockquote {
+    font-size: 1.09rem !important;
+  }
+
+  article h1 {
+    font-size: 2.5rem !important;
+  }
+
+  article h2 {
+    font-size: 1.875rem !important;
+  }
+
+  article h3 {
+    font-size: 1.6rem !important;
+  }
+
+  article h4 {
+    font-size: 1.35rem !important;
+  }
+}
+
 /* Hide page name/breadcrumb at top of each page */
 nav[aria-label="breadcrumb"],
 [class*="breadcrumb"],

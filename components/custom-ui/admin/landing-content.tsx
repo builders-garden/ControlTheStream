@@ -1,5 +1,7 @@
+import { ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface LandingContentProps {
   signInWithBase: () => void;
@@ -37,18 +39,28 @@ export const LandingContent = ({ signInWithBase }: LandingContentProps) => {
             more onchain interactions.
           </p>
 
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            whileTap={{ scale: 0.98 }}
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="flex justify-center items-center gap-3 bg-foreground text-background w-full md:w-fit py-3 px-5 rounded-[12px] text-base md:text-lg font-extrabold cursor-pointer hover:bg-foreground/90"
-            onClick={signInWithBase}>
-            <div className="size-5 md:size-6 bg-blue-600" />
-            Sign in with Base
-          </motion.button>
+          <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-fit">
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="flex justify-center items-center gap-3 bg-foreground text-background w-full md:w-fit py-3 px-5 rounded-[12px] text-base md:text-lg font-extrabold cursor-pointer hover:bg-foreground/90"
+              onClick={signInWithBase}>
+              <div className="size-5 md:size-6 bg-blue-600" />
+              Sign in with Base
+            </motion.button>
+            <Link
+              href="/docs"
+              target="_blank"
+              className="flex justify-center items-center gap-1 py-3 px-5 w-full md:w-fit rounded-[12px] text-base md:text-lg font-extrabold border border-foreground/30 hover:border-foreground/60 transition-colors"
+            >
+              Learn more
+              <ArrowUpRight className="size-5" />
+            </Link>
+          </div>
         </div>
 
         <div className="relative flex justify-center items-center w-full mt-8 md:mt-0">
